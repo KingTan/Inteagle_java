@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: Inteagle            
+  datasource:
+     url: jdbc:mysql://localhost:3306/inteagle?characterEncoding=utf8&useSSL=true&serverTimezone=UTC
+     username: root
+     password: root
+     driver-class-name: com.mysql.cj.jdbc.Driver
+     
+mybatis:
+  mapper-locations: classpath:mapper/*/*.xml     #mapper文件路径
+  type-aliases-package: com.inteagle.*.*.entity  #实体类的包路径
+  
+logging:
+  level:
+    com.dy.springboot.server.mapper: DEBUG
+
+
+
+
+
+
+
+
+
+
+

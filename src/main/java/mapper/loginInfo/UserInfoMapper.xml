@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inteagle.loginInfo.dao.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="com.inteagle.loginInfo.entity.UserInfo">
+    <result column="user_id" jdbcType="CHAR" property="userId" />
+    <result column="role_id" jdbcType="CHAR" property="roleId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="id_card_num" jdbcType="VARCHAR" property="idCardNum" />
+    <result column="corp_name" jdbcType="VARCHAR" property="corpName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="head_portrait" jdbcType="VARCHAR" property="headPortrait" />
+    <result column="user_status" jdbcType="VARCHAR" property="userStatus" />
+    <result column="user_isonline" jdbcType="VARCHAR" property="userIsonline" />
+    <result column="in_date" jdbcType="TIMESTAMP" property="inDate" />
+    <result column="in_user_name" jdbcType="CHAR" property="inUserName" />
+    <result column="edit_user_name" jdbcType="CHAR" property="editUserName" />
+    <result column="edit_date" jdbcType="TIMESTAMP" property="editDate" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+  		user_id,role_id,user_name,gender,phone,id_card_num,corp_name,password,
+  		email,head_portrait,user_status,user_isonline,in_date,in_user_name,
+  		edit_user_name,edit_date
+  </sql>
+  
+  <!--根据登录参数和密码查询用户信息  -->
+  <select id="getUserInfoByParamAndPwd" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/>
+  	from user_info
+  	where (
+			user_info.id_card_num LIKE CONCAT('%', #{searchParam}, '%')
+			or
+			user_info.phone LIKE CONCAT('%', #{searchParam}, '%')
+			or
+			user_info.corp_name LIKE CONCAT('%', #{searchParam}, '%')
+		  )
+		  and 
+		  password = #{passWord}
+  </select>
+  
+  <!--查询所有登录用户信息  -->
+  <select id="getAllUserInfoList" resultMap="BaseResultMap">
+  		select <include refid="Base_Column_List"/>
+  		from user_info
+  </select>
+  
+  <insert id="insert" parameterType="com.inteagle.loginInfo.entity.UserInfo">
+    insert into user_info (user_id, role_id, user_name, 
+      gender, phone, id_card_num, 
+      corp_name, password, email, 
+      head_portrait, user_status, user_isonline, 
+      in_date, in_user_name, edit_user_name, 
+      edit_date)
+    values (#{userId,jdbcType=CHAR}, #{roleId,jdbcType=CHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{idCardNum,jdbcType=VARCHAR}, 
+      #{corpName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{headPortrait,jdbcType=VARCHAR}, #{userStatus,jdbcType=VARCHAR}, #{userIsonline,jdbcType=VARCHAR}, 
+      #{inDate,jdbcType=TIMESTAMP}, #{inUserName,jdbcType=CHAR}, #{editUserName,jdbcType=TIMESTAMP}, 
+      #{editDate,jdbcType=CHAR})
+  </insert>
+   
+  <insert id="insertSelective" parameterType="com.inteagle.loginInfo.entity.UserInfo">
+    insert into user_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="idCardNum != null">
+        id_card_num,
+      </if>
+      <if test="corpName != null">
+        corp_name,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="headPortrait != null">
+        head_portrait,
+      </if>
+      <if test="userStatus != null">
+        user_status,
+      </if>
+      <if test="userIsonline != null">
+        user_isonline,
+      </if>
+      <if test="inDate != null">
+        in_date,
+      </if>
+      <if test="inUserName != null">
+        in_user_name,
+      </if>
+      <if test="editUserName != null">
+        edit_user_name,
+      </if>
+      <if test="editDate != null">
+        edit_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=CHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=CHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="idCardNum != null">
+        #{idCardNum,jdbcType=VARCHAR},
+      </if>
+      <if test="corpName != null">
+        #{corpName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="headPortrait != null">
+        #{headPortrait,jdbcType=VARCHAR},
+      </if>
+      <if test="userStatus != null">
+        #{userStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userIsonline != null">
+        #{userIsonline,jdbcType=VARCHAR},
+      </if>
+      <if test="inDate != null">
+        #{inDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inUserName != null">
+        #{inUserName,jdbcType=CHAR},
+      </if>
+      <if test="editUserName != null">
+        #{editUserName,jdbcType=TIMESTAMP},
+      </if>
+      <if test="editDate != null">
+        #{editDate,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>
