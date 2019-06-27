@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.inteagle.common.entity.JsonResult;
 import com.inteagle.loginInfo.entity.UserInfo;
 import com.inteagle.loginInfo.service.UserInfoService;
 
-import cn.yunji.entity.JsonResult;
+
 
 @Controller
 @RequestMapping("/userInfo")

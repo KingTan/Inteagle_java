@@ -54,13 +54,48 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--netty -->
+		<!-- springboot整合 redis -->
 		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>4.1.25.Final</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<!-- 1.5的版本默认采用的连接池技术是jedis 2.0以上版本默认连接池是lettuce, 在这里采用jedis，所以需要排除lettuce的jar -->
+			<exclusions>
+				<exclusion>
+					<groupId>redis.clients</groupId>
+					<artifactId>jedis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.lettuce</groupId>
+					<artifactId>lettuce-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
+		<!-- 添加jedis客户端 -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+
+		<!--spring2.0集成redis所需common-pool2 -->
+		<!-- 必须加上，jedis依赖此 -->
+		<!-- spring boot 2.0 的操作手册有标注 大家可以去看看 地址是：https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/reference/htmlsingle/ -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+
+		<!-- 将作为Redis对象序列化器 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.47</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
 
 		<!-- pagehelper -->
 		<dependency>
@@ -85,8 +120,8 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.10</version>
 		</dependency>
+
 		<dependency>
 			<groupId>commons-discovery</groupId>
 			<artifactId>commons-discovery</artifactId>
@@ -110,7 +145,6 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.3.5</version>
 		</dependency>
 		<!-- easypoi -->
 		<dependency>
@@ -143,13 +177,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.yunji</groupId>
-			<artifactId>yunji</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/yunji.jar</systemPath>
-		</dependency>
-		<dependency>
 			<groupId>jave</groupId>
 			<artifactId>jave</artifactId>
 			<version>1.0</version>
@@ -157,6 +184,25 @@
 			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/jave-1.0.2.jar</systemPath>
 		</dependency>
 
+		<!-- javax.servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- xstream -->
+		<dependency>
+			<groupId>xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+
+		<!-- dom4j -->
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
 
 	</dependencies>
 

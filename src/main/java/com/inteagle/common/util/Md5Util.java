@@ -5,13 +5,14 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import cn.yunji.exception.BusinessException;
+import com.inteagle.common.exception.BusinessException;
+
 import sun.misc.BASE64Encoder;
 
 /**
  * MD5加密工具类
  * 
- * @author peng.xy
+ * @author IVAn
  * @time 2018年11月1日 下午2:05:52
  */
 @SuppressWarnings("restriction")
@@ -22,7 +23,7 @@ public class Md5Util {
 	 * 
 	 * @param str
 	 * @return
-	 * @author peng.xy
+	 * @author IVAn
 	 * @time 2018年11月1日 下午2:18:54
 	 */
 	public static String getMD5(String str) {

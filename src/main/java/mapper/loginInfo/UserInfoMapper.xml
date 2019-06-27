@@ -26,16 +26,30 @@
   		edit_user_name,edit_date
   </sql>
   
+  <!--根据登录账户查询用户信息  -->
+  <select id="getUserInfoByParam" resultMap="BaseResultMap">
+ 	select <include refid="Base_Column_List"/>
+  	from user_info
+  	where (
+			user_info.id_card_num = #{searchParam}
+			or
+			user_info.phone = #{searchParam}
+			or
+			user_info.corp_name = #{searchParam}
+		  )
+  </select>
+  
+  
   <!--根据登录参数和密码查询用户信息  -->
   <select id="getUserInfoByParamAndPwd" resultMap="BaseResultMap">
   	select <include refid="Base_Column_List"/>
   	from user_info
   	where (
-			user_info.id_card_num LIKE CONCAT('%', #{searchParam}, '%')
+			user_info.id_card_num = #{searchParam}
 			or
-			user_info.phone LIKE CONCAT('%', #{searchParam}, '%')
+			user_info.phone = #{searchParam}
 			or
-			user_info.corp_name LIKE CONCAT('%', #{searchParam}, '%')
+			user_info.corp_name = #{searchParam}
 		  )
 		  and 
 		  password = #{passWord}

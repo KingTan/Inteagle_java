@@ -7,8 +7,8 @@ import java.util.UUID;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.inteagle.common.util.UserUtil;
 
-import cn.yunji.util.UserUtil;
 
 /**
  * 
