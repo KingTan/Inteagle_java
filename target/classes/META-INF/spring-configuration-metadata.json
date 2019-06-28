@@ -1,0 +1,67 @@
+{
+  "groups": [
+    {
+      "name": "com.mqtt",
+      "type": "com.inteagle.common.mqtt.config.MqttConfiguration",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    }
+  ],
+  "properties": [
+    {
+      "name": "com",
+      "type": "java.lang.String",
+      "description": "A description for 'com'"
+    },
+    {
+      "name": "com.mqtt.clientid",
+      "type": "java.lang.String",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    },
+    {
+      "name": "com.mqtt.host",
+      "type": "java.lang.String",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    },
+    {
+      "name": "com.mqtt.keepalive",
+      "type": "java.lang.Integer",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    },
+    {
+      "name": "com.mqtt.password",
+      "type": "java.lang.String",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    },
+    {
+      "name": "com.mqtt.timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    },
+    {
+      "name": "com.mqtt.topic",
+      "type": "java.lang.String",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    },
+    {
+      "name": "com.mqtt.username",
+      "type": "java.lang.String",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    },
+    {
+      "name": "jedis",
+      "type": "java.lang.String",
+      "description": "A description for 'jedis'"
+    },
+    {
+      "name": "mqtt",
+      "type": "java.lang.String",
+      "description": "A description for 'mqtt'"
+    },
+    {
+      "name": "redis",
+      "type": "java.lang.String",
+      "description": "A description for 'redis'"
+    }
+  ],
+  "hints": []
+}
