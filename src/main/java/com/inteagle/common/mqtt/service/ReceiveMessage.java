@@ -5,6 +5,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+
 public class ReceiveMessage {
 
 	private static int QOS = 1;
@@ -23,10 +24,10 @@ public class ReceiveMessage {
 		options.setPassword(password.toCharArray());
 		options.setKeepAliveInterval(20);
 		options.setConnectionTimeout(10);
-
 		MqttClient client = new MqttClient(HOST, clientId, persistence);
 		client.setCallback(new PushCallback());
 		client.connect(options);
+		System.out.println("连接mqtt服务器.....");
 		return client;
 	}
 
