@@ -1,6 +1,5 @@
 package com.inteagle.common.mqtt.utils.queue;
 
-import com.alibaba.fastjson.JSON;
 import com.lmax.disruptor.RingBuffer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +60,7 @@ public class ObjectEventProducer {
             event.setEvent(content);
         } finally {
             ringBuffer.publish(sequence);
-            log.info("Disruptor===publish");
+//            log.info("Disruptor===publish");
         }
     }
 }

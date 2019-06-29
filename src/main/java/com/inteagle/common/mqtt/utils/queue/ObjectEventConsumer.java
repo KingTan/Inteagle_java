@@ -1,6 +1,5 @@
 package com.inteagle.common.mqtt.utils.queue;
 
-import com.alibaba.fastjson.JSON;
 import com.lmax.disruptor.EventHandler;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ObjectEventConsumer implements EventHandler<ObjectEvent> {
     @Override
     public void onEvent(ObjectEvent objectEvent, long l, boolean b) throws Exception {
-        log.info("Disruptor===事件消费者:" + JSON.toJSONString(objectEvent.getEvent()));
+//        log.info("Disruptor===事件消费者:" + JSON.toJSONString(objectEvent.getEvent()));
         Thread.sleep(10000);
     }
 }

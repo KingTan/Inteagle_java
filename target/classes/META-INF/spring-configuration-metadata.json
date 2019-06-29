@@ -68,6 +68,11 @@
       "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
     },
     {
+      "name": "mqtt.topic",
+      "type": "java.lang.String",
+      "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"
+    },
+    {
       "name": "mqtt.username",
       "type": "java.lang.String",
       "sourceType": "com.inteagle.common.mqtt.config.MqttConfiguration"

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -24,11 +25,11 @@ import java.util.UUID;
 public class SubscribeConn {
 
 	private MqttClient mqttClient;
+
 	private MqttConnectOptions mqttConnectOptions;
 
 	@Autowired
 	private ServiceInfoUtil serviceInfoUtil;
-
 	@Autowired
 	private MqttConfiguration mqttConfiguration;
 	@Autowired
@@ -42,6 +43,7 @@ public class SubscribeConn {
 			// host为主机名，clientId即连接MQTT的客户端ID，一般以客户端唯一标识符表示，MemoryPersistence设置clientId的保存形式，默认为以内存保存
 			String clientId = UUID.randomUUID().toString() + "[" + InetAddress.getLocalHost().getHostAddress() + "-"
 					+ serviceInfoUtil.getPort() + "]";
+
 			mqttClient = new MqttClient(mqttConfiguration.getHost(), clientId, new MemoryPersistence());
 			// MQTT的连接设置
 			mqttConnectOptions = new MqttConnectOptions();
@@ -62,20 +64,24 @@ public class SubscribeConn {
 			}
 			// 设置回调
 			mqttClient.setCallback(pushCallback);
+
+			String topic = mqttConfiguration.getTopic();
+
 			/*
-			 * if(topic.length>0){ MqttTopic mqttTopic = mqttClient.getTopic(topic[0]);
-			 * //setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
+			 * if (topic.length() > 0) { MqttTopic mqttTopic = mqttClient.getTopic(topic);
+			 * // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
 			 * mqttConnectOptions.setWill(mqttTopic, "close".getBytes(),
 			 * mqttConfiguration.getQos(), true); }
+			 * 
+			 * mqttClient.connect(mqttConnectOptions);
 			 */
-//            mqttClient.connect(mqttConnectOptions);
 
 			IMqttToken iMqttToken = mqttClient.connectWithResult(mqttConnectOptions);
-			log.info("连接服务器成功...");
+			log.info("连接 mqtt 服务器成功...");
 
 		} catch (Exception e) {
 			System.out.println(e);
-			log.info("连接服务器失败...");
+			log.info("连接 mqtt服务器失败...");
 		}
 		return mqttClient;
 	}
