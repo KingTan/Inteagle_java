@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class SubscribeConn {
 
 	/**
 	 * 连接emq服务器
+	 * 
+	 * @throws MqttException
 	 */
 	public MqttClient getConn() {
 		try {
@@ -66,7 +69,6 @@ public class SubscribeConn {
 			mqttClient.setCallback(pushCallback);
 
 			String topic = mqttConfiguration.getTopic();
-
 			/*
 			 * if (topic.length() > 0) { MqttTopic mqttTopic = mqttClient.getTopic(topic);
 			 * // setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
@@ -75,12 +77,22 @@ public class SubscribeConn {
 			 * 
 			 * mqttClient.connect(mqttConnectOptions);
 			 */
-
 			IMqttToken iMqttToken = mqttClient.connectWithResult(mqttConnectOptions);
 			log.info("连接 mqtt 服务器成功...");
 
+			try {
+				if (!mqttClient.isConnected()) {
+					// 重连
+					mqttClient.reconnect();
+				}
+			} catch (MqttException e) {
+				// TODO: handle exception
+			}
+
 		} catch (Exception e) {
 			System.out.println(e);
+
+			// TODO Auto-generated catch block
 			log.info("连接 mqtt服务器失败...");
 		}
 		return mqttClient;

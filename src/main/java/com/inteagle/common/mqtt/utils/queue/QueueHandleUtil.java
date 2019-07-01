@@ -40,7 +40,7 @@ public class QueueHandleUtil {
 		disruptor.handleEventsWith(new ObjectEventConsumer());
 		disruptor.start();
 		ObjectEventProducer producer = new ObjectEventProducer(ringBuffer);
-//		log.info("MQ消费者将接收的消息放入Disruptor===content:" + content);
+		log.info("MQ消费者将接收的消息放入Disruptor===content:" + content);
 		producer.onData(content);
 	}
 
