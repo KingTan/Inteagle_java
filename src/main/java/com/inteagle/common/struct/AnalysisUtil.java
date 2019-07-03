@@ -85,19 +85,21 @@ public class AnalysisUtil {
 		try {
 			// Byte转16进制编码
 			String hexStr = ByteHexUtil.bytes2HexStr(codeStr.getBytes("utf8")); // 编码
-			System.out.println("encode result : " + hexStr);
+//			System.out.println("encode result : " + hexStr);
 
 			String rawSource = new String(ByteHexUtil.hexStr2Bytes(hexStr), "utf8"); // 解码
-			System.out.println("decode result : " + rawSource);
+//			System.out.println("decode result : " + rawSource);
 
-			hexStr = "a5a50012213300ff43494CCC41D59999000000000000000f8b5a5a";
+//			hexStr = "a5a50012213300ff43494CCC41D59999000000000000000f8b5a5a";
+
+			hexStr = "a5a50012213300010000204d0000a04d00000000000000018c5a5a";
 
 			// SOF头
 			String sof_hex = hexStr.substring(0, 4);
-			System.out.println("sof_hex----" + sof_hex);
+//			System.out.println("sof_hex----" + sof_hex);
 			// EOF尾
 			String eof_hex = hexStr.substring(hexStr.length() - 4);
-			System.out.println("eof_hex----" + eof_hex);
+//			System.out.println("eof_hex----" + eof_hex);
 
 			// 验证头尾
 			if (sof_hex.equals("a5a5") && eof_hex.equals("5a5a")) {
@@ -111,10 +113,10 @@ public class AnalysisUtil {
 				log.info("数据完整,SOF EOF验证成功");
 				// 数据长度 16进制
 				String len_hex = hexStr.substring(4, 8);
-				System.out.println("长度len_hex------" + len_hex);
+//				System.out.println("长度len_hex------" + len_hex);
 				// 数据长度 10进制
 				long len_num = Long.parseLong(len_hex, 16);
-				System.out.println("长度len_num------" + len_num);
+//				System.out.println("长度len_num------" + len_num);
 
 				// cmd: uint16_t Bit14~Bit15位为转发优先级，优先级4最高0最低。Bit12~Bit13为ACK位作为命令类型:set,get,ack
 				String str_2 = ByteHexUtil.hex2Binary(hexStr.substring(8, 12));
@@ -130,13 +132,34 @@ public class AnalysisUtil {
 				// data+crc+eof
 				String data_crc_eof = hexStr.substring(12);
 
-				// 数据体
-				String data_str = data_crc_eof.substring(0, (data_crc_eof.length() - 6));
+//				System.out.println("data_crc_eof-----" + data_crc_eof);
 
-				System.out.println("data_str-----" + data_str);
+				// CRC 16进制
+				String crc_hex = data_crc_eof.substring((data_crc_eof.length() - 6), (data_crc_eof.length() - 4));
 
-				// 数据体JSON
-				getDataJson(data_str);
+				// CRC 检验数据
+				String crc_examine = hexStr.substring(4, (hexStr.length() - 6));
+
+				// CRC 校验数据的字节数组
+				byte[] b = ByteHexUtil.hexStr2Bytes(crc_examine);
+
+				// CRC 校验
+				byte crc = CRC8.calcCrc8(b);
+
+				if (crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString())) {
+					log.info("crc校验成功....");
+
+					// 数据体
+					String data_str = data_crc_eof.substring(0, (data_crc_eof.length() - 6));
+
+					System.out.println("data_str-----" + data_str);
+
+					// 数据体JSON
+					getDataJson(data_str);
+				} else {
+					log.error("CRC 校验失败.....");
+				}
+
 			}
 
 		} catch (UnsupportedEncodingException e) {
@@ -166,15 +189,18 @@ public class AnalysisUtil {
 				// 方法2 JavaStruct解析
 				try {
 					IdInfoStruct struct = new IdInfoStruct();
-
 					byte[] b = ByteHexUtil.hexStr2Bytes(data);
 
+					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
+
 					System.out.println("id----" + struct.id);
 					System.out.println("x-----" + struct.x);
 					System.out.println("y-----" + struct.y);
 					System.out.println("t-----" + struct.t);
 
+					// 保存到数据库
+					
 				} catch (StructException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
