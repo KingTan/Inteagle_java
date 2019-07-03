@@ -5,6 +5,14 @@ import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.inteagle.apis.struct.entity.IdInfoStruct;
+import com.inteagle.apis.struct.service.IdInfoStructService;
+
 import lombok.extern.slf4j.Slf4j;
 import struct.JavaStruct;
 import struct.StructException;
@@ -18,7 +26,20 @@ import struct.StructException;
  *
  */
 @Slf4j
+@Component
 public class AnalysisUtil {
+
+	@Autowired
+	private IdInfoStructService idInfoStructService;
+
+	private static AnalysisUtil analysisUtil;
+	
+	//项目启动时 注入到Spring容器
+	@PostConstruct
+	public void init() {
+		analysisUtil = this;
+		analysisUtil.idInfoStructService = this.idInfoStructService;
+	}
 
 	// 命令类型
 	public static final Map<Integer, String> CMD_TYPE = new HashMap<Integer, String>();
@@ -146,6 +167,9 @@ public class AnalysisUtil {
 				// CRC 校验
 				byte crc = CRC8.calcCrc8(b);
 
+//				System.out.println("crc_hex-----" + crc_hex);
+//				System.out.println("(Integer.toHexString(0x00ff & crc)-----" + (Integer.toHexString(0x00ff & crc)));
+
 				if (crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString())) {
 					log.info("crc校验成功....");
 
@@ -154,8 +178,9 @@ public class AnalysisUtil {
 
 					System.out.println("data_str-----" + data_str);
 
-					// 数据体JSON
+					// JavaStruct解析数据、保存到数据库
 					getDataJson(data_str);
+
 				} else {
 					log.error("CRC 校验失败.....");
 				}
@@ -200,7 +225,17 @@ public class AnalysisUtil {
 					System.out.println("t-----" + struct.t);
 
 					// 保存到数据库
-					
+					try {
+						int result = analysisUtil.idInfoStructService.insert(struct);
+
+						if (result > 0) {
+							log.info("数据保存成功...");
+						}
+
+					} catch (Exception e) {
+						log.error(e.toString());
+					}
+
 				} catch (StructException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

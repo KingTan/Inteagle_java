@@ -18,7 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
  * 
  */
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.inteagle" })
+@ComponentScan(basePackages = { "com.inteagle"})
 @MapperScan("com.inteagle.*.*.dao")
 public class InteagleApplication extends SpringBootServletInitializer {
 

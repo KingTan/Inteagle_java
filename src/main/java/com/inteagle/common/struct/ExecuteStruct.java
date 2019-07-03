@@ -2,6 +2,8 @@ package com.inteagle.common.struct;
 
 import java.nio.ByteOrder;
 
+import com.inteagle.apis.struct.entity.IdInfoStruct;
+
 import struct.*;
 
 public class ExecuteStruct {
