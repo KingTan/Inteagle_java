@@ -1,4 +1,4 @@
-package com.inteagle.loginInfo.entity;
+package com.inteagle.apis.loginInfo.entity;
 
 import java.util.Date;
 

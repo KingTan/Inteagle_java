@@ -80,14 +80,14 @@ public class SubscribeConn {
 			IMqttToken iMqttToken = mqttClient.connectWithResult(mqttConnectOptions);
 			log.info("连接 mqtt 服务器成功...");
 
-			try {
-				if (!mqttClient.isConnected()) {
-					// 重连
-					mqttClient.reconnect();
-				}
-			} catch (MqttException e) {
-				// TODO: handle exception
-			}
+//			try {
+//				if (!mqttClient.isConnected()) {
+//					// 重连
+//					mqttClient.reconnect();
+//				}
+//			} catch (MqttException e) {
+//				// TODO: handle exception
+//			}
 
 		} catch (Exception e) {
 			System.out.println(e);

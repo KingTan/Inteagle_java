@@ -119,6 +119,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/com/lmax/disruptor/3.4.2/disruptor-3.4.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/projectlombok/lombok/1.18.6/lombok-1.18.6.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/junit/junit/4.12/junit-4.12.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="F:\eclipse_file\Inteagle\src\main\webapp\WEB-INF\lib\javastruct-0.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="D:\apache-tomcat-8.5.42\lib\annotations-api.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="D:\apache-tomcat-8.5.42\lib\catalina-ant.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="EXTJAR" id="D:\apache-tomcat-8.5.42\lib\catalina-ha.jar" enabled="true" runInBatchMode="false"/>

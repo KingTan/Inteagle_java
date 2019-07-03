@@ -1,4 +1,4 @@
-package com.inteagle.loginInfo.dao;
+package com.inteagle.apis.loginInfo.dao;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.inteagle.common.base.dao.BaseMapper;
-import com.inteagle.loginInfo.entity.UserInfo;
+import com.inteagle.apis.loginInfo.entity.UserInfo;
 
 @Repository
 public interface UserInfoMapper extends BaseMapper<UserInfo> {

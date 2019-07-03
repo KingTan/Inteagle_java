@@ -1,78 +1,80 @@
 package com.inteagle.common.struct;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 
 import struct.*;
 
 public class ExecuteStruct {
 
-	@StructClass
-	public class AString {
-
-		@StructField(order = 0)
-		@ArrayLengthMarker(fieldName = "chars")
-		public int length;
-
-		@StructField(order = 1)
-		public char[] chars;
-
-		public AString(String content) {
-			this.length = content.length();
-			this.chars = content.toCharArray();
-		}
-	}
-
 	public void TestAString() throws StructException {
 
-		// 构造 str 对象时，执行相应构造方法后，长度字段为4。
-		AString str = new AString("");
-
-		String textStr = "0102";
-
 		try {
-			String encodeStr = new String(ByteHexUtil.hexStr2Bytes(textStr), "utf8");
-			System.out.println("encodeStr------" + encodeStr);
 
-			byte[] b = ByteHexUtil.hexStr2Bytes(encodeStr);
+			String hexStr = "00ff43494CCC41D59999000000000000000f";
 
-			byte[] b2 = new byte[3];
+			String str = "{";
 
+			byte[] b = ByteHexUtil.hexStr2Bytes(hexStr);
 			for (int i = 0; i < b.length; i++) {
 				System.out.printf("b[%d]: %d\n", i, b[i]);
-				b2[i] = b[i];
+				str += b[i] + ",";
 			}
 
-			b2[2] = -3;
+			str += "}";
 
-			for (int i = 0; i < b2.length; i++) {
-				System.out.printf("b2[%d]: %d\n", i, b2[i]);
-			}
+			System.out.println("str------" + str);
 
-			byte[] b3 = { 0, 0, 0, 1, 0, 0, 0, 2, -3 };
-			 
+//			byte[] b2 = { 0, -1, 67, 73, 76, -52, 65, -43, -103, -103, 0, 0, 0, 0, 0, 0, 0, 15 };
 
-			StructDemo demo = new StructDemo();
-			JavaStruct.unpack(demo, b3, ByteOrder.BIG_ENDIAN);
+//			IdInfoStruct demo1 = new IdInfoStruct();
+//			demo1.id = 255;
+//			demo1.x = 201.29999f;
+//			demo1.y = 26.699999f;
+//			demo1.t = 15;
+//
+//			byte[] b_demo = JavaStruct.pack(demo1);
+//			
+//			String str_d = "{";
+//
+//			for (int i = 0; i < b_demo.length; i++) {
+//				System.out.printf("b_demo[%d]: %d\n", i, b_demo[i]);
+//				str_d += b_demo[i] + ",";
+//			}
+//
+//			str_d += "}";
+//
+//			System.out.println("str_d------" + str_d);
+			
+			IdInfoStruct demo = new IdInfoStruct();
+			JavaStruct.unpack(demo, b, ByteOrder.BIG_ENDIAN);
+			System.out.println("id----" + demo.id);
+			System.out.println("x-----" + demo.x);
+			System.out.println("y-----" + demo.y);
+			System.out.println("t-----" + demo.t);
 
-			System.out.println("A----" + demo.getA());
-			System.out.println("B-----" + demo.getB());
+//			StructDemo sto = new StructDemo();
+//			sto.a = 1.2f;
+//			sto.b = 2.1f;
+//
+//			byte[] f = JavaStruct.pack(sto);
+//			for (int i = 0; i < f.length; i++) {
+//				System.out.printf("f[%d]: %d\n", i, f[i]);
+//			}
 
-		} catch (UnsupportedEncodingException e1) {
+//			byte[] b3 = { 0, 0, 0, 1, 0, 0, 0, 2 };
+
+//			byte[] b4 = { -1, -3, -1, -6, -3, -6, -3, -1, -1, -1, -1, -1, -2, -1, -2, -2, -1, -38 };
+
+//			StructDemo demo = new StructDemo();
+//			JavaStruct.unpack(demo, f, ByteOrder.BIG_ENDIAN);
+//
+//			System.out.println("A----" + demo.a);
+//			System.out.println("B-----" + demo.b);
+
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-//		{
-//			int(8) a=1; 000000001;0x01
-//			int(8) b=2; 0x02
-//		}
-//		
-//		{
-//			int a;
-//			int b;
-//		}
 
 	}
 

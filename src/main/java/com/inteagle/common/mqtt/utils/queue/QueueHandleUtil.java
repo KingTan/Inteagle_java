@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
-@SuppressWarnings({"deprecation","unchecked"})
+@SuppressWarnings({ "deprecation", "unchecked" })
 public class QueueHandleUtil {
 
 	/**
@@ -32,8 +32,6 @@ public class QueueHandleUtil {
 		/**
 		 * 创建disruptor
 		 */
-		
-	
 		Disruptor<ObjectEvent> disruptor = new Disruptor<ObjectEvent>(factory, ringBufferSize, executor,
 				ProducerType.SINGLE, new YieldingWaitStrategy());
 		RingBuffer<ObjectEvent> ringBuffer = disruptor.getRingBuffer();

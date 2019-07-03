@@ -1,4 +1,4 @@
-package com.inteagle.loginInfo.controller;
+package com.inteagle.apis.loginInfo.controller;
 
 import java.util.List;
 
@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.inteagle.common.entity.JsonResult;
-import com.inteagle.loginInfo.entity.UserInfo;
-import com.inteagle.loginInfo.service.UserInfoService;
-
-
+import com.inteagle.apis.loginInfo.entity.UserInfo;
+import com.inteagle.apis.loginInfo.service.UserInfoService;
 
 @Controller
 @RequestMapping("/userInfo")

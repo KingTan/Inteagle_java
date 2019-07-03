@@ -1,4 +1,4 @@
-package com.inteagle.loginInfo.service;
+package com.inteagle.apis.loginInfo.service;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.inteagle.common.base.service.AbstractService;
 import com.inteagle.common.util.ParamUtil;
-import com.inteagle.loginInfo.dao.UserInfoMapper;
-import com.inteagle.loginInfo.entity.UserInfo;
+import com.inteagle.apis.loginInfo.dao.UserInfoMapper;
+import com.inteagle.apis.loginInfo.entity.UserInfo;
 
 @Service
 public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
