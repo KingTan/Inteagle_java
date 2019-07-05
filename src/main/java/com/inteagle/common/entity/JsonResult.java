@@ -6,15 +6,15 @@ import com.inteagle.common.exception.BusinessException;
 
 /**
  * 
-* @ClassName: JsonResult
-* @Description: TODO(自定义相应对象)
-* @author IVAn
-* @date 2019年6月27日
-*
-* @param <T>
+ * @ClassName: JsonResult
+ * @Description: TODO(自定义相应对象)
+ * @author IVAn
+ * @date 2019年6月27日
+ *
+ * @param <T>
  */
 public class JsonResult<T> implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -51,7 +51,7 @@ public class JsonResult<T> implements Serializable {
 	 * 服务器请求异常消息提示
 	 */
 	public static final String ERROR_MESSAGE = "服务器繁忙";
-	
+
 	public JsonResult(Integer state, T data, String message) {
 		this.state = state;
 		this.data = data;
@@ -117,6 +117,5 @@ public class JsonResult<T> implements Serializable {
 	public void setData(T data) {
 		this.data = data;
 	}
-	
-	
+
 }

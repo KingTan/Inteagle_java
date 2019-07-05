@@ -39,9 +39,9 @@ public class PushCallback implements MqttCallback {
 		log.info("接收消息主题:{},接收消息Qos:{},接收消息内容:{}", topic, mqttMessage.getQos(), new String(mqttMessage.getPayload()));
 		String content = new String(mqttMessage.getPayload());
 		log.info("MQ消费者接收消息:" + content);
-
+		
 		// 解析数据
-//		AnalysisUtil.validate(content);
+		AnalysisUtil.validate(mqttMessage.getPayload());
 
 		// 数据存到队列
 //		Thread.sleep(5000);

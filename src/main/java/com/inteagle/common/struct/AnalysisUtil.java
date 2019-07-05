@@ -33,8 +33,8 @@ public class AnalysisUtil {
 	private IdInfoStructService idInfoStructService;
 
 	private static AnalysisUtil analysisUtil;
-	
-	//项目启动时 注入到Spring容器
+
+	// 项目启动时 注入到Spring容器
 	@PostConstruct
 	public void init() {
 		analysisUtil = this;
@@ -94,26 +94,22 @@ public class AnalysisUtil {
 
 	public static void main(String[] args) {
 
-		String str = "a5a50012213300ff43494CCC41D59999000000000000000f8b5a5a";
+		byte[] test = { 1, 2, 3 };
 
-		validate(str);
-
+		try {
+			validate(test);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	// 解析 paylaod 数据
-	public static void validate(String codeStr) {
+	public static void validate(byte[] playload) throws UnsupportedEncodingException {
 
 		try {
-			// Byte转16进制编码
-			String hexStr = ByteHexUtil.bytes2HexStr(codeStr.getBytes("utf8")); // 编码
-//			System.out.println("encode result : " + hexStr);
-
-			String rawSource = new String(ByteHexUtil.hexStr2Bytes(hexStr), "utf8"); // 解码
-//			System.out.println("decode result : " + rawSource);
-
-//			hexStr = "a5a50012213300ff43494CCC41D59999000000000000000f8b5a5a";
-
-			hexStr = "a5a50012213300010000204d0000a04d00000000000000018c5a5a";
+			String hexStr = ByteHexUtil.bytes2HexStr(playload); // 编码
+			System.out.println("encode result : " + hexStr);
 
 			// SOF头
 			String sof_hex = hexStr.substring(0, 4);
@@ -187,8 +183,6 @@ public class AnalysisUtil {
 
 			}
 
-		} catch (UnsupportedEncodingException e) {
-			System.out.println(e.toString());
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.toString());
@@ -226,11 +220,11 @@ public class AnalysisUtil {
 
 					// 保存到数据库
 					try {
-						int result = analysisUtil.idInfoStructService.insert(struct);
-
-						if (result > 0) {
-							log.info("数据保存成功...");
-						}
+//						int result = analysisUtil.idInfoStructService.insert(struct);
+//
+//						if (result > 0) {
+//							log.info("数据保存成功...");
+//						}
 
 					} catch (Exception e) {
 						log.error(e.toString());

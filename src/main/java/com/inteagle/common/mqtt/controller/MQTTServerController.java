@@ -17,7 +17,7 @@ public class MQTTServerController {
 	@Autowired
 	private MqttConfiguration mqttConfiguration;
 
-	String TOPIC = "6lbr-up";
+	String TOPIC = "6lbr-server";
 
 	@RequestMapping("/")
 	public String sayHello() {

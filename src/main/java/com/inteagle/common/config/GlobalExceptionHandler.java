@@ -13,14 +13,15 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 
 @ControllerAdvice
 @ResponseBody
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes" })
 @Slf4j
 public class GlobalExceptionHandler {
 
+	@SuppressWarnings("unchecked")
 	@ExceptionHandler(Exception.class)
 	public JsonResult handleException(Exception e) {
 		log.error(e.toString());
-		return new JsonResult(BusinessException.DEFAULT_CODE, "系统异常，请稍后再试");
+		return new JsonResult(JsonResult.ERROR, e.toString(), "系统异常，请稍后再试");
 	}
 
 	// 业务异常
@@ -32,18 +33,17 @@ public class GlobalExceptionHandler {
 
 	// spring参数校验异常
 	@ExceptionHandler(MissingServletRequestParameterException.class)
-	public JsonResult MissingServletRequestParameterException(BusinessException e) {
+	public JsonResult MissingServletRequestParameterException(MissingServletRequestParameterException e) {
 		log.error(e.toString());
-		return new JsonResult(e);
+		String msg = "parameter '" + e.getParameterName() + "' can not be null，type is '" + e.getParameterType() + "'";
+		return new JsonResult<>(JsonResult.ERROR, null, msg);
 	}
-	
-	//其他异常处理对象
+
+	// 其他异常处理对象
 	@ExceptionHandler(Throwable.class)
 	public JsonResult ExceptionHandler(BusinessException e) {
 		log.error(e.toString());
 		return new JsonResult(e);
 	}
-	
-	
 
 }

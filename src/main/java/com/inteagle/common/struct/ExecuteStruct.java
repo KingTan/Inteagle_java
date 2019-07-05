@@ -6,6 +6,14 @@ import com.inteagle.apis.struct.entity.IdInfoStruct;
 
 import struct.*;
 
+/**
+ * 
+* @ClassName: ExecuteStruct
+* @Description: TODO(验证javaStruct工具类)
+* @author IVAn
+* @date 2019年7月5日上午11:43:25
+*
+ */
 public class ExecuteStruct {
 
 	public void TestAString() throws StructException {

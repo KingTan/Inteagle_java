@@ -1,5 +1,7 @@
 package com.inteagle.apis.struct.controller;
 
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +28,14 @@ public class IdInfoStructController {
 	@RequestMapping("/addInfo_oth")
 	@ResponseBody
 	public JsonResult<Integer> addInfooth() {
-		AnalysisUtil.validate("123");
+
+		try {
+			byte[] test = { 1, 2, 3 };
+			AnalysisUtil.validate(test);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return new JsonResult<Integer>(1);
 	}
 
