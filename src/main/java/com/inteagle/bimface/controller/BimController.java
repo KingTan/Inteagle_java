@@ -9,6 +9,7 @@ import com.bimface.file.bean.FileBean;
 import com.bimface.sdk.BimfaceClient;
 import com.bimface.sdk.bean.request.FileUploadRequest;
 import com.inteagle.bimface.config.Config;
+import com.inteagle.common.entity.JsonResult;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +21,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletException;
@@ -45,7 +47,8 @@ public class BimController {
 	 * @throws IOException
 	 */
 	@RequestMapping("/getViewToken")
-	public void getViewToken(HttpServletRequest request, HttpServletResponse response)
+	@ResponseBody
+	public JsonResult<String> getViewToken(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// 获取参数值
 		String fileId = request.getParameter("fileId");
@@ -59,9 +62,10 @@ public class BimController {
 		} catch (BimfaceException e) {
 			log.error(e.toString());
 		}
+		return new JsonResult<String>(JsonResult.SUCCESS, viewToken, JsonResult.SUCCESS_MESSAGE);
 
-		// JSON序列化
-		response.getWriter().write(JSONObject.toJSONString(viewToken));
+//		// JSON序列化
+//		response.getWriter().write(JSONObject.toJSONString(viewToken));
 	}
 
 	/**
