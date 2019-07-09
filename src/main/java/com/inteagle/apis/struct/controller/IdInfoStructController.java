@@ -29,13 +29,13 @@ public class IdInfoStructController {
 	@ResponseBody
 	public JsonResult<Integer> addInfooth() {
 
-		try {
-			byte[] test = { 1, 2, 3 };
-			AnalysisUtil.validate(test);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			byte[] test = { 1, 2, 3 };
+//			AnalysisUtil.validate(test);
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return new JsonResult<Integer>(1);
 	}
 

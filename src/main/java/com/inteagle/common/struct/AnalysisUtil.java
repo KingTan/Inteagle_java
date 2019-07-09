@@ -10,8 +10,10 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSONObject;
 import com.inteagle.apis.struct.entity.IdInfoStruct;
 import com.inteagle.apis.struct.service.IdInfoStructService;
+import com.inteagle.common.websocket.WebSocketServer;
 
 import lombok.extern.slf4j.Slf4j;
 import struct.JavaStruct;
@@ -92,24 +94,16 @@ public class AnalysisUtil {
 		CMD.put(300, "CMD_FRAME_RESERVED");
 	}
 
-	public static void main(String[] args) {
-
-		byte[] test = { 1, 2, 3 };
-
-		try {
-			validate(test);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	// 解析 paylaod 数据
-	public static void validate(byte[] playload) throws UnsupportedEncodingException {
+	// byte[] playload
+	public static void validate(String hexStr) throws UnsupportedEncodingException {
 
 		try {
-			String hexStr = ByteHexUtil.bytes2HexStr(playload); // 编码
-			System.out.println("encode result : " + hexStr);
+
+//			System.out.println("playload------" + playload);
+//
+//			String hexStr = ByteHexUtil.bytes2HexStr(playload); // 编码
+//			System.out.println("encode result : " + hexStr);
 
 			// SOF头
 			String sof_hex = hexStr.substring(0, 4);
@@ -218,13 +212,13 @@ public class AnalysisUtil {
 					System.out.println("y-----" + struct.y);
 					System.out.println("t-----" + struct.t);
 
-					// 保存到数据库
 					try {
-//						int result = analysisUtil.idInfoStructService.insert(struct);
-//
-//						if (result > 0) {
-//							log.info("数据保存成功...");
-//						}
+						// 保存到数据库
+						  int result = analysisUtil.idInfoStructService.insert(struct);
+						  if (result > 0) { log.info("数据保存成功..."); }
+
+						// 发送socket消息
+						WebSocketServer.sendInfo(JSONObject.toJSONString(struct), "ivan");
 
 					} catch (Exception e) {
 						log.error(e.toString());
@@ -253,6 +247,26 @@ public class AnalysisUtil {
 
 	}
 
+//	public static void main(String[] args) {
+//		byte[] test = { 1, 2, 3 };
+//
+//		try {
+//			validate(test);
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+
+	/**
+	 * @description 16进制转成10进制
+	 * @author IVAn
+	 * @date 2019年7月9日 下午2:45:12
+	 * @param s
+	 * @param radix
+	 * @return
+	 * @throws NumberFormatException
+	 */
 	public static long parseLong(String s, int radix) throws NumberFormatException {
 		if (s == null) {
 			throw new NumberFormatException("null");

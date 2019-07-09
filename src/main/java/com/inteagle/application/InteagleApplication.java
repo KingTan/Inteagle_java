@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.inteagle"})
 @MapperScan("com.inteagle.*.*.dao")
+@EnableScheduling
 public class InteagleApplication extends SpringBootServletInitializer {
 
 	protected static final Logger logger = LoggerFactory.getLogger(InteagleApplication.class);
