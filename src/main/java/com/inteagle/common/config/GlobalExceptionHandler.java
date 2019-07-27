@@ -11,6 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.MissingServletRequestParameterException;
 
+/**
+ * 
+* @ClassName: GlobalExceptionHandler
+* @Description: TODO(全局异常配置)
+* @author IVAn
+* @date 2019年7月23日上午10:53:29
+*
+ */
 @ControllerAdvice
 @ResponseBody
 @SuppressWarnings({ "rawtypes" })

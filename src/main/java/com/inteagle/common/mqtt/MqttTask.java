@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.inteagle.common.mqtt.service.IMqttPublish;
-import com.inteagle.common.websocket.WebSocketServer;
+import com.inteagle.common.websocket.server.WebSocketServer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +16,7 @@ public class MqttTask {
 
 	@Autowired
 	private IMqttPublish iEmqService;
-
+	
 //	@Scheduled(cron = "*/1 * * * * ?")
 //	public void execute() {
 //		String topic = "6lbr-server";
@@ -29,6 +29,7 @@ public class MqttTask {
 //			object.put("t", (0));
 //			
 //			try {
+//				//socket发送位置消息
 //				WebSocketServer.sendInfo(object.toJSONString(), "ivan");
 ////				iEmqService.publish(topic, content);
 //				log.info("发布消息");

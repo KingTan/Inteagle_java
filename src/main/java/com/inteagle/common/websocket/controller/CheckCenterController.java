@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.inteagle.common.entity.JsonResult;
-import com.inteagle.common.websocket.WebSocketServer;
+import com.inteagle.common.websocket.server.WebSocketServer;
 
 @Controller
 @RequestMapping("/checkcenter")

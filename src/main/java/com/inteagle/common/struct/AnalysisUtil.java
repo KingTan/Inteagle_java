@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 import com.inteagle.apis.struct.entity.IdInfoStruct;
 import com.inteagle.apis.struct.service.IdInfoStructService;
-import com.inteagle.common.websocket.WebSocketServer;
+import com.inteagle.common.websocket.server.WebSocketServer;
 
 import lombok.extern.slf4j.Slf4j;
 import struct.JavaStruct;
@@ -99,12 +99,6 @@ public class AnalysisUtil {
 	public static void validate(String hexStr) throws UnsupportedEncodingException {
 
 		try {
-
-//			System.out.println("playload------" + playload);
-//
-//			String hexStr = ByteHexUtil.bytes2HexStr(playload); // 编码
-//			System.out.println("encode result : " + hexStr);
-
 			// SOF头
 			String sof_hex = hexStr.substring(0, 4);
 //			System.out.println("sof_hex----" + sof_hex);
@@ -139,7 +133,8 @@ public class AnalysisUtil {
 				int cmd_type_bin = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(2, 4)));
 				// 命令
 				int cmd_bin = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(4, 12)));
-
+				 
+				System.out.println("cmd_bin----"+cmd_bin);
 				// data+crc+eof
 				String data_crc_eof = hexStr.substring(12);
 
@@ -214,8 +209,8 @@ public class AnalysisUtil {
 
 					try {
 						// 保存到数据库
-						  int result = analysisUtil.idInfoStructService.insert(struct);
-						  if (result > 0) { log.info("数据保存成功..."); }
+//						  int result = analysisUtil.idInfoStructService.insert(struct);
+//						  if (result > 0) { log.info("数据保存成功..."); }
 
 						// 发送socket消息
 						WebSocketServer.sendInfo(JSONObject.toJSONString(struct), "ivan");

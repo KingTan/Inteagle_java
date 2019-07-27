@@ -24,6 +24,15 @@ public class MyApplicationRunner implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments applicationArguments) throws Exception {
 		log.info(" MQTT Subscribe Server 开始...");
+
+		// 订阅主题
 		iMqttSubscribe.subscribe(mqttConfiguration.getTopic());
+
+		// 订阅主题
+		iMqttSubscribe.subscribe("inclinometer/#");
+
+		// 订阅主题
+		iMqttSubscribe.subscribe("6lbr-up/#");
+
 	}
 }

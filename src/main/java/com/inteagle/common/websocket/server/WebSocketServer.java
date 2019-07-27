@@ -1,8 +1,7 @@
-package com.inteagle.common.websocket;
+package com.inteagle.common.websocket.server;
 
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
-
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -11,13 +10,22 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.server.standard.SpringConfigurator;
 
 import com.alibaba.fastjson.JSONObject;
 import com.inteagle.common.websocket.message.MessageData;
 
 import lombok.extern.slf4j.Slf4j;
 
-@ServerEndpoint("/netSocket/{sid}")
+/**
+ * 
+ * @ClassName: WebSocketServer
+ * @Description: TODO(socket服务---mqtt硬件发送数据 转发到前端)
+ * @author IVAn
+ * @date 2019年7月13日上午11:34:32
+ *
+ */
+@ServerEndpoint(value = "/netSocket/{sid}")
 @Component
 @Slf4j
 public class WebSocketServer {
