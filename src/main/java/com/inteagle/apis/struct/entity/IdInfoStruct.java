@@ -25,6 +25,9 @@ public class IdInfoStruct extends BaseEntity {
 	@StructField(order = 3)
 	public long t;
 
+	@StructField(order = 4)
+	public short camera_id;
+
 	public short getId() {
 		return id;
 	}
@@ -55,6 +58,14 @@ public class IdInfoStruct extends BaseEntity {
 
 	public void setT(long t) {
 		this.t = t;
+	}
+
+	public short getCamera_id() {
+		return camera_id;
+	}
+
+	public void setCamera_id(short camera_id) {
+		this.camera_id = camera_id;
 	}
 
 }

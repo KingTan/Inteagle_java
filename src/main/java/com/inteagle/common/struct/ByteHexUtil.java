@@ -1,5 +1,7 @@
 package com.inteagle.common.struct;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -18,7 +20,13 @@ public class ByteHexUtil {
 
 //		String hexStr = bytes2HexStr(source.getBytes("utf8")); // 编码
 //		System.out.println("encode result : " + hexStr);
-
+		
+		// 精确到毫秒
+        // 获取当前时间戳
+        System.out.println(System.currentTimeMillis());
+        System.out.println(Calendar.getInstance().getTimeInMillis());
+        System.out.println(new Date().getTime());
+		
 		byte[] rawSource = hexStr2Bytes("a5a500122133009542db000042f700000000000000000040115a5a"); // 解码
 		System.out.println("decode result : " + rawSource);
 

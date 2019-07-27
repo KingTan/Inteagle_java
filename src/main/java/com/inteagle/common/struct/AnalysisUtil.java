@@ -133,8 +133,8 @@ public class AnalysisUtil {
 				int cmd_type_bin = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(2, 4)));
 				// 命令
 				int cmd_bin = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(4, 12)));
-				 
-				System.out.println("cmd_bin----"+cmd_bin);
+
+				System.out.println("cmd_bin----" + cmd_bin);
 				// data+crc+eof
 				String data_crc_eof = hexStr.substring(12);
 
@@ -190,9 +190,11 @@ public class AnalysisUtil {
 	 */
 	public static void getDataJson(String data) {
 
+		System.out.println("data--length------" + data.length());
+
 		if (data.length() > 0) {
 			if (data.length() == 44) {
-			} else if (data.length() == 36) {
+			} else if (data.length() == 40) {
 
 				// 方法2 JavaStruct解析
 				try {
@@ -206,7 +208,7 @@ public class AnalysisUtil {
 					System.out.println("x-----" + struct.x);
 					System.out.println("y-----" + struct.y);
 					System.out.println("t-----" + struct.t);
-
+					System.out.println("camera_id-----" + struct.camera_id);
 					try {
 						// 保存到数据库
 //						  int result = analysisUtil.idInfoStructService.insert(struct);

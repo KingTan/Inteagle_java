@@ -8,19 +8,21 @@ import struct.*;
 
 /**
  * 
-* @ClassName: ExecuteStruct
-* @Description: TODO(验证javaStruct工具类)
-* @author IVAn
-* @date 2019年7月5日上午11:43:25
-*
+ * @ClassName: ExecuteStruct
+ * @Description: TODO(验证javaStruct工具类)
+ * @author IVAn
+ * @date 2019年7月5日上午11:43:25
+ *
  */
 public class ExecuteStruct {
 
 	public void TestAString() throws StructException {
 
 		try {
-
-			String hexStr = "00ff43494CCC41D59999000000000000000f";
+			// 0064420000004204000000000000000001930000
+//			00ff43494CCC41D59999000000000000000f
+//			1564219947548
+			String hexStr = "1564219947548";
 
 			String str = "{";
 
@@ -54,13 +56,15 @@ public class ExecuteStruct {
 //			str_d += "}";
 //
 //			System.out.println("str_d------" + str_d);
-			
-			IdInfoStruct demo = new IdInfoStruct();
-			JavaStruct.unpack(demo, b, ByteOrder.BIG_ENDIAN);
-			System.out.println("id----" + demo.id);
-			System.out.println("x-----" + demo.x);
-			System.out.println("y-----" + demo.y);
-			System.out.println("t-----" + demo.t);
+
+			// javaStruct接收转换
+//			IdInfoStruct demo = new IdInfoStruct();
+//			JavaStruct.unpack(demo, b, ByteOrder.BIG_ENDIAN);
+//			System.out.println("id----" + demo.id);
+//			System.out.println("x-----" + demo.x);
+//			System.out.println("y-----" + demo.y);
+//			System.out.println("t-----" + demo.t);
+//			System.out.println("camera_id-----" + demo.camera_id);
 
 //			StructDemo sto = new StructDemo();
 //			sto.a = 1.2f;
