@@ -97,7 +97,7 @@ public class AnalysisUtil {
 	// 解析 paylaod 数据
 	// byte[] playload
 	public static void validate(String hexStr) throws UnsupportedEncodingException {
-
+		System.out.println("hexStr-----" + hexStr);
 		try {
 			// SOF头
 			String sof_hex = hexStr.substring(0, 4);
@@ -118,30 +118,45 @@ public class AnalysisUtil {
 				log.info("数据完整,SOF EOF验证成功");
 				// 数据长度 16进制
 				String len_hex = hexStr.substring(4, 8);
-//				System.out.println("长度len_hex------" + len_hex);
+				// System.out.println("长度len_hex------" + len_hex);
+
 				// 数据长度 10进制
-				long len_num = Long.parseLong(len_hex, 16);
-//				System.out.println("长度len_num------" + len_num);
+				// long len_num = Long.parseLong(len_hex, 16);
+				// System.out.println("长度len_num------" + len_num);
 
+				String cmd_hex = hexStr.substring(8, 12);
+				System.out.println("cmd_hex-----" + cmd_hex);
+
+				// CMD 10进制
+				long cmd_ten = Long.parseLong(cmd_hex, 16) & 0x0fff;
+				System.out.println("cmd_ten-----" + cmd_ten);
+
+//				System.out.println(ByteHexUtil.changeType(cmd_hex));
 				// cmd: uint16_t Bit14~Bit15位为转发优先级，优先级4最高0最低。Bit12~Bit13为ACK位作为命令类型:set,get,ack
-				String str_2 = ByteHexUtil.hex2Binary(hexStr.substring(8, 12));
+//				String str_2 = ByteHexUtil.hex2Binary(hexStr.substring(8, 12));
+//				// 2进制 转 10进制
+//				// 转发优先级
+//				int forwarding_priority = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(0, 2)));
+//				System.out.println("forwarding_priority-----" + forwarding_priority);
+//				// 命令类型
+//				int cmd_type_bin = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(2, 4)));
+//				System.out.println("cmd_type_bin-----" + cmd_type_bin);
+//				// 命令
+//				int cmd_bin = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(4, 12)));
+//				System.out.println("cmd_bin-----" + cmd_bin);
 
-				// 2进制 转 10进制
-				// 转发优先级
-				int forwarding_priority = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(0, 2)));
-				// 命令类型
-				int cmd_type_bin = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(2, 4)));
-				// 命令
-				int cmd_bin = ByteHexUtil.BinaryToDecimal(Integer.parseInt(str_2.substring(4, 12)));
-
-				System.out.println("cmd_bin----" + cmd_bin);
 				// data+crc+eof
 				String data_crc_eof = hexStr.substring(12);
 
-//				System.out.println("data_crc_eof-----" + data_crc_eof);
-
 				// CRC 16进制
 				String crc_hex = data_crc_eof.substring((data_crc_eof.length() - 6), (data_crc_eof.length() - 4));
+
+				System.out.println("crc_hex-------" + crc_hex);
+
+				// CRC 10进制
+				long crc_ten = Long.parseLong(crc_hex, 16);
+
+				System.out.println("crc_ten-------" + crc_ten);
 
 				// CRC 检验数据
 				String crc_examine = hexStr.substring(4, (hexStr.length() - 6));
@@ -152,10 +167,11 @@ public class AnalysisUtil {
 				// CRC 校验
 				byte crc = CRC8.calcCrc8(b);
 
-//				System.out.println("crc_hex-----" + crc_hex);
-//				System.out.println("(Integer.toHexString(0x00ff & crc)-----" + (Integer.toHexString(0x00ff & crc)));
+				System.out.println("crc--校验值-----" + crc);
 
-				if (crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString())) {
+				// crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString())
+				// 判断CRC 10进制 和校验值
+				if (crc_ten == crc) {
 					log.info("crc校验成功....");
 
 					// 数据体
@@ -164,12 +180,14 @@ public class AnalysisUtil {
 					System.out.println("data_str-----" + data_str);
 
 					// JavaStruct解析数据、保存到数据库
-					getDataJson(data_str);
+					getDataJson(data_str, cmd_ten);
 
 				} else {
 					log.error("CRC 校验失败.....");
 				}
 
+			} else {
+				log.error("sof eof验证失败...");
 			}
 
 		} catch (Exception e) {
@@ -188,72 +206,119 @@ public class AnalysisUtil {
 	 * @date 2019年7月3日 上午10:52:49
 	 * @param data
 	 */
-	public static void getDataJson(String data) {
+	public static void getDataJson(String data, long cmd) {
 
-		System.out.println("data--length------" + data.length());
+		int cmd_num = (int) cmd;
+		System.out.println("cmd-num--------" + cmd_num);
 
-		if (data.length() > 0) {
-			if (data.length() == 44) {
-			} else if (data.length() == 40) {
+		String cmd_value = CMD.get(cmd_num);
 
-				// 方法2 JavaStruct解析
-				try {
-					IdInfoStruct struct = new IdInfoStruct();
-					byte[] b = ByteHexUtil.hexStr2Bytes(data);
+		switch (cmd_value) {
+		case "CMD_COMMON_TIME_SYNC":
+			try {
+				TimeSyncData timeSyncData = new TimeSyncData();
 
-					// 解析成javaStruct
-					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
+				byte[] b = ByteHexUtil.hexStr2Bytes(data);
 
-					System.out.println("id----" + struct.id);
-					System.out.println("x-----" + struct.x);
-					System.out.println("y-----" + struct.y);
-					System.out.println("t-----" + struct.t);
-					System.out.println("camera_id-----" + struct.camera_id);
-					try {
-						// 保存到数据库
-//						  int result = analysisUtil.idInfoStructService.insert(struct);
-//						  if (result > 0) { log.info("数据保存成功..."); }
+				// 解析成javaStruct
+				JavaStruct.unpack(timeSyncData, b, ByteOrder.BIG_ENDIAN);
 
-						// 发送socket消息
-						WebSocketServer.sendInfo(JSONObject.toJSONString(struct), "ivan");
+				System.out.println("getT_h-------" + timeSyncData.getT_h());
+				System.out.println("getT_l-------" + timeSyncData.getT_l());
 
-					} catch (Exception e) {
-						log.error(e.toString());
-					}
-
-				} catch (StructException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				/*
-				 * //方法1 分段截取 按照协议转进制解析 // 16进制 转 10进制 int id =
-				 * ByteHexUtil.hexStringToAlgorism(data.substring(0, 4));
-				 * System.out.println("id-----" + id); // hex 转成 float Long x_long =
-				 * parseLong(data.substring(4, 12), 16); float x_rate =
-				 * Float.intBitsToFloat(x_long.intValue()); System.out.println("x_rate------" +
-				 * x_rate); Long y_long = parseLong(data.substring(12, 20), 16); float y_rate =
-				 * Float.intBitsToFloat(y_long.intValue()); System.out.println("y_rate-----" +
-				 * y_rate); int t_rate = ByteHexUtil.hexStringToAlgorism(data.substring(20,
-				 * 36)); System.out.println("t_rate-----" + t_rate);
-				 */
-
+			} catch (StructException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
+			break;
+		case "1":
+			break;
+		case "2":
+			break;
+		default:
+			break;
 		}
+
+//		System.out.println("data--length------" + data.length());
+//		if (data.length() > 0) {
+//			if (data.length() == 44) {
+//			} else if (data.length() == 40) {
+//
+//				// 方法2 JavaStruct解析
+//				try {
+//					IdInfoStruct struct = new IdInfoStruct();
+//					byte[] b = ByteHexUtil.hexStr2Bytes(data);
+//
+//					// 解析成javaStruct
+//					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
+//
+//					System.out.println("id----" + struct.id);
+//					System.out.println("x-----" + struct.x);
+//					System.out.println("y-----" + struct.y);
+//					System.out.println("t-----" + struct.t);
+//					System.out.println("camera_id-----" + struct.camera_id);
+//					try {
+//						// 保存到数据库
+////						  int result = analysisUtil.idInfoStructService.insert(struct);
+////						  if (result > 0) { log.info("数据保存成功..."); }
+//
+//						// 发送socket消息
+//						WebSocketServer.sendInfo(JSONObject.toJSONString(struct), "ivan");
+//
+//					} catch (Exception e) {
+//						log.error(e.toString());
+//					}
+//
+//				} catch (StructException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//
+//				/*
+//				 * //方法1 分段截取 按照协议转进制解析 // 16进制 转 10进制 int id =
+//				 * ByteHexUtil.hexStringToAlgorism(data.substring(0, 4));
+//				 * System.out.println("id-----" + id); // hex 转成 float Long x_long =
+//				 * parseLong(data.substring(4, 12), 16); float x_rate =
+//				 * Float.intBitsToFloat(x_long.intValue()); System.out.println("x_rate------" +
+//				 * x_rate); Long y_long = parseLong(data.substring(12, 20), 16); float y_rate =
+//				 * Float.intBitsToFloat(y_long.intValue()); System.out.println("y_rate-----" +
+//				 * y_rate); int t_rate = ByteHexUtil.hexStringToAlgorism(data.substring(20,
+//				 * 36)); System.out.println("t_rate-----" + t_rate);
+//				 */
+//			} else if (data.length() == 16) {
+//				try {
+//					TimeSyncData timeSyncData = new TimeSyncData();
+//
+//					byte[] b = ByteHexUtil.hexStr2Bytes(data);
+//
+//					// 解析成javaStruct
+//					JavaStruct.unpack(timeSyncData, b, ByteOrder.BIG_ENDIAN);
+//
+//					System.out.println("getT_h-------" + timeSyncData.getT_h());
+//					System.out.println("getT_l-------" + timeSyncData.getT_l());
+//
+//				} catch (StructException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//
+//			}
+//
+//		}
 
 	}
 
-//	public static void main(String[] args) {
-//		byte[] test = { 1, 2, 3 };
-//
-//		try {
-//			validate(test);
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
+	public static void main(String[] args) {
+		// a5a5000820060000000100000001065a5a
+		// a5a500122133009542db000042f700000000000000000040115a5a
+		
+		try {
+			validate("a5a50008200620001000715a5a");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * @description 16进制转成10进制

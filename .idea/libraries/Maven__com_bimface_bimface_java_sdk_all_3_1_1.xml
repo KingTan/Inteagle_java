@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.bimface:bimface-java-sdk:all:3.1.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/bimface/bimface-java-sdk/3.1.1/bimface-java-sdk-3.1.1-all.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/bimface/bimface-java-sdk/3.1.1/bimface-java-sdk-3.1.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/bimface/bimface-java-sdk/3.1.1/bimface-java-sdk-3.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -54,7 +54,6 @@ public class PushCallback implements MqttCallback {
 //			AnalysisUtil.validate(mqttMessage.getPayload());
 			
 			String hexStr_2 = ByteHexUtil.bytes2HexStr(mqttMessage.getPayload()); // 编码
-			System.out.println("hexStr_2-----"+hexStr_2);
 			
 			AnalysisUtil.validate(hexStr_2);
 		}

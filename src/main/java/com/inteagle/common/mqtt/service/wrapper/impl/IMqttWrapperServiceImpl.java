@@ -3,6 +3,7 @@ package com.inteagle.common.mqtt.service.wrapper.impl;
 import com.inteagle.common.mqtt.config.MqttConfiguration;
 import com.inteagle.common.mqtt.service.SubscribeConn;
 import com.inteagle.common.mqtt.service.wrapper.IMqttWrapperService;
+import com.inteagle.common.struct.ByteHexUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -27,7 +28,16 @@ public class IMqttWrapperServiceImpl implements IMqttWrapperService {
 	public Boolean publish(String topic, String content) {
 
 		log.info("MQ===public=== 入参:topic:{};content:{}", topic, content);
-		MqttMessage message = new MqttMessage(content.getBytes());
+		
+		byte[] rawSource =ByteHexUtil.hexStr2Bytes(content); // 解码
+		System.out.println("发送decode result : " + rawSource);
+
+		String hexStr_2 = ByteHexUtil.bytes2HexStr(rawSource); // 编码
+		System.out.println("发送encode result : " + hexStr_2);
+		
+		//content.getBytes()
+		MqttMessage message = new MqttMessage(rawSource);
+		
 		message.setQos(mqttConfiguration.getQos());
 		/**
 		 * Retained为true时MQ会保留最后一条发送的数据，当断开再次订阅即会接收到这最后一次的数据
@@ -39,6 +49,7 @@ public class IMqttWrapperServiceImpl implements IMqttWrapperService {
 			// 判定是否需要重新连接
 			// 删除一个判断条件
 			// || !mqttClient.getClientId().equals(mqttConfiguration.getSubscribeClientId())
+			
 			if (mqttClient == null || !mqttClient.isConnected()) {
 				System.err.println("重新连接------");
 				mqttClient = subscribeConn.getConn();

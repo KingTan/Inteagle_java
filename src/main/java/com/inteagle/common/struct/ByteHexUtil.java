@@ -27,26 +27,36 @@ public class ByteHexUtil {
         System.out.println(Calendar.getInstance().getTimeInMillis());
         System.out.println(new Date().getTime());
 		
-		byte[] rawSource = hexStr2Bytes("a5a500122133009542db000042f700000000000000000040115a5a"); // 解码
+        //a5a500122133009542db000042f700000000000000000040115a5a
+		byte[] rawSource = hexStr2Bytes("2006"); // 解码
 		System.out.println("decode result : " + rawSource);
 
 		String hexStr_2 = bytes2HexStr(rawSource); // 编码
 		System.out.println("encode result : " + hexStr_2);
-
+		
+		long hexStr_long=Long.parseLong(hexStr_2);
+		System.out.println("hexStr_long------"+hexStr_long);
+		
+		
 //		byte[] b = hexStr2Bytes(rawSource);
 //
 //		String str = "{";
-//
 //		for (int i = 0; i < b.length; i++) {
 ////			System.out.printf("b[%d]: %d\n", i, b[i]);
 //			str += b[i] + ",";
 //		}
-//
 //		str += "}";
-//
 //		System.out.println("str-----" + str);
 
 	}
+	
+	
+	public static String changeType(String str) {
+		byte[] rawSource = hexStr2Bytes(str); // 解码
+		String hexStr_2 = bytes2HexStr(rawSource); // 编码
+		return hexStr_2;
+	}
+	
 
 	// 字符串转 ASCII 码
 	public static String stringToAscii(String value) {
@@ -62,20 +72,8 @@ public class ByteHexUtil {
 		return sbu.toString();
 	}
 
-	private Object byteArr;
-
 	// byte转为hex串
 	public static String bytes2HexStr(byte[] byteArr) {
-//		if (null == byteArr || byteArr.length < 1)
-//			return "";
-//		StringBuilder sb = new StringBuilder();
-//		for (byte t : byteArr) {
-//			if ((t & 0xF0) == 0)
-//				sb.append("0");
-//			sb.append(Integer.toHexString(t & 0xFF)); // t & 0xFF 操作是为去除Integer高位多余的符号位（java数据是用补码表示）
-//		}
-//		return sb.toString();
-
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < byteArr.length; i++) {
 			String hex = Integer.toHexString(byteArr[i] & 0xFF);
@@ -100,23 +98,6 @@ public class ByteHexUtil {
 
 		return result;
 
-//		int hexlen = hexStr.length();
-//		byte[] result;
-//		if (hexlen % 2 == 1) {
-//			// 奇数
-//			hexlen++;
-//			result = new byte[(hexlen / 2)];
-//			hexStr = "0" + hexStr;
-//		} else {
-//			// 偶数
-//			result = new byte[(hexlen / 2)];
-//		}
-//		int j = 0;
-//		for (int i = 0; i < hexlen; i += 2) {
-//			result[j] = hexToByte(hexStr.substring(i, i + 2));
-//			j++;
-//		}
-//		return result;
 	}
 
 	/**
