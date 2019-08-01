@@ -55,7 +55,7 @@ public class PushCallback implements MqttCallback {
 			
 			String hexStr_2 = ByteHexUtil.bytes2HexStr(mqttMessage.getPayload()); // 编码
 			
-			AnalysisUtil.validate(hexStr_2);
+			AnalysisUtil.validate(hexStr_2,topic);
 		}
 
 		// 数据存到队列

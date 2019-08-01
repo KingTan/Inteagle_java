@@ -22,19 +22,32 @@ public class RedisTestController {
 
 	@RequestMapping(value = "/test", method = { RequestMethod.GET, RequestMethod.POST })
 	public String redisTest() {
-		StringBuffer sb = new StringBuffer();
-		redisService.set("str", "str");
-		sb.append("str=").append(redisService.get("str").toString()).append(",");
-		redisService.hmSet("hmset", "key", "val");
-		sb.append("hmset=").append(redisService.hmGet("hmset", "key")).append(",");
-		redisService.lPush("list", "val");
-		sb.append("list=").append(redisService.lRange("list", 0, 1).toString()).append(",");
-		redisService.add("set", "val");
-		sb.append("set=").append(redisService.setMembers("set").toString()).append(",");
-		redisService.zAdd("zset", "val1", 1);
-		redisService.zAdd("zset", "val2", 2);
-		sb.append("zset=").append(redisService.rangeByScore("zset", 1, 2)).append(",");
-		return sb.toString();
+		
+		// 将指定的值插入列表尾部并返回长度
+		ListCacheUtil.rightPush("camera_person_id_list", "1");
+		
+		
+		
+		
+//		StringBuffer sb = new StringBuffer();
+//		redisService.set("str", "str");
+//		redisService.set("str", "str2");
+//		sb.append("str=").append(redisService.get("str").toString()).append(",");
+//		redisService.hmSet("hmset", "key", "val");
+//		
+//		sb.append("hmset=").append(redisService.hmGet("hmset", "key")).append(",");
+//		redisService.lPush("list", "val");
+//		
+//		sb.append("list=").append(redisService.lRange("list", 0, 1).toString()).append(",");
+//		redisService.add("set", "val");
+//		
+//		sb.append("set=").append(redisService.setMembers("set").toString()).append(",");
+//		redisService.zAdd("zset", "val1", 1);
+//		redisService.zAdd("zset", "val2", 2);
+//		
+//		sb.append("zset=").append(redisService.rangeByScore("zset", 1, 2)).append(",");
+		
+		return "1";
 	}
 
 }

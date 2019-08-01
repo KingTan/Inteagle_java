@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inteagle.common.mqtt.service.IMqttPublish;
 import com.inteagle.common.struct.ByteHexUtil;
 import com.inteagle.common.struct.CRC8;
+import com.inteagle.common.struct.SendDataUtil;
 import com.inteagle.common.struct.TimeSyncData;
 
 import struct.JavaStruct;
@@ -36,27 +37,6 @@ public class MQTTServerController {
 //		System.out.println("发布消息");
 //		System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName() + "==========:" + msg);
 
-		// a5a5 0008 2006 000003e8000007d0 11 5a5a
-//		String sof = "a5a5";
-//		sof = ByteHexUtil.changeType(sof);
-//
-//		String len = "0008";
-//		len = ByteHexUtil.changeType(len);
-//
-//		String cmd = "2006";
-//		cmd = ByteHexUtil.changeType(cmd);
-//
-//		String data = "000003e8000007d0";
-//		data = ByteHexUtil.changeType(data);
-//		
-//		String crc = "11";
-//		crc = ByteHexUtil.changeType(crc);
-//
-//		String eof = "5a5a";
-//		eof = ByteHexUtil.changeType(eof);
-//
-//		msg = sof + len + cmd + data + crc + eof;
-
 		String sof = "a5a5";
 		sof = ByteHexUtil.changeType(sof);
 
@@ -70,16 +50,16 @@ public class MQTTServerController {
 		TimeSyncData timeSyncData = new TimeSyncData();
 
 		long curretnTimeStamp = Calendar.getInstance().getTimeInMillis();
-		
+
 		System.out.println("curretnTimeStamp-------" + curretnTimeStamp);
-		
+
 		int t_l = (int) curretnTimeStamp;
 		int t_h = (int) (curretnTimeStamp >> 32);
-		
+
 		System.out.println("t_h-------" + t_h);
 		System.out.println("t_l-------" + t_l);
-		
-		Long change_val = getLongFromInt(t_l, t_h);
+
+		Long change_val = SendDataUtil.getLongFromInt(t_l, t_h);
 		System.out.println("change_val-------" + change_val);
 
 //		int t_h = Integer.parseInt(curretnTimeStamp.toString().substring(0, 7));
@@ -118,27 +98,4 @@ public class MQTTServerController {
 		return iEmqService.publish(topic, msg);
 	}
 
-	// long转为两个int
-	public static List<Integer> changLong(long num) {
-		int intNum1 = (int) num;
-		int intNum2 = (int) (num >> 32);
-		List<Integer> list = new ArrayList<Integer>();
-		list.add(intNum1);
-		list.add(intNum2);
-		System.out.println("intNum1-----" + intNum1);
-		System.out.println("intNum2-----" + intNum2);
-		return list;
-	}
-
-	// 两个int合并成long
-	public static long getLongFromInt(int num1, int num2) {
-		// long l1 = (long)(((long)num2&0xffffffff)<<32);
-		// long l2 = (long)num1&0x00000000ffffffffL;
-		// 简写
-		long l1 = (num2 & 0x00000000ffffffffL) << 32;
-		long l2 = num1 & 0x00000000ffffffffL;
-
-		long num = l1 | l2;
-		return num;
-	}
 }
