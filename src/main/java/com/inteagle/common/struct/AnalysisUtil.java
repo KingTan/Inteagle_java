@@ -1,5 +1,6 @@
 package com.inteagle.common.struct;
 
+import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +111,18 @@ public class AnalysisUtil {
 	// byte[] playload
 	public static void validate(String hexStr, String topic) {
 		System.out.println("hexStr-----" + hexStr);
+
+		// 发送socket消息
+		sendSocketData(hexStr, "hexStr");
+
+		// 发送socket消息
+		try {
+			WebSocketServer.sendInfo("123123", "ivan");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		try {
 			// SOF头
 			String sof_hex = hexStr.substring(0, 4);
@@ -143,6 +156,9 @@ public class AnalysisUtil {
 				// CMD 10进制
 				long cmd_ten = Long.parseLong(cmd_hex, 16) & 0x0fff;
 				System.out.println("cmd_ten-----" + cmd_ten);
+
+				// 发送socket消息
+				sendSocketData(cmd_ten, "cmd_ten");
 
 				// data+crc+eof
 				String data_crc_eof = hexStr.substring(12);
@@ -230,6 +246,9 @@ public class AnalysisUtil {
 				System.out.println("getT_h-------" + timeSyncData.getT_h());
 				System.out.println("getT_l-------" + timeSyncData.getT_l());
 
+				// 发送socket消息
+				sendSocketData(timeSyncData, "timeSyncData");
+
 			} catch (StructException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -252,8 +271,8 @@ public class AnalysisUtil {
 				System.out.println("camera_id-----" + struct.camera_id);
 
 				try {
-					
-					//取出 Redis中的人脸识别数据
+
+					// 取出 Redis中的人脸识别数据
 					List<Object> list = ListCacheUtil.listFindAll("camera_person_id_list");
 					if (list != null && list.size() != 0) {
 						for (int i = 0; i < list.size(); i++) {
@@ -267,6 +286,9 @@ public class AnalysisUtil {
 
 					// 发送socket消息
 					WebSocketServer.sendInfo(JSONObject.toJSONString(struct), "ivan");
+
+					// 发送socket消息
+					sendSocketData(struct, "IdInfoStruct");
 
 				} catch (Exception e) {
 					log.error(e.toString());
@@ -291,6 +313,9 @@ public class AnalysisUtil {
 				// 将指定的值插入列表尾部并返回长度
 				ListCacheUtil.rightPush("camera_person_id_list", struct.getId());
 
+				// 发送socket消息
+				sendSocketData(struct, "HelmetDiscernStruct");
+
 			} catch (StructException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -308,6 +333,9 @@ public class AnalysisUtil {
 				System.out.println("action----------" + struct.getAction());
 				System.out.println("device_type----------" + struct.getDevice_type());
 				System.out.println("priority----------" + struct.getPriority());
+
+				// 发送socket消息
+				sendSocketData(struct, "DeviceActionStruct");
 
 				byte action = struct.getAction();
 				byte device_type = struct.getDevice_type();
@@ -404,6 +432,22 @@ public class AnalysisUtil {
 //		}
 //
 //	}
+
+	// 发送socket数据
+	public static void sendSocketData(Object dataStr, String dataType) {
+		try {
+			System.out.println("发送socket消息...");
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("data", dataStr);
+			jsonObject.put("dataType", dataType);
+			jsonObject.put("messageType", "mqtt");
+			WebSocketServer.sendInfo(JSONObject.toJSONString(jsonObject), "showWindow");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			log.error("socket发送mqtt数据失败...");
+		}
+	}
 
 	public static void main(String[] args) {
 		// a5a5000820060000000100000001065a5a
