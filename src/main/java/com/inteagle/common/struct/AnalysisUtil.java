@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 import com.inteagle.apis.struct.entity.IdInfoStruct;
@@ -17,6 +18,7 @@ import com.inteagle.common.mqtt.service.IMqttPublish;
 import com.inteagle.common.mqtt.service.wrapper.impl.IMqttWrapperServiceImpl;
 import com.inteagle.common.redis.ListCacheUtil;
 import com.inteagle.common.redis.RedisCacheUtil;
+import com.inteagle.common.redis.RedisService;
 import com.inteagle.common.websocket.server.WebSocketServer;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,15 +33,16 @@ import struct.StructException;
  */
 @Slf4j
 @Component
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class AnalysisUtil {
 
 	private static AnalysisUtil analysisUtil;
-
 	@Autowired
 	private IdInfoStructService idInfoStructService;
-
 	@Autowired
 	private IMqttWrapperServiceImpl iMqttWrapperServiceImpl;
+	@Autowired
+	private RedisService redisService;
 
 	// 项目启动时 注入到Spring容器
 	@PostConstruct
@@ -47,6 +50,7 @@ public class AnalysisUtil {
 		analysisUtil = this;
 		analysisUtil.idInfoStructService = this.idInfoStructService;
 		analysisUtil.iMqttWrapperServiceImpl = this.iMqttWrapperServiceImpl;
+		analysisUtil.redisService = this.redisService;
 	}
 
 	// 命令类型
@@ -105,23 +109,19 @@ public class AnalysisUtil {
 		CMD.put(251, "CMD_FRAME_SET_THRESHOLD");
 		CMD.put(300, "CMD_FRAME_RESERVED");
 
+		// 电池情况
+		CMD.put(604, "CMD_HELMET_SENSOR_DATA");
+
 	}
 
 	// 解析 paylaod 数据
 	// byte[] playload
 	public static void validate(String hexStr, String topic) {
 		System.out.println("hexStr-----" + hexStr);
-
+		// 发送socket消息
+		sendSocketData(topic, "topic");
 		// 发送socket消息
 		sendSocketData(hexStr, "hexStr");
-
-		// 发送socket消息
-		try {
-			WebSocketServer.sendInfo("123123", "ivan");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 
 		try {
 			// SOF头
@@ -264,6 +264,8 @@ public class AnalysisUtil {
 				// 解析成javaStruct
 				JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
 
+				int helmet_id = struct.getId();
+
 				System.out.println("id----" + struct.id);
 				System.out.println("x-----" + struct.x);
 				System.out.println("y-----" + struct.y);
@@ -272,21 +274,26 @@ public class AnalysisUtil {
 
 				try {
 
-					// 取出 Redis中的人脸识别数据
-					List<Object> list = ListCacheUtil.listFindAll("camera_person_id_list");
-					if (list != null && list.size() != 0) {
-						for (int i = 0; i < list.size(); i++) {
-							System.out.println("list.get(i)------" + list.get(i));
+					if (analysisUtil.redisService.get("personId") != null) {
+
+						int personId = (int) analysisUtil.redisService.get("personId");
+						if (personId == 255 && helmet_id == 255) {
+							log.info("----------安全帽-人脸识别正确-------------");
+						} else {
+							JSONObject jsonObject = new JSONObject();
+							jsonObject.put("data", "-1");
+							jsonObject.put("dataType", "helmet_analysis");
+							jsonObject.put("helmet_id", helmet_id);
+							// 发送socket消息
+							WebSocketServer.sendInfo(JSONObject.toJSONString(jsonObject), "ivan");
 						}
 					}
 
 					// 保存到数据库
 //						  int result = analysisUtil.idInfoStructService.insert(struct);
 //						  if (result > 0) { log.info("数据保存成功..."); }
-
 					// 发送socket消息
 					WebSocketServer.sendInfo(JSONObject.toJSONString(struct), "ivan");
-
 					// 发送socket消息
 					sendSocketData(struct, "IdInfoStruct");
 
@@ -308,10 +315,12 @@ public class AnalysisUtil {
 
 				// 解析成javaStruct
 				JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
-				System.out.println("id----------" + struct.getId());
 
-				// 将指定的值插入列表尾部并返回长度
-				ListCacheUtil.rightPush("camera_person_id_list", struct.getId());
+				int personId = struct.getId();
+				System.out.println("id----------" + personId);
+
+				// 缓存到redis
+				analysisUtil.redisService.set("personId", personId);
 
 				// 发送socket消息
 				sendSocketData(struct, "HelmetDiscernStruct");
@@ -358,8 +367,30 @@ public class AnalysisUtil {
 				e.printStackTrace();
 			}
 			break;
+		// 电池情况数据
+		case "CMD_HELMET_SENSOR_DATA":
+			// 方法2 JavaStruct解析
+			try {
+				HelmetSensorDataStruct struct = new HelmetSensorDataStruct();
+				byte[] b = ByteHexUtil.hexStr2Bytes(data);
 
+				// 解析成javaStruct
+				JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
+				System.out.println("id----------" + struct.getId());
+				System.out.println("vol----------" + struct.getVol());
+				System.out.println("temp----------" + struct.getTemp());
+				System.out.println("helmet_on----------" + struct.getHelmet_on());
+
+				// 发送socket消息
+				sendSocketData(struct, "HelmetSensorDataStruct");
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
 		default:
+			System.err.println("未解析该命令.....");
 			break;
 		}
 
@@ -436,7 +467,6 @@ public class AnalysisUtil {
 	// 发送socket数据
 	public static void sendSocketData(Object dataStr, String dataType) {
 		try {
-			System.out.println("发送socket消息...");
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("data", dataStr);
 			jsonObject.put("dataType", dataType);
@@ -450,11 +480,10 @@ public class AnalysisUtil {
 	}
 
 	public static void main(String[] args) {
-		// a5a5000820060000000100000001065a5a
-		// a5a500122133009542db000042f700000000000000000040115a5a
 
+		// a5a5000c225c000000000000000000000000885a5a
 		try {
-			validate("a5a500032007000000275a5a", "6lbr-up");
+			validate("a5a500142134000000ff78f8fe937f0000000300000000000000475a5a", "6lbr-up");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

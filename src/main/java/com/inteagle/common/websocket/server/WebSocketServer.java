@@ -144,17 +144,12 @@ public class WebSocketServer {
 	 */
 	public static void sendInfo(String message, @PathParam("sid") String sid) throws IOException {
 		log.info("推送消息到窗口" + sid + "，推送内容:" + message);
-		
-		System.out.println("webSocketSet.size()----"+webSocketSet.size());
-		
 		for (WebSocketServer item : webSocketSet) {
 			try {
 				// 这里可以设定只推送给这个sid的，为null则全部推送
 				if (sid == null) {
-					System.err.println("sid----------"+sid);
 					item.sendMessage(message);
 				} else if (item.sid.equals(sid)) {
-					System.err.println("sid----------"+sid);
 					item.sendMessage(message);
 				}
 			} catch (IOException e) {

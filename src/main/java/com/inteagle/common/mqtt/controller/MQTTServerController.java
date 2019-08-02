@@ -1,5 +1,6 @@
 package com.inteagle.common.mqtt.controller;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -11,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.inteagle.common.mqtt.service.IMqttPublish;
 import com.inteagle.common.struct.ByteHexUtil;
 import com.inteagle.common.struct.CRC8;
 import com.inteagle.common.struct.SendDataUtil;
 import com.inteagle.common.struct.TimeSyncData;
+import com.inteagle.common.websocket.server.WebSocketServer;
 
 import struct.JavaStruct;
 import struct.StructException;
@@ -45,6 +48,9 @@ public class MQTTServerController {
 
 		String cmd = "2006";
 		cmd = ByteHexUtil.changeType(cmd);
+		
+		// CMD 10进制
+		long cmd_ten = Long.parseLong(cmd, 16) & 0x0fff;
 
 		// 初始时间结构体对象
 		TimeSyncData timeSyncData = new TimeSyncData();
@@ -94,6 +100,24 @@ public class MQTTServerController {
 
 		msg = sof + len + cmd + data + crc + eof;
 		System.out.println("msg-----" + msg);
+		
+		
+		try {
+			JSONObject jsonObject_data = new JSONObject();
+			jsonObject_data.put("msg", msg);
+			jsonObject_data.put("topic", topic);
+			jsonObject_data.put("cmd_ten", cmd_ten);
+			
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("data", jsonObject_data);
+			jsonObject.put("dataType", "send");
+			jsonObject.put("messageType", "mqtt");
+			//发送socket 消息
+			WebSocketServer.sendInfo(JSONObject.toJSONString(jsonObject), "showWindow");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return iEmqService.publish(topic, msg);
 	}
