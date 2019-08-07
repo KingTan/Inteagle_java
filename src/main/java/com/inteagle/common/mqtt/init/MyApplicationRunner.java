@@ -34,5 +34,8 @@ public class MyApplicationRunner implements ApplicationRunner {
 		// 订阅主题
 		iMqttSubscribe.subscribe("6lbr-up/#");
 
+		// 订阅主题
+		iMqttSubscribe.subscribe("6lbr-down/#");
+
 	}
 }

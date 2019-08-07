@@ -48,14 +48,14 @@ public class PushCallback implements MqttCallback {
 			System.out.println("content------" + content);
 //			analyseData(content);
 
-		} else if (topic.indexOf("6lbr-server") != -1 || topic.indexOf("6lbr-up") != -1) {
+		} else if (topic.indexOf("6lbr-server") != -1 || topic.indexOf("6lbr-up") != -1|| topic.indexOf("6lbr-down") != -1) {
 
 			// 解析数据(小慧-安全帽数据)
 //			AnalysisUtil.validate(mqttMessage.getPayload());
-			
+
 			String hexStr_2 = ByteHexUtil.bytes2HexStr(mqttMessage.getPayload()); // 编码
-			
-			AnalysisUtil.validate(hexStr_2,topic);
+
+			AnalysisUtil.validate(hexStr_2, topic);
 		}
 
 		// 数据存到队列

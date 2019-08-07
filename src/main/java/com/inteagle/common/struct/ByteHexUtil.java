@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import struct.JavaStruct;
+
 /**
  * 
  * @ClassName: ByteHexUtil
@@ -15,29 +17,106 @@ import java.util.regex.Pattern;
 public class ByteHexUtil {
 
 	public static void main(String[] args) throws Exception {
+
+		String sof = "a5a5";
+		sof = ByteHexUtil.changeType(sof);
+
+		// CMD 16进制
+		// Integer.toHexString(0712)
+		String cmd = "02be";
+		cmd = ByteHexUtil.changeType(cmd);
+
+		MotorStartStruct motorStartStruct = new MotorStartStruct();
+		short fre = 23123;
+		motorStartStruct.setFre(fre);
+		short duty = 1;
+		motorStartStruct.setDuty(duty);
+		short steps = 3;
+		motorStartStruct.setSteps(steps);
+		short step_hold = 3;
+		motorStartStruct.setSteps_hold(step_hold);
+		short hold_time = 3;
+		motorStartStruct.setHold_time(hold_time);
+		short dir = 1;
+		motorStartStruct.setDir(dir);
+
+		// 转成字节数组
+		byte[] start_byte = JavaStruct.pack(motorStartStruct);
+		String data = ByteHexUtil.bytes2HexStr(start_byte);
+
+		System.out.println("data------------" + data);
+
+		Integer data_len = data.length();
+
+		System.out.println("data.length----" + data_len);
+
+		String len_hex_after = data_len.toHexString(data_len);
+
+		System.out.println("len_hex_after----" + len_hex_after);
+
+		// 10进制转成16进制
+		String len_hex = intToHex(data_len);
+		System.out.println("len_hex----" + len_hex);
+
+		String after = addZeroForNum(len_hex, 4);
+
+		System.out.println("after----" + after);
+
+		// 数据长度 10进制
+		long len_num = Long.parseLong("0018", 16) & 0x0fff;
+		System.out.println("长度len_num------" + len_num);
+
+		String len = "2008";
+		len = ByteHexUtil.changeType(len);
+
+		// 按照协议 截取到crc的16进制值
+		String crc = len + cmd + data;
+		// System.out.println("crc-------" + crc);
+
+		// 16进制转成字节数组
+		byte[] crc_byte = ByteHexUtil.hex2Byte(crc);
+
+		// 传入字节数组 求出crc的校验值字节
+		byte crc_after = CRC8.calcCrc8(crc_byte);
+
+		// 将校验值字节放入数组中 转成16进制数据
+		byte[] crc_after_array = { crc_after };
+		crc = ByteHexUtil.byte2HexStr(crc_after_array);
+
+		String eof = "5a5a";
+		eof = ByteHexUtil.changeType(eof);
+
+		String msg = sof + len + cmd + data + crc + eof;
+		System.out.println("msg-----" + msg);
+
+		// CMD 10进制
+//		long cmd_ten = Long.parseLong("02bf", 16) & 0x0fff;
+//		System.out.println("cmd_ten-----" + cmd_ten);
+//		
+//		String cmd = Integer.toHexString(703);
+//		System.out.println("cmd-----" + cmd);
 //		String source = "study hard and make progress everyday";
 //		System.out.println("source : " + source);
 
 //		String hexStr = bytes2HexStr(source.getBytes("utf8")); // 编码
 //		System.out.println("encode result : " + hexStr);
-		
-		// 精确到毫秒
-        // 获取当前时间戳
-        System.out.println(System.currentTimeMillis());
-        System.out.println(Calendar.getInstance().getTimeInMillis());
-        System.out.println(new Date().getTime());
-		
-        //a5a500122133009542db000042f700000000000000000040115a5a
-		byte[] rawSource = hexStr2Bytes("2006"); // 解码
-		System.out.println("decode result : " + rawSource);
 
-		String hexStr_2 = bytes2HexStr(rawSource); // 编码
-		System.out.println("encode result : " + hexStr_2);
-		
-		long hexStr_long=Long.parseLong(hexStr_2);
-		System.out.println("hexStr_long------"+hexStr_long);
-		
-		
+		// 精确到毫秒
+		// 获取当前时间戳
+//        System.out.println(System.currentTimeMillis());
+//        System.out.println(Calendar.getInstance().getTimeInMillis());
+//        System.out.println(new Date().getTime());
+//		
+//        //a5a500122133009542db000042f700000000000000000040115a5a
+//		byte[] rawSource = hexStr2Bytes("2006"); // 解码
+//		System.out.println("decode result : " + rawSource);
+//
+//		String hexStr_2 = bytes2HexStr(rawSource); // 编码
+//		System.out.println("encode result : " + hexStr_2);
+//		
+//		long hexStr_long=Long.parseLong(hexStr_2);
+//		System.out.println("hexStr_long------"+hexStr_long);
+
 //		byte[] b = hexStr2Bytes(rawSource);
 //
 //		String str = "{";
@@ -49,14 +128,49 @@ public class ByteHexUtil {
 //		System.out.println("str-----" + str);
 
 	}
-	
-	
+
+	// 字符串长度不够 前后补0
+	public static String addZeroForNum(String str, int strLength) {
+		int strLen = str.length();
+		StringBuffer sb = null;
+		while (strLen < strLength) {
+			sb = new StringBuffer();
+			sb.append("0").append(str); // 左补0
+			// sb.append(str).append("0"); //右补0
+			str = sb.toString();
+			strLen = str.length();
+		}
+		return str;
+	}
+
+	// 10进制转16进制
+	public static String intToHex(int n) {
+		// StringBuffer s = new StringBuffer();
+		StringBuilder sb = new StringBuilder(8);
+		String a;
+		char[] b = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+		while (n != 0) {
+			sb = sb.append(b[n % 16]);
+			n = n / 16;
+		}
+		a = sb.reverse().toString();
+		return a;
+	}
+
+	public static String binaryToDecimal(int n) {
+		String str = "";
+		while (n != 0) {
+			str = n % 2 + str;
+			n = n / 2;
+		}
+		return str;
+	}
+
 	public static String changeType(String str) {
 		byte[] rawSource = hexStr2Bytes(str); // 解码
 		String hexStr_2 = bytes2HexStr(rawSource); // 编码
 		return hexStr_2;
 	}
-	
 
 	// 字符串转 ASCII 码
 	public static String stringToAscii(String value) {

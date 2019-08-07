@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2019年7月13日下午2:23:54
  *
  */
-@ServerEndpoint(value="/chartsSocket/{id}/{rate}")
+@ServerEndpoint(value="/chartsSocket/{id}")
 @Component
 @Slf4j
 public class ChartsSocketServer {
