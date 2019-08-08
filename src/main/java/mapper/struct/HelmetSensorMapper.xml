@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.inteagle.apis.struct.dao.HelmetSensorMapper">
+	<resultMap id="BaseResultMap"
+		type="com.inteagle.apis.struct.entity.HelmetSensorDataStruct">
+		<result column="sensor_id" jdbcType="CHAR" property="sensorId" />
+		<result column="device_id" jdbcType="CHAR" property="id" />
+		<result column="vol" jdbcType="INTEGER" property="vol" />
+		<result column="temp" jdbcType="INTEGER" property="temp" />
+		<result column="helmet_on" jdbcType="INTEGER" property="helmet_on" />
+		<result column="in_date" jdbcType="TIMESTAMP" property="inDate" />
+	    <result column="in_user_name" jdbcType="CHAR" property="inUserName" />
+	    <result column="edit_user_name" jdbcType="CHAR" property="editUserName" />
+	    <result column="edit_date" jdbcType="TIMESTAMP" property="editDate" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		sensor_id,device_id,vol,temp,helmet_on,in_date,in_user_name,edit_user_name,edit_date
+	</sql>
+
+	<!--根据 设备ID 查询该设备的所有电池情况  -->
+	<select id="selectAllHelmetSensorDataStructListById" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+		from device_sensor 
+		where device_id = #{deviceId}
+	</select>
+	
+	<!--添加电池情况  -->
+	<insert id="insertSensor" parameterType="com.inteagle.apis.struct.entity.HelmetSensorDataStruct">
+		INSERT INTO device_sensor
+		VALUE(
+			replace(UUID(),'-',''),
+			#{id,jdbcType=CHAR},
+			#{vol,jdbcType=INTEGER},
+			#{temp,jdbcType=INTEGER},
+			#{helmet_on,jdbcType=INTEGER},
+			current_date,
+			'ivan',
+			current_date,
+			'ivan'
+		)
+	</insert>
+
+
+</mapper>

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
+import com.inteagle.apis.struct.entity.HelmetSensorDataStruct;
 import com.inteagle.apis.struct.entity.IdInfoStruct;
 import com.inteagle.apis.struct.service.IdInfoStructService;
 import com.inteagle.common.enumList.DeviceActionEnum;
@@ -33,7 +34,6 @@ import struct.StructException;
  */
 @Slf4j
 @Component
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class AnalysisUtil {
 
 	private static AnalysisUtil analysisUtil;

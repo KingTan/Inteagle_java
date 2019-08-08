@@ -57,7 +57,7 @@ public class ChartsDataTask {
 
 		try {
 			ChartsSocketServer.sendInfo(jsonObject.toJSONString(), "001");
-			System.out.println("发送socket消息....");
+//			System.out.println("发送socket消息....");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -143,7 +143,7 @@ public class ChartsSocketServer {
 	 * 群发自定义消息
 	 */
 	public static void sendInfo(String message, @PathParam("id") String id) throws IOException {
-		log.info("推送消息到窗口" + id + "，推送内容:" + message);
+//		log.info("推送消息到窗口" + id + "，推送内容:" + message);
 		for (ChartsSocketServer item : chartsSocketWebSocketSet) {
 			try {
 				// 这里可以设定只推送给这个id的，为null则全部推送

@@ -1,4 +1,6 @@
-package com.inteagle.common.struct;
+package com.inteagle.apis.struct.entity;
+
+import java.util.Date;
 
 import com.inteagle.common.base.entity.BaseEntity;
 
@@ -20,11 +22,11 @@ public class HelmetSensorDataStruct extends BaseEntity {
 	 * @Fields field:field:{todo}(用一句话描述这个变量表示什么)
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	//设备ID
+
+	// 设备ID
 	@StructField(order = 0)
 	private short id;
-	
+
 	// 电压(电压低于2600m/f时 电量不足)
 	@StructField(order = 1)
 	private int vol;
@@ -36,6 +38,25 @@ public class HelmetSensorDataStruct extends BaseEntity {
 	// 是否戴帽
 	@StructField(order = 3)
 	private int helmet_on;
+	
+	//电池记录主键
+	private String sensorId;
+	
+	private Date inDate;
+
+	private String inUserName;
+
+	private String editUserName;
+
+	private Date editDate;
+
+	public String getsensorId() {
+		return sensorId;
+	}
+
+	public void setsensorId(String sensorId) {
+		this.sensorId = sensorId;
+	}
 
 	public short getId() {
 		return id;
@@ -67,6 +88,38 @@ public class HelmetSensorDataStruct extends BaseEntity {
 
 	public void setHelmet_on(int helmet_on) {
 		this.helmet_on = helmet_on;
+	}
+
+	public Date getInDate() {
+		return inDate;
+	}
+
+	public void setInDate(Date inDate) {
+		this.inDate = inDate;
+	}
+
+	public String getInUserName() {
+		return inUserName;
+	}
+
+	public void setInUserName(String inUserName) {
+		this.inUserName = inUserName;
+	}
+
+	public String getEditUserName() {
+		return editUserName;
+	}
+
+	public void setEditUserName(String editUserName) {
+		this.editUserName = editUserName;
+	}
+
+	public Date getEditDate() {
+		return editDate;
+	}
+
+	public void setEditDate(Date editDate) {
+		this.editDate = editDate;
 	}
 
 }
