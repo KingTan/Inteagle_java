@@ -38,17 +38,9 @@ public class HelmetSensorDataStruct extends BaseEntity {
 	// 是否戴帽
 	@StructField(order = 3)
 	private int helmet_on;
-	
-	//电池记录主键
+
+	// 电池记录主键
 	private String sensorId;
-	
-	private Date inDate;
-
-	private String inUserName;
-
-	private String editUserName;
-
-	private Date editDate;
 
 	public String getsensorId() {
 		return sensorId;
@@ -88,38 +80,6 @@ public class HelmetSensorDataStruct extends BaseEntity {
 
 	public void setHelmet_on(int helmet_on) {
 		this.helmet_on = helmet_on;
-	}
-
-	public Date getInDate() {
-		return inDate;
-	}
-
-	public void setInDate(Date inDate) {
-		this.inDate = inDate;
-	}
-
-	public String getInUserName() {
-		return inUserName;
-	}
-
-	public void setInUserName(String inUserName) {
-		this.inUserName = inUserName;
-	}
-
-	public String getEditUserName() {
-		return editUserName;
-	}
-
-	public void setEditUserName(String editUserName) {
-		this.editUserName = editUserName;
-	}
-
-	public Date getEditDate() {
-		return editDate;
-	}
-
-	public void setEditDate(Date editDate) {
-		this.editDate = editDate;
 	}
 
 }

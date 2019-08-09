@@ -1,18 +1,20 @@
 package com.inteagle.apis.struct.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.inteagle.apis.struct.entity.HelmetSensorDataStruct;
 import com.inteagle.apis.struct.entity.IdInfoStruct;
 import com.inteagle.apis.struct.service.HelmetSensorService;
 import com.inteagle.apis.struct.service.IdInfoStructService;
 import com.inteagle.common.entity.JsonResult;
+import com.inteagle.common.util.PageUtil;
 
 @Controller
 public class IdInfoStructController {
@@ -28,12 +30,19 @@ public class IdInfoStructController {
 	public JsonResult<Integer> addHelmetSensor() {
 
 		HelmetSensorDataStruct helmetSensorDataStruct = new HelmetSensorDataStruct();
-		helmetSensorDataStruct.setId(Short.parseShort("002"));
+		helmetSensorDataStruct.setId(Short.parseShort("001"));
 		helmetSensorDataStruct.setVol(20);
 		helmetSensorDataStruct.setTemp(30);
 		helmetSensorDataStruct.setHelmet_on(1);
+		return new JsonResult<Integer>(helmetSensorService.insertSensor(helmetSensorDataStruct));
+	}
 
-		return new JsonResult<Integer>(helmetSensorService.insert(helmetSensorDataStruct));
+	@RequestMapping("/layuiTableData")
+	@ResponseBody
+	public JsonResult<PageInfo<HelmetSensorDataStruct>> getlayuiTableData(String deviceId, Integer page, Integer limit) {
+		PageUtil.setPage(page, limit);
+		List<HelmetSensorDataStruct> list = helmetSensorService.selectAllHelmetSensorDataStructListById(deviceId);
+		return PageUtil.getPageJsonResult(list); 
 	}
 
 	@RequestMapping("/getHelmetSensorList")

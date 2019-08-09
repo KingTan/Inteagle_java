@@ -43,14 +43,6 @@ public class UserInfo extends BaseEntity {
 
 	private String userIsonline;
 
-	private Date inDate;
-
-	private String inUserName;
-
-	private String editUserName;
-
-	private Date editDate;
-
 	public String getUserId() {
 		return userId;
 	}
@@ -145,38 +137,6 @@ public class UserInfo extends BaseEntity {
 
 	public void setUserIsonline(String userIsonline) {
 		this.userIsonline = userIsonline == null ? null : userIsonline.trim();
-	}
-
-	public Date getInDate() {
-		return inDate;
-	}
-
-	public void setInDate(Date inDate) {
-		this.inDate = inDate;
-	}
-
-	public String getInUserName() {
-		return inUserName;
-	}
-
-	public void setInUserName(String inUserName) {
-		this.inUserName = inUserName;
-	}
-
-	public String getEditUserName() {
-		return editUserName;
-	}
-
-	public void setEditUserName(String editUserName) {
-		this.editUserName = editUserName;
-	}
-
-	public Date getEditDate() {
-		return editDate;
-	}
-
-	public void setEditDate(Date editDate) {
-		this.editDate = editDate;
 	}
 
 }

@@ -34,9 +34,87 @@ public class MQTTServerController {
 	public String sayHello() {
 		return "Hello !";
 	}
+	
+	/**
+	 * @description 发送电量mqtt数据 
+	 * @author IVAn
+	 * @date 2019年8月9日 上午10:27:06
+	 * @return
+	 */
+	@RequestMapping("/send/HelmetSensorData")
+	public boolean sendHelmetSensorData(String topic) {
+
+		System.out.println("发送电量mqtt数据 ...");
+
+		String sof = "a5a5";
+		sof = ByteHexUtil.changeType(sof);
+
+		// CMD 16进制
+		// Integer.toHexString(0712)
+		String cmd = "02be";
+		cmd = ByteHexUtil.changeType(cmd);
+
+		String msg = "";
+
+		try {
+			MotorStartStruct motorStartStruct = new MotorStartStruct();
+			short fre = 1;
+			motorStartStruct.setFre(fre);
+			short duty = 1;
+			motorStartStruct.setDuty(duty);
+			short steps = 3;
+			motorStartStruct.setSteps(steps);
+			short step_hold = 3;
+			motorStartStruct.setSteps_hold(step_hold);
+			short hold_time = 3;
+			motorStartStruct.setHold_time(hold_time);
+			short dir = 1;
+			motorStartStruct.setDir(dir);
+
+			// 转成字节数组
+			byte[] start_byte = JavaStruct.pack(motorStartStruct);
+			String data = ByteHexUtil.bytes2HexStr(start_byte);
+			
+			
+			// 10进制转成16进制
+			String len_hex = ByteHexUtil.intToHex(data.length());
+			System.out.println("len_hex----" + len_hex);
+
+			String len = ByteHexUtil.addZeroForNum(len_hex, 4);
+			System.out.println("len----" + len);
+			
+			len = ByteHexUtil.changeType(len);
+			// 按照协议 截取到crc的16进制值
+			String crc = len + cmd + data;
+			// System.out.println("crc-------" + crc);
+
+			// 16进制转成字节数组
+			byte[] crc_byte = ByteHexUtil.hex2Byte(crc);
+
+			// 传入字节数组 求出crc的校验值字节
+			byte crc_after = CRC8.calcCrc8(crc_byte);
+
+			// 将校验值字节放入数组中 转成16进制数据
+			byte[] crc_after_array = { crc_after };
+			crc = ByteHexUtil.byte2HexStr(crc_after_array);
+
+			String eof = "5a5a";
+			eof = ByteHexUtil.changeType(eof);
+
+			msg = sof + len + cmd + data + crc + eof;
+			System.out.println("msg-----" + msg);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return iEmqService.publish(topic, msg);
+	
+	}
+	
 
 	/**
-	 * @description 发送开始数据
+	 * @description 发送mqtt电机启动数据
 	 * @author IVAn
 	 * @date 2019年8月4日 下午7:49:59
 	 * @return
@@ -112,7 +190,7 @@ public class MQTTServerController {
 	}
 
 	/**
-	 * @description 发送结束数据
+	 * @description 发送mqtt电机停止数据
 	 * @author IVAn
 	 * @date 2019年8月4日 下午7:49:59
 	 * @return

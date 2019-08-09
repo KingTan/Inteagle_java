@@ -26,13 +26,13 @@ spring:
       enabled: true
       max-file-size: 1024MB
       max-request-size: 1024MB
+
       
 mybatis:
   mapper-locations: classpath:mapper/*/*.xml     #mapper文件路径
   type-aliases-package: com.inteagle.*.entity  #实体类的包路径
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    
+#  configuration:
+#     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #配置日志
 logging:
   #配置日志文件路径
@@ -65,8 +65,6 @@ mqtt:
   publishClientId: my_publish_01
   #消息订阅者clientId
   subscribeClientId: my_subscribe_01
-
-
 
 
 

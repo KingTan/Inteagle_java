@@ -3,22 +3,18 @@ package com.inteagle.common.struct;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
 import com.inteagle.apis.struct.entity.HelmetSensorDataStruct;
 import com.inteagle.apis.struct.entity.IdInfoStruct;
+import com.inteagle.apis.struct.service.HelmetSensorService;
 import com.inteagle.apis.struct.service.IdInfoStructService;
 import com.inteagle.common.enumList.DeviceActionEnum;
 import com.inteagle.common.enumList.DeviceTypeEnum;
-import com.inteagle.common.mqtt.service.IMqttPublish;
 import com.inteagle.common.mqtt.service.wrapper.impl.IMqttWrapperServiceImpl;
-import com.inteagle.common.redis.ListCacheUtil;
-import com.inteagle.common.redis.RedisCacheUtil;
 import com.inteagle.common.redis.RedisService;
 import com.inteagle.common.websocket.server.WebSocketServer;
 
@@ -37,8 +33,11 @@ import struct.StructException;
 public class AnalysisUtil {
 
 	private static AnalysisUtil analysisUtil;
+	
 	@Autowired
 	private IdInfoStructService idInfoStructService;
+	@Autowired
+	private HelmetSensorService helmetSensorService;
 	@Autowired
 	private IMqttWrapperServiceImpl iMqttWrapperServiceImpl;
 	@Autowired
@@ -51,6 +50,7 @@ public class AnalysisUtil {
 		analysisUtil.idInfoStructService = this.idInfoStructService;
 		analysisUtil.iMqttWrapperServiceImpl = this.iMqttWrapperServiceImpl;
 		analysisUtil.redisService = this.redisService;
+		analysisUtil.helmetSensorService=this.helmetSensorService;
 	}
 
 	// 命令类型
@@ -398,7 +398,18 @@ public class AnalysisUtil {
 					System.out.println("vol----------" + struct.getVol());
 					System.out.println("temp----------" + struct.getTemp());
 					System.out.println("helmet_on----------" + struct.getHelmet_on());
-
+					
+					try {
+						//保存到数据库
+						int result=	analysisUtil.helmetSensorService.insertSensor(struct);
+						if(result>0) {
+							log.info("ID:"+struct.getId()+" 电池情况成功保存数据库.....");
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+						log.error(e.toString());
+					}
+					
 					// 发送socket消息
 					socketDataObj.put("HelmetSensorDataStruct", struct);
 					socketDataObj.put("dataType", "HelmetSensorDataStruct");

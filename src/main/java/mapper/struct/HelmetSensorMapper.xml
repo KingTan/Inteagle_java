@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper
 	namespace="com.inteagle.apis.struct.dao.HelmetSensorMapper">
+	
 	<resultMap id="BaseResultMap"
 		type="com.inteagle.apis.struct.entity.HelmetSensorDataStruct">
 		<result column="sensor_id" jdbcType="CHAR" property="sensorId" />
@@ -19,11 +20,13 @@
 		sensor_id,device_id,vol,temp,helmet_on,in_date,in_user_name,edit_user_name,edit_date
 	</sql>
 
-	<!--根据 设备ID 查询该设备的所有电池情况  -->
+	<!--根据 设备ID 查询该设备的电池情况  -->
 	<select id="selectAllHelmetSensorDataStructListById" resultMap="BaseResultMap">
 		select <include refid="Base_Column_List"/>
-		from device_sensor 
+		from device_sensor
+		<if test="deviceId != null">
 		where device_id = #{deviceId}
+		</if> 
 	</select>
 	
 	<!--添加电池情况  -->
@@ -31,13 +34,13 @@
 		INSERT INTO device_sensor
 		VALUE(
 			replace(UUID(),'-',''),
-			#{id,jdbcType=CHAR},
-			#{vol,jdbcType=INTEGER},
-			#{temp,jdbcType=INTEGER},
-			#{helmet_on,jdbcType=INTEGER},
-			current_date,
+			#{id},
+			#{vol},
+			#{temp},
+			#{helmet_on},
+			SYSDATE(),
 			'ivan',
-			current_date,
+			SYSDATE(),
 			'ivan'
 		)
 	</insert>

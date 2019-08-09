@@ -2,6 +2,7 @@ package com.inteagle.apis.struct.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.inteagle.apis.struct.entity.HelmetSensorDataStruct;
@@ -27,7 +28,7 @@ public interface HelmetSensorMapper extends BaseMapper<HelmetSensorDataStruct>{
 	 * @param deviceId
 	 * @return
 	 */
-	List<HelmetSensorDataStruct> selectAllHelmetSensorDataStructListById(String deviceId);
+	List<HelmetSensorDataStruct> selectAllHelmetSensorDataStructListById(@Param("deviceId")String deviceId);
 	
 	
 	

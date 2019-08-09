@@ -1,5 +1,7 @@
 package com.inteagle.common.mqtt;
 
+import java.util.Calendar;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,21 @@ public class MqttTask {
 
 	@Autowired
 	private IMqttPublish iEmqService;
+
+	@Scheduled(cron = "0/5 * * * * ? ")
+	public void execute() {
+		String topic = "global_timer";
+
+		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
+
+		try {
+			iEmqService.publish(topic, Long.toString(content));
+			log.info("发布消息");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
 
 //	@Scheduled(cron = "0/5 * * * * ? ")
 //	public void execute() {
