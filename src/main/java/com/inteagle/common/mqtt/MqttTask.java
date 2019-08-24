@@ -20,20 +20,20 @@ public class MqttTask {
 	@Autowired
 	private IMqttPublish iEmqService;
 
-	@Scheduled(cron = "0/5 * * * * ? ")
-	public void execute() {
-		String topic = "global_timer";
-
-		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
-
-		try {
-			iEmqService.publish(topic, Long.toString(content));
-			log.info("发布消息");
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-
-	}
+//	@Scheduled(cron = "0/5 * * * * ? ")
+//	public void execute() {
+//		String topic = "global_timer";
+//
+//		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
+//
+//		try {
+//			iEmqService.publish(topic, Long.toString(content));
+//			log.info("发布消息");
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
+//
+//	}
 
 //	@Scheduled(cron = "0/5 * * * * ? ")
 //	public void execute() {

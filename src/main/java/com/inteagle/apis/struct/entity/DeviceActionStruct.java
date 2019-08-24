@@ -1,4 +1,4 @@
-package com.inteagle.common.struct;
+package com.inteagle.apis.struct.entity;
 
 import com.inteagle.common.base.entity.BaseEntity;
 
@@ -29,6 +29,27 @@ public class DeviceActionStruct extends BaseEntity {
 
 	@StructField(order = 2)
 	private byte priority;
+	
+	@StructField(order = 3)
+	private short device_id;
+
+	private String recordId;
+
+	public short getDevice_id() {
+		return device_id;
+	}
+
+	public void setDevice_id(short device_id) {
+		this.device_id = device_id;
+	}
+
+	public String getRecordId() {
+		return recordId;
+	}
+
+	public void setRecordId(String recordId) {
+		this.recordId = recordId;
+	}
 
 	public byte getAction() {
 		return action;

@@ -8,8 +8,10 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
+import com.inteagle.apis.struct.entity.DeviceActionStruct;
 import com.inteagle.apis.struct.entity.HelmetSensorDataStruct;
 import com.inteagle.apis.struct.entity.IdInfoStruct;
+import com.inteagle.apis.struct.service.DeviceActionService;
 import com.inteagle.apis.struct.service.HelmetSensorService;
 import com.inteagle.apis.struct.service.IdInfoStructService;
 import com.inteagle.common.enumList.DeviceActionEnum;
@@ -39,6 +41,8 @@ public class AnalysisUtil {
 	@Autowired
 	private HelmetSensorService helmetSensorService;
 	@Autowired
+	private DeviceActionService deviceActionService;
+	@Autowired
 	private IMqttWrapperServiceImpl iMqttWrapperServiceImpl;
 	@Autowired
 	private RedisService redisService;
@@ -51,6 +55,7 @@ public class AnalysisUtil {
 		analysisUtil.iMqttWrapperServiceImpl = this.iMqttWrapperServiceImpl;
 		analysisUtil.redisService = this.redisService;
 		analysisUtil.helmetSensorService=this.helmetSensorService;
+		analysisUtil.deviceActionService=this.deviceActionService;
 	}
 
 	// 命令类型
@@ -356,10 +361,11 @@ public class AnalysisUtil {
 
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
-					System.out.println("action----------" + struct.getAction());
-					System.out.println("device_type----------" + struct.getDevice_type());
-					System.out.println("priority----------" + struct.getPriority());
-
+					System.out.println("action----------:" + struct.getAction());
+					System.out.println("device_type----------:" + struct.getDevice_type());
+					System.out.println("priority----------:" + struct.getPriority());
+					System.out.println("device_id----------:" + struct.getDevice_id());
+					
 					// 发送socket消息
 					socketDataObj.put("DeviceActionStruct", struct);
 					socketDataObj.put("dataType", "DeviceActionStruct");
@@ -378,6 +384,14 @@ public class AnalysisUtil {
 							// 发送时间同步的消息到对应主题的设备
 							analysisUtil.iMqttWrapperServiceImpl.publish(topic, SendDataUtil.sendTimeSyncData());
 						}
+						try {
+							//保存到数据库
+							int result=	analysisUtil.deviceActionService.insert(struct);
+						} catch (Exception e) {
+							// TODO: handle exception
+							log.error(e.toString());
+						}
+						
 					}
 
 				} catch (Exception e) {
@@ -394,10 +408,10 @@ public class AnalysisUtil {
 
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
-					System.out.println("id----------" + struct.getId());
-					System.out.println("vol----------" + struct.getVol());
-					System.out.println("temp----------" + struct.getTemp());
-					System.out.println("helmet_on----------" + struct.getHelmet_on());
+					System.out.println("id----------:" + struct.getId());
+					System.out.println("vol----------:" + struct.getVol());
+					System.out.println("temp----------:" + struct.getTemp());
+					System.out.println("helmet_on----------:" + struct.getHelmet_on());
 					
 					try {
 						//保存到数据库
@@ -554,7 +568,7 @@ public class AnalysisUtil {
 		// a5a5000c225c000000000000000000000000885a5a
 		// a5a5200802be000100010003000300030001e15a5a
 		try {
-			validate("a5a5200802be000100010003000300030001e15a5a", "6lbr-up");
+			validate("a5a5000e225cb40600000a8f0000001800000000d85a5a", "6lbr-up");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

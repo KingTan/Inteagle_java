@@ -29,16 +29,15 @@ public class IMqttWrapperServiceImpl implements IMqttWrapperService {
 
 		log.info("MQ===public=== 入参:topic:{};content:{}", topic, content);
 		
-//		byte[] rawSource =ByteHexUtil.hexStr2Bytes(content); // 解码
-//		System.out.println("发送decode result : " + rawSource);
-//
-//		String hexStr_2 = ByteHexUtil.bytes2HexStr(rawSource); // 编码
-//		System.out.println("发送encode result : " + hexStr_2);
+		byte[] rawSource =ByteHexUtil.hexStr2Bytes(content); // 解码
+		System.out.println("发送decode result : " + rawSource);
+
+		String hexStr_2 = ByteHexUtil.bytes2HexStr(rawSource); // 编码
+		System.out.println("发送encode result : " + hexStr_2);
 		
-		//content.getBytes()
-//		MqttMessage message = new MqttMessage(rawSource);
+		MqttMessage message = new MqttMessage(rawSource);
 		
-		MqttMessage message = new MqttMessage(content.getBytes());
+//		MqttMessage message = new MqttMessage(content.getBytes());
 		
 		message.setQos(mqttConfiguration.getQos());
 		/**

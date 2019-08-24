@@ -20,51 +20,53 @@ import struct.JavaStruct;
 public class ByteHexUtil {
 
 	public static void main(String[] args) throws Exception {
+		
 
+		// CMD 10进制
+		long cmd_ten = Long.parseLong("025c", 16) & 0x0fff;
+		System.out.println("cmd_ten-----" + cmd_ten);
+		
+		String cmd_hex=Integer.toHexString(604);
+		System.out.println("cmd_hex-----" + cmd_hex);
+		
+		
+		String hex_str="a5a5000e225cb40600000a8f0000001800000000d85a5a";
+		
+		
 //		String sof = "a5a5";
 //		sof = ByteHexUtil.changeType(sof);
 //
 //		// CMD 16进制
-//		// Integer.toHexString(0712)
+//		String cmd_hex = Integer.toHexString(0604);
+//
+//		System.out.println("cmd_hex-------------" + cmd_hex);
+//
 //		String cmd = "02be";
 //		cmd = ByteHexUtil.changeType(cmd);
-//		
-//		HelmetSensorDataStruct helmetSensorDataStruct=new HelmetSensorDataStruct();
-//		short id= 001;
+//
+//		String msg = "";
+//
+//		HelmetSensorDataStruct helmetSensorDataStruct = new HelmetSensorDataStruct();
+//		short id = 1;
 //		helmetSensorDataStruct.setId(id);
-//		helmetSensorDataStruct.setVol(10);
-//		helmetSensorDataStruct.setTemp(20);
-//		helmetSensorDataStruct.setHelmet_on(1);
+//		helmetSensorDataStruct.setVol(11);
+//		helmetSensorDataStruct.setTemp(22);
+//		helmetSensorDataStruct.setHelmet_on(0);
 //
 //		// 转成字节数组
 //		byte[] start_byte = JavaStruct.pack(helmetSensorDataStruct);
 //		String data = ByteHexUtil.bytes2HexStr(start_byte);
 //
-//		System.out.println("data------------" + data);
-//
-//		Integer data_len = data.length();
-//
-//		System.out.println("data.length----" + data_len);
-//
-//		String len_hex_after = data_len.toHexString(data_len);
-//
-//		System.out.println("len_hex_after----" + len_hex_after);
+//		System.out.println("data.length-----------" + data.length());
 //
 //		// 10进制转成16进制
-//		String len_hex = intToHex(data_len);
+//		String len_hex = ByteHexUtil.intToHex(data.length());
 //		System.out.println("len_hex----" + len_hex);
 //
-//		String after = addZeroForNum(len_hex, 4);
+//		String len = ByteHexUtil.addZeroForNum(len_hex, 4);
+//		System.out.println("len----" + len);
 //
-//		System.out.println("after----" + after);
-//
-//		// 数据长度 10进制
-//		long len_num = Long.parseLong("0024", 16) & 0x0fff;
-//		System.out.println("长度len_num------" + len_num);
-//
-//		String len = "2008";
 //		len = ByteHexUtil.changeType(len);
-//
 //		// 按照协议 截取到crc的16进制值
 //		String crc = len + cmd + data;
 //		// System.out.println("crc-------" + crc);
@@ -82,20 +84,9 @@ public class ByteHexUtil {
 //		String eof = "5a5a";
 //		eof = ByteHexUtil.changeType(eof);
 //
-//		String msg = sof + len + cmd + data + crc + eof;
+//		msg = sof + len + cmd + data + crc + eof;
+//
 //		System.out.println("msg-----" + msg);
-
-		// CMD 10进制
-//		long cmd_ten = Long.parseLong("02bf", 16) & 0x0fff;
-//		System.out.println("cmd_ten-----" + cmd_ten);
-//		
-//		String cmd = Integer.toHexString(703);
-//		System.out.println("cmd-----" + cmd);
-//		String source = "study hard and make progress everyday";
-//		System.out.println("source : " + source);
-
-//		String hexStr = bytes2HexStr(source.getBytes("utf8")); // 编码
-//		System.out.println("encode result : " + hexStr);
 
 		// 精确到毫秒
 		// 获取当前时间戳
@@ -103,13 +94,13 @@ public class ByteHexUtil {
 //        System.out.println(Calendar.getInstance().getTimeInMillis());
 //        System.out.println(new Date().getTime());
 
-		String now_time = DateUtil.getDateTimeStr();
-
-		System.out.println("now_time---------" + now_time);
-
-		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
-
-		System.out.println(Long.toString(content));
+//		String now_time = DateUtil.getDateTimeStr();
+//
+//		System.out.println("now_time---------" + now_time);
+//
+//		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
+//
+//		System.out.println(Long.toString(content));
 //		
 //        //a5a500122133009542db000042f700000000000000000040115a5a
 //		byte[] rawSource = hexStr2Bytes("2006"); // 解码

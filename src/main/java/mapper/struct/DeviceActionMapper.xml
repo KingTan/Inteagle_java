@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.inteagle.apis.struct.dao.DeviceActionMapper">
+	
+	<resultMap id="BaseResultMap"
+		type="com.inteagle.apis.struct.entity.DeviceActionStruct">
+		<result column="record_id" jdbcType="CHAR" property="recordId" />
+		<result column="device_id" jdbcType="CHAR" property="device_id" />
+		<result column="action" jdbcType="INTEGER" property="action" />
+		<result column="device_type" jdbcType="INTEGER" property="device_type" />
+		<result column="priority" jdbcType="INTEGER" property="priority" />
+		<result column="in_date" jdbcType="TIMESTAMP" property="inDate" />
+	    <result column="in_user_name" jdbcType="CHAR" property="inUserName" />
+	    <result column="edit_user_name" jdbcType="CHAR" property="editUserName" />
+	    <result column="edit_date" jdbcType="TIMESTAMP" property="editDate" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		record_id,device_id,action,device_type,priority,in_date,in_user_name,edit_user_name,edit_date
+	</sql>
+	
+	<select id="getDeviceActionList" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/>
+		from device_action
+		ORDER BY in_date DESC
+	</select>
+	
+	<insert id="insert" parameterType="com.inteagle.apis.struct.entity.DeviceActionStruct">
+		INSERT INTO device_action
+		VALUES
+			(
+			replace(uuid(),'-',''),
+			#{device_id},
+			#{action},
+			#{device_type},
+			#{priority},
+			SYSDATE(),
+			'ivan',
+			SYSDATE(),
+			'ivan'
+		)
+	</insert>
+
+
+</mapper>

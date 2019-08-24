@@ -26,7 +26,8 @@
 		from device_sensor
 		<if test="deviceId != null">
 		where device_id = #{deviceId}
-		</if> 
+		</if>
+		ORDER BY in_date DESC
 	</select>
 	
 	<!--添加电池情况  -->

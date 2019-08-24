@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.inteagle.apis.struct.entity.HelmetSensorDataStruct;
 import com.inteagle.common.mqtt.service.IMqttPublish;
 import com.inteagle.common.struct.AnalysisUtil;
 import com.inteagle.common.struct.ByteHexUtil;
@@ -51,30 +52,22 @@ public class MQTTServerController {
 
 		// CMD 16进制
 		// Integer.toHexString(0712)
-		String cmd = "02be";
+		String cmd = "025c";
 		cmd = ByteHexUtil.changeType(cmd);
 
 		String msg = "";
 
 		try {
-			MotorStartStruct motorStartStruct = new MotorStartStruct();
-			short fre = 1;
-			motorStartStruct.setFre(fre);
-			short duty = 1;
-			motorStartStruct.setDuty(duty);
-			short steps = 3;
-			motorStartStruct.setSteps(steps);
-			short step_hold = 3;
-			motorStartStruct.setSteps_hold(step_hold);
-			short hold_time = 3;
-			motorStartStruct.setHold_time(hold_time);
-			short dir = 1;
-			motorStartStruct.setDir(dir);
-
-			// 转成字节数组
-			byte[] start_byte = JavaStruct.pack(motorStartStruct);
-			String data = ByteHexUtil.bytes2HexStr(start_byte);
+			HelmetSensorDataStruct helmetSensorDataStruct = new HelmetSensorDataStruct();
+			short id=100;
+			helmetSensorDataStruct.setId(id);
+			helmetSensorDataStruct.setVol(11);
+			helmetSensorDataStruct.setTemp(22);
+			helmetSensorDataStruct.setHelmet_on(0);
 			
+			// 转成字节数组
+			byte[] start_byte = JavaStruct.pack(helmetSensorDataStruct);
+			String data = ByteHexUtil.bytes2HexStr(start_byte);
 			
 			// 10进制转成16进制
 			String len_hex = ByteHexUtil.intToHex(data.length());
@@ -237,7 +230,8 @@ public class MQTTServerController {
 
 		return iEmqService.publish(topic, msg);
 	}
-
+	
+	//发送时间同步的消息
 	@RequestMapping("/send/msg")
 	public boolean send(@RequestParam("msg") String msg, @RequestParam("topic") String topic)
 			throws MqttException, StructException {
