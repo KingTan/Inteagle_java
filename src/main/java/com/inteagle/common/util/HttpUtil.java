@@ -362,13 +362,14 @@ public class HttpUtil {
 					sbQuery.append(query.getKey());
 					if (!StringUtils.isBlank(query.getValue())) {
 						sbQuery.append("=");
-						sbQuery.append(URLEncoder.encode(query.getValue(), "utf-8"));
+						sbQuery.append(URLEncoder.encode(query.getValue(), "UTF-8"));
 					}
 				}
 			}
 			if (0 < sbQuery.length()) {
 				sbUrl.append("?").append(sbQuery);
 			}
+			
 		}
 
 		return sbUrl.toString();

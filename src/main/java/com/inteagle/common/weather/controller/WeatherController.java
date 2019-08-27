@@ -35,7 +35,47 @@ public class WeatherController {
 	 * 相应的依赖请参照
 	 * https://github.com/aliyun/api-gateway-demo-sign-java/blob/master/pom.xml
 	 */
+	
+	
+	/**
+	 * @description 根据经纬度查询天气
+	 * @author IVAn
+	 * @date 2019年8月26日 上午10:41:11
+	 * @param lat
+	 * @param lng
+	 * @return
+	 */
+	@RequestMapping("/getWeatherByGPS")
+	@ResponseBody
+	public JsonResult<Object> getAreaIdByGPS(String lat,String lng) {
 
+		ParamUtil.validateParam(lat, "lat纬度不能为空");
+		ParamUtil.validateParam(lng, "lng经度不能为空");
+		String path = "/gps-to-weather";
+		String method = "GET";
+		Map<String, String> headers = new HashMap<String, String>();
+		// 最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+		headers.put("Authorization", "APPCODE " + WeatherApiAccount.APP_CODE);
+		Map<String, String> querys = new HashMap<String, String>();
+		querys.put("from", "5");
+		querys.put("lat", lat);
+		querys.put("lng", lng);
+		try {
+			HttpResponse response = HttpUtil.doGetWithHeaders(WeatherApiAccount.HOST, path, method, headers, querys);
+			// System.out.println(response.toString());
+			// 获取response的body
+			String JsonString = EntityUtils.toString(response.getEntity());
+			// json字符串转json对象
+			JSONObject object = JSONObject.parseObject(JsonString);
+			return new JsonResult<Object>(object);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new JsonResult<Object>(JsonResult.ERROR, JsonResult.ERROR_MESSAGE);
+	}
+	
+	
+	
 	/**
 	 * @description 根据城市名获取城市id
 	 * @author IVAn

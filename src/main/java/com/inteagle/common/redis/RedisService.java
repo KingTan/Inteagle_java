@@ -14,6 +14,11 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.inteagle.common.constant.Constant;
+import com.inteagle.common.exception.BusinessException;
+import com.inteagle.common.sms.entity.IdentifyingCode;
+
 /**
  * 
  * @ClassName: RedisService
@@ -49,7 +54,87 @@ public class RedisService {
 	}
 
 	/**
-	 * 写入缓存设置时效时间
+	 * 保存验证码
+	 * 
+	 * @param request
+	 * @param telephone：手机号码
+	 * @param codeType：1注册，2修改密码，3修改手机号码，4绑定手机号码
+	 * @author peng.xy
+	 * @time 2018年11月1日 下午8:55:47
+	 */
+	public void saveIdentifyingCode(String telephone, String code, String codeType) {
+		IdentifyingCode identifyingCode = new IdentifyingCode(telephone, code, codeType);
+		set(identifyingCode.getCacheKey(), JSON.toJSONString(identifyingCode), Long.parseLong("10"));
+	}
+
+	/**
+	 * 校验验证码
+	 * 
+	 * @param request
+	 * @param telephone：手机号码
+	 * @param codeType：1注册，2修改密码，3修改手机号码，4绑定手机号码
+	 * @author peng.xy
+	 * @time 2018年11月1日 下午8:41:32
+	 */
+	public void validateIdentifyingCode(String telephone, String code, String codeType) {
+		IdentifyingCode identifyingCode = JSON.parseObject(get(telephone + "-" + codeType).toString(),
+				IdentifyingCode.class);
+
+		if (identifyingCode == null) {
+			BusinessException.throwException("请重新获取验证码");
+		}
+		if (!telephone.equals(identifyingCode.getTelephone())) {
+			BusinessException.throwException("手机号码不一致");
+		}
+		if (!code.equals(identifyingCode.getCode())) {
+			BusinessException.throwException("验证码错误");
+		}
+	}
+
+	/**
+	 * 取出缓存中存储的对象
+	 * 
+	 * @param key  键
+	 * @param clas 值的类型
+	 * @return T
+	 * @author peng.xy
+	 * @param <T>
+	 * @time 2018年10月24日 下午5:06:57
+	 */
+	public <T> T get_Object(String key, Class<T> clas) {
+		return (T) redisTemplate.opsForValue().get(getProjectKey(key));
+	}
+
+	/**
+	 * 读取缓存
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public Object get(final String key) {
+		Object result = null;
+		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
+		result = operations.get(key);
+		return result;
+	}
+
+	/**
+	 * 获取带前缀的key名称
+	 * 
+	 * @param key：键
+	 * @return projectKey
+	 * @author peng.xy
+	 * @time 2018年10月24日 下午4:40:14
+	 */
+	private String getProjectKey(String key) {
+		if (key == null) {
+			throw new BusinessException("rediskey不能为空");
+		}
+		return Constant.project + "-" + key;
+	}
+
+	/**
+	 * 写入缓存设置时效时间(分钟)
 	 * 
 	 * @param key
 	 * @param value
@@ -60,7 +145,7 @@ public class RedisService {
 		try {
 			ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
 			operations.set(key, value);
-			redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+			redisTemplate.expire(key, expireTime, TimeUnit.MINUTES);
 			result = true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -109,19 +194,6 @@ public class RedisService {
 	 */
 	public boolean exists(final String key) {
 		return redisTemplate.hasKey(key);
-	}
-
-	/**
-	 * 读取缓存
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public Object get(final String key) {
-		Object result = null;
-		ValueOperations<Serializable, Object> operations = redisTemplate.opsForValue();
-		result = operations.get(key);
-		return result;
 	}
 
 	/**

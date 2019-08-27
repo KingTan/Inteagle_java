@@ -7,7 +7,7 @@ spring:
   datasource:
      url: jdbc:mysql://localhost:3306/inteagle?characterEncoding=utf8&useSSL=true&serverTimezone=UTC
      username: root
-     password: inteagle2019
+     password: root
      driver-class-name: com.mysql.cj.jdbc.Driver
      
   redis:

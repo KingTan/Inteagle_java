@@ -15,26 +15,48 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 	int insertSelective(UserInfo record);
 
 	/**
-	 * 
-	 * @Title: getAllUserInfoList @Description: TODO(查询所有登录用户信息) @param @return
-	 *         参数 @return List<UserInfo> 返回类型 @throws
+	 * @description 注册
+	 * @author IVAn
+	 * @date 2019年8月27日 下午6:05:17
+	 * @param userInfo
+	 * @return
+	 */
+	int register(UserInfo userInfo);
+
+	/**
+	 * @description 查询所有用户列表
+	 * @author IVAn
+	 * @date 2019年8月27日 下午6:05:30
+	 * @return
 	 */
 	List<UserInfo> getAllUserInfoList();
 
 	/**
-	 * 
-	 * @Title: getUserInfoByParamAndPwd @Description: TODO(根据身份证号,手机号或公司名称 和登录密码
-	 *         查询登录用户信息) @param @param searchParam @param @param
-	 *         passWord @param @return 参数 @return UserInfo 返回类型 @throws
+	 * @description (根据身份证号,手机号或公司名称 和登录密码 查询登录用户信息)
+	 * @author IVAn
+	 * @date 2019年8月27日 下午6:05:48
+	 * @param searchParam
+	 * @param passWord
+	 * @return
 	 */
 	UserInfo getUserInfoByParamAndPwd(@Param("searchParam") String searchParam, @Param("passWord") String passWord);
 
 	/**
-	 * 
-	 * @Title: getUserInfoByParam @Description: TODO(根据身份证号,手机号或公司名称
-	 *         查询登录用户对象) @param @param searchParam @param @return 参数 @return
-	 *         UserInfo 返回类型 @throws
+	 * @description 根据身份证号,手机号或公司名称 查询登录用户对象
+	 * @author IVAn
+	 * @date 2019年8月27日 下午6:06:08
+	 * @param searchParam
+	 * @return
 	 */
 	UserInfo getUserInfoByParam(String searchParam);
+
+	/**
+	 * @description 通过手机号 查询用户
+	 * @author IVAn
+	 * @date 2019年8月27日 下午6:56:31
+	 * @param phone
+	 * @return
+	 */
+	UserInfo getUserInfoByPhone(String phone);
 
 }

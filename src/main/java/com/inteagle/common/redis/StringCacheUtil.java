@@ -1,12 +1,11 @@
 package com.inteagle.common.redis;
 
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.data.redis.core.StringRedisTemplate;
-
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import com.inteagle.common.exception.BusinessException;
 import com.inteagle.common.util.ParamUtil;
-import com.inteagle.common.util.SpringContextUtil;
 
 /**
  * 
@@ -16,10 +15,19 @@ import com.inteagle.common.util.SpringContextUtil;
  * @date 2019年8月1日下午4:46:13
  *
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class StringCacheUtil {
 
-	private static StringRedisTemplate template = SpringContextUtil.getBean("stringRedisTemplate",
-			StringRedisTemplate.class);
+	private static StringCacheUtil stringCacheUtil;
+	@Autowired
+	private RedisTemplate redisTemplate;
+
+	// 项目启动时 注入到Spring容器
+	@PostConstruct
+	public void init() {
+		stringCacheUtil = this;
+		stringCacheUtil.redisTemplate = this.redisTemplate;
+	}
 
 	/**
 	 * 保存键值对
@@ -31,7 +39,7 @@ public class StringCacheUtil {
 	 */
 	public static boolean set(String key, String value) {
 		if (ParamUtil.notNullForParams(key, value)) {
-			template.opsForValue().set(getProjectKey(key), value);
+			stringCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value);
 			return true;
 		}
 		return false;
@@ -48,7 +56,7 @@ public class StringCacheUtil {
 	 */
 	public static boolean setSeconds(String key, String value, int seconds) {
 		if (ParamUtil.notNullForParams(key, value)) {
-			template.opsForValue().set(getProjectKey(key), value, seconds, TimeUnit.SECONDS);
+			stringCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value, seconds, TimeUnit.SECONDS);
 			return true;
 		}
 		return false;
@@ -65,7 +73,7 @@ public class StringCacheUtil {
 	 */
 	public static boolean setMinutes(String key, String value, int minutes) {
 		if (ParamUtil.notNullForParams(key, value)) {
-			template.opsForValue().set(getProjectKey(key), value, minutes, TimeUnit.MINUTES);
+			stringCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value, minutes, TimeUnit.MINUTES);
 			return true;
 		}
 		return false;
@@ -82,7 +90,7 @@ public class StringCacheUtil {
 	 */
 	public static boolean setHours(String key, String value, int hours) {
 		if (ParamUtil.notNullForParams(key, value)) {
-			template.opsForValue().set(getProjectKey(key), value, hours, TimeUnit.HOURS);
+			stringCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value, hours, TimeUnit.HOURS);
 			return true;
 		}
 		return false;
@@ -99,7 +107,7 @@ public class StringCacheUtil {
 	 */
 	public static boolean setDay(String key, String value, int day) {
 		if (ParamUtil.notNullForParams(key, value)) {
-			template.opsForValue().set(getProjectKey(key), value, day, TimeUnit.DAYS);
+			stringCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value, day, TimeUnit.DAYS);
 			return true;
 		}
 		return false;
@@ -115,7 +123,7 @@ public class StringCacheUtil {
 	 */
 	public static boolean append(String key, String value) {
 		if (ParamUtil.notNullForParams(key, value)) {
-			template.opsForValue().append(getProjectKey(key), value);
+			stringCacheUtil.redisTemplate.opsForValue().append(getProjectKey(key), value);
 			return true;
 		}
 		return false;
@@ -131,7 +139,7 @@ public class StringCacheUtil {
 	 */
 	public static String get(String key) {
 		if (ParamUtil.notNullForParams(key)) {
-			return template.opsForValue().get(getProjectKey(key));
+			return (String) stringCacheUtil.redisTemplate.opsForValue().get(getProjectKey(key));
 		}
 		return null;
 	}
@@ -147,7 +155,7 @@ public class StringCacheUtil {
 	 */
 	public static String get(String key, long start, long end) {
 		if (ParamUtil.notNullForParams(key)) {
-			return template.opsForValue().get(getProjectKey(key), start, end);
+			return stringCacheUtil.redisTemplate.opsForValue().get(getProjectKey(key), start, end);
 		}
 		return null;
 	}
@@ -162,7 +170,7 @@ public class StringCacheUtil {
 	 */
 	public static Long size(String key) {
 		if (ParamUtil.notNullForParams(key)) {
-			return template.opsForValue().size(getProjectKey(key));
+			return stringCacheUtil.redisTemplate.opsForValue().size(getProjectKey(key));
 		}
 		return null;
 	}
@@ -175,7 +183,7 @@ public class StringCacheUtil {
 	 */
 	public static void delete(String key) {
 		if (ParamUtil.notNullForParams(key)) {
-			template.delete(getProjectKey(key));
+			stringCacheUtil.redisTemplate.delete(getProjectKey(key));
 		}
 	}
 

@@ -2,11 +2,10 @@ package com.inteagle.common.redis;
 
 import java.util.Collection;
 import java.util.List;
-
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-
-import com.inteagle.common.util.SpringContextUtil;
 
 /**
  * 
@@ -19,8 +18,16 @@ import com.inteagle.common.util.SpringContextUtil;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ListCacheUtil {
 
-	private static RedisTemplate<String, Object> redisTemplate = SpringContextUtil.getBean("redisTemplate",
-			RedisTemplate.class);
+	private static ListCacheUtil listCacheUtil;
+	@Autowired
+	private RedisTemplate redisTemplate;
+
+	// 项目启动时 注入到Spring容器
+	@PostConstruct
+	public void init() {
+		listCacheUtil = this;
+		listCacheUtil.redisTemplate = this.redisTemplate;
+	}
 
 	/**
 	 * 设置指定位置的值
@@ -32,7 +39,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:52:37
 	 */
 	public static void set(String key, long index, Object value) {
-		redisTemplate.opsForList().set(getProjectKey(key), index, value);
+		listCacheUtil.redisTemplate.opsForList().set(getProjectKey(key), index, value);
 	}
 
 	/**
@@ -44,7 +51,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:56:35
 	 */
 	public static void remove(String key, Object value) {
-		redisTemplate.opsForList().remove(getProjectKey(key), 0, value);
+		listCacheUtil.redisTemplate.opsForList().remove(getProjectKey(key), 0, value);
 	}
 
 	/**
@@ -58,7 +65,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:57:46
 	 */
 	public static void remove(String key, long count, Object value) {
-		redisTemplate.opsForList().remove(getProjectKey(key), count, value);
+		listCacheUtil.redisTemplate.opsForList().remove(getProjectKey(key), count, value);
 	}
 
 	/**
@@ -72,7 +79,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:25:17
 	 */
 	public static List<Object> range(String key, long start, long end) {
-		return redisTemplate.opsForList().range(getProjectKey(key), start, end);
+		return listCacheUtil.redisTemplate.opsForList().range(getProjectKey(key), start, end);
 	}
 
 	/**
@@ -85,7 +92,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月29日 下午2:08:20
 	 */
 	public static Object index(String key, long index) {
-		return redisTemplate.opsForList().index(getProjectKey(key), index);
+		return listCacheUtil.redisTemplate.opsForList().index(getProjectKey(key), index);
 	}
 
 	/**
@@ -98,7 +105,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:26:32
 	 */
 	public static void trim(String key, long start, long end) {
-		redisTemplate.opsForList().trim(getProjectKey(key), start, end);
+		listCacheUtil.redisTemplate.opsForList().trim(getProjectKey(key), start, end);
 	}
 
 	/**
@@ -110,7 +117,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:28:17
 	 */
 	public static Long size(String key) {
-		return redisTemplate.opsForList().size(getProjectKey(key));
+		return listCacheUtil.redisTemplate.opsForList().size(getProjectKey(key));
 	}
 
 	/**
@@ -123,7 +130,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:30:59
 	 */
 	public static Long leftPush(String key, Object value) {
-		return redisTemplate.opsForList().leftPush(getProjectKey(key), value);
+		return listCacheUtil.redisTemplate.opsForList().leftPush(getProjectKey(key), value);
 	}
 
 	/**
@@ -136,7 +143,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:30:59
 	 */
 	public static Long leftPushAll(String key, Object... values) {
-		return redisTemplate.opsForList().leftPushAll(getProjectKey(key), values);
+		return listCacheUtil.redisTemplate.opsForList().leftPushAll(getProjectKey(key), values);
 	}
 
 	/**
@@ -149,7 +156,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:33:52
 	 */
 	public static Long leftPushAll(String key, Collection<Object> values) {
-		return redisTemplate.opsForList().leftPushAll(getProjectKey(key), values);
+		return listCacheUtil.redisTemplate.opsForList().leftPushAll(getProjectKey(key), values);
 	}
 
 	/**
@@ -162,7 +169,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:35:37
 	 */
 	public static Long leftPushIfPresent(String key, Object value) {
-		return redisTemplate.opsForList().leftPushIfPresent(getProjectKey(key), value);
+		return listCacheUtil.redisTemplate.opsForList().leftPushIfPresent(getProjectKey(key), value);
 	}
 
 	/**
@@ -175,7 +182,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:44:10
 	 */
 	public static Long rightPush(String key, Object value) {
-		return redisTemplate.opsForList().rightPush(getProjectKey(key), value);
+		return listCacheUtil.redisTemplate.opsForList().rightPush(getProjectKey(key), value);
 	}
 
 	/**
@@ -188,7 +195,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:47:40
 	 */
 	public static Long rightPushAll(String key, Object... values) {
-		return redisTemplate.opsForList().rightPushAll(getProjectKey(key), values);
+		return listCacheUtil.redisTemplate.opsForList().rightPushAll(getProjectKey(key), values);
 	}
 
 	/**
@@ -201,7 +208,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:47:40
 	 */
 	public static Long rightPushAll(String key, Collection<Object> values) {
-		return redisTemplate.opsForList().rightPushAll(getProjectKey(key), values);
+		return listCacheUtil.redisTemplate.opsForList().rightPushAll(getProjectKey(key), values);
 	}
 
 	/**
@@ -214,7 +221,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月24日 上午9:50:09
 	 */
 	public static Long rightPushIfPresent(String key, Object value) {
-		return redisTemplate.opsForList().rightPushIfPresent(getProjectKey(key), value);
+		return listCacheUtil.redisTemplate.opsForList().rightPushIfPresent(getProjectKey(key), value);
 	}
 
 	/**
@@ -226,7 +233,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月29日 下午2:10:25
 	 */
 	public static Object leftPop(String key) {
-		return redisTemplate.opsForList().leftPop(getProjectKey(key));
+		return listCacheUtil.redisTemplate.opsForList().leftPop(getProjectKey(key));
 	}
 
 	/**
@@ -238,7 +245,7 @@ public class ListCacheUtil {
 	 * @time 2018年10月29日 下午2:11:55
 	 */
 	public static Object rightPop(String key) {
-		return redisTemplate.opsForList().rightPop(getProjectKey(key));
+		return listCacheUtil.redisTemplate.opsForList().rightPop(getProjectKey(key));
 	}
 
 	/**
@@ -251,8 +258,8 @@ public class ListCacheUtil {
 	public static List<Object> listFindAll(String key) {
 		// 获取带有头部的key
 		key = getProjectKey(key);
-		ListOperations listOperations = redisTemplate.opsForList();
-		if (!redisTemplate.hasKey(key)) {
+		ListOperations listOperations = listCacheUtil.redisTemplate.opsForList();
+		if (!listCacheUtil.redisTemplate.hasKey(key)) {
 			return null;
 		}
 		return listOperations.range(key, 0, listOperations.size(key));

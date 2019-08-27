@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+	<!-- // 项目ip -->
+	<server>http://192.168.1.26:8080/</server>
+
+	<!-- 文件盘符 -->
+	<drive>F:\\</drive>
+
+	<!-- 文件目录 -->
+	<folder>Inteagle_files</folder>
+
+	<!-- 项目名 -->
+	<project>Inteagle</project>
+
+	<!-- 真实验证码开关 -->
+	<IdentifyingCodeFlag>false</IdentifyingCodeFlag>
+
+	<!-- 验证码保存时间 -->
+	<identityCodeMinutes>10</identityCodeMinutes>
+
+	<!-- 调试过滤器开关 -->
+	<debugFilterFlag>true</debugFilterFlag>
+
+	<!-- 异常打印控制开关 -->
+	<exceptionFlag>true</exceptionFlag>
+
+</root>

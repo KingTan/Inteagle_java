@@ -2,10 +2,11 @@ package com.inteagle.common.redis;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-
 import com.inteagle.common.exception.BusinessException;
-import com.inteagle.common.util.SpringContextUtil;
+import com.inteagle.common.sms.entity.IdentifyingCode;
 
 /**
  * 
@@ -15,11 +16,33 @@ import com.inteagle.common.util.SpringContextUtil;
  * @date 2019年8月1日下午4:47:43
  *
  */
-@SuppressWarnings({ "unchecked" })
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class RedisCacheUtil {
-	// 对象操作模版对象
-	private static RedisTemplate<String, Object> redisTemplate = SpringContextUtil.getBean("redisTemplate",
-			RedisTemplate.class);
+
+	private static RedisCacheUtil redisCacheUtil;
+	@Autowired
+	private RedisTemplate redisTemplate;
+
+	// 项目启动时 注入到Spring容器
+	@PostConstruct
+	public void init() {
+		redisCacheUtil = this;
+		redisCacheUtil.redisTemplate = this.redisTemplate;
+	}
+
+	/**
+	 * 保存验证码
+	 * 
+	 * @param request
+	 * @param telephone：手机号码
+	 * @param codeType：1注册，2修改密码，3修改手机号码，4绑定手机号码
+	 * @author peng.xy
+	 * @time 2018年11月1日 下午8:55:47
+	 */
+	public static void saveIdentifyingCode(String telephone, String code, String codeType) {
+		IdentifyingCode IdentifyingCode = new IdentifyingCode(telephone, code, codeType);
+		setMinutes(IdentifyingCode.getCacheKey(), IdentifyingCode, 10);
+	}
 
 	/**
 	 * 保存键值对到缓存中
@@ -30,7 +53,7 @@ public class RedisCacheUtil {
 	 * @time 2018年10月24日 下午4:59:10
 	 */
 	public static void set(String key, Object value) {
-		redisTemplate.opsForValue().set(getProjectKey(key), value);
+		redisCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value);
 	}
 
 	/**
@@ -43,7 +66,7 @@ public class RedisCacheUtil {
 	 * @time 2018年10月24日 下午4:59:10
 	 */
 	public static void setSeconds(String key, Object value, int seconds) {
-		redisTemplate.opsForValue().set(getProjectKey(key), value, seconds, TimeUnit.SECONDS);
+		redisCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value, seconds, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -56,7 +79,7 @@ public class RedisCacheUtil {
 	 * @time 2018年10月24日 下午4:59:10
 	 */
 	public static void setMinutes(String key, Object value, int minutes) {
-		redisTemplate.opsForValue().set(getProjectKey(key), value, minutes, TimeUnit.MINUTES);
+		redisCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value, minutes, TimeUnit.MINUTES);
 	}
 
 	/**
@@ -69,7 +92,7 @@ public class RedisCacheUtil {
 	 * @time 2018年10月23日 下午8:17:05
 	 */
 	public static void setHours(String key, Object value, int hours) {
-		redisTemplate.opsForValue().set(getProjectKey(key), value, hours, TimeUnit.HOURS);
+		redisCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value, hours, TimeUnit.HOURS);
 	}
 
 	/**
@@ -82,7 +105,7 @@ public class RedisCacheUtil {
 	 * @time 2018年10月23日 下午8:17:05
 	 */
 	public static void setDay(String key, Object value, int day) {
-		redisTemplate.opsForValue().set(getProjectKey(key), value, day, TimeUnit.DAYS);
+		redisCacheUtil.redisTemplate.opsForValue().set(getProjectKey(key), value, day, TimeUnit.DAYS);
 	}
 
 	/**
@@ -94,7 +117,7 @@ public class RedisCacheUtil {
 	 * @time 2018年10月24日 下午5:06:57
 	 */
 	public static Object get(String key) {
-		return redisTemplate.opsForValue().get(getProjectKey(key));
+		return redisCacheUtil.redisTemplate.opsForValue().get(getProjectKey(key));
 	}
 
 	/**
@@ -108,7 +131,7 @@ public class RedisCacheUtil {
 	 * @time 2018年10月24日 下午5:06:57
 	 */
 	public static <T> T get(String key, Class<T> clas) {
-		return (T) redisTemplate.opsForValue().get(getProjectKey(key));
+		return (T) redisCacheUtil.redisTemplate.opsForValue().get(getProjectKey(key));
 	}
 
 	/**
@@ -127,6 +150,7 @@ public class RedisCacheUtil {
 	}
 
 	public static void deteleKey(String key) {
-		redisTemplate.delete(key);
+		redisCacheUtil.redisTemplate.delete(key);
 	}
+
 }

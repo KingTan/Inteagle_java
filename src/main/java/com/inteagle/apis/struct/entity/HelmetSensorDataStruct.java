@@ -25,7 +25,7 @@ public class HelmetSensorDataStruct extends BaseEntity {
 
 	// 设备ID
 	@StructField(order = 0)
-	private int id;
+	private short id;
 
 	// 电压(电压低于2600m/f时 电量不足)
 	@StructField(order = 1)
@@ -50,11 +50,11 @@ public class HelmetSensorDataStruct extends BaseEntity {
 		this.sensorId = sensorId;
 	}
 
-	public int getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 
