@@ -21,7 +21,22 @@ public class UserInfoController {
 	private UserInfoService userInfoService;
 
 	/**
-	 * @description 登录
+	 * @description 登录(验证码登录)
+	 * @author IVAn
+	 * @date 2019年8月27日 下午6:03:31
+	 * @param searchParam
+	 * @param passWord
+	 * @return
+	 */
+	@RequestMapping("/loginByIdentityCode")
+	@ResponseBody
+	public JsonResult<UserInfo> loginByIdentityCode(@RequestParam(value = "phoneNumber") String phoneNumber,
+			@RequestParam(value = "identityCode") String identityCode) {
+		return new JsonResult<UserInfo>(userInfoService.loginByIndentityCode(phoneNumber, identityCode));
+	}
+
+	/**
+	 * @description 登录(普通登录)
 	 * @author IVAn
 	 * @date 2019年8月27日 下午6:03:31
 	 * @param searchParam
@@ -45,7 +60,8 @@ public class UserInfoController {
 	@ResponseBody
 	public JsonResult<Object> registerUser(String userName, String phone, String idCardNum, String password,
 			String IdentityCode) {
-		return userInfoService.register(userName, phone, idCardNum, password, IdentityCode, "register");
+		return userInfoService.register(userName, phone, idCardNum, password, IdentityCode,
+				IdentityCodeEnum.Register.getValue());
 	}
 
 	/**

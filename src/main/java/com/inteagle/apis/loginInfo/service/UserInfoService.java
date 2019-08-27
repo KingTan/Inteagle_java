@@ -10,6 +10,7 @@ import com.inteagle.common.base.service.AbstractService;
 import com.inteagle.common.entity.JsonResult;
 import com.inteagle.common.exception.BusinessException;
 import com.inteagle.common.redis.RedisService;
+import com.inteagle.common.sms.entity.IdentityCodeEnum;
 import com.inteagle.common.util.ParamUtil;
 import com.inteagle.apis.loginInfo.dao.UserInfoMapper;
 import com.inteagle.apis.loginInfo.entity.UserInfo;
@@ -60,6 +61,37 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 			// TODO: handle exception
 		}
 		return new JsonResult<Object>(JsonResult.ERROR, JsonResult.ERROR_MESSAGE);
+	}
+
+	/**
+	 * @description 根据手机号查询用户信息
+	 * @author IVAn
+	 * @date 2019年8月27日 下午6:49:01
+	 * @param searchParam
+	 * @param passWord
+	 * @return
+	 */
+	public UserInfo getUserInfoByPhone(String phoneNumber) {
+		return userInfoMapper.getUserInfoByPhone(phoneNumber);
+	}
+
+	/**
+	 * @description 根据手机号验证码登录
+	 * @author IVAn
+	 * @date 2019年8月27日 下午6:49:01
+	 * @param searchParam
+	 * @param passWord
+	 * @return
+	 */
+	public UserInfo loginByIndentityCode(String phoneNumber, String IndentityCode) {
+		// 根据手机号查询是否已注册用户
+		UserInfo exist_user = userInfoMapper.getUserInfoByPhone(phoneNumber);
+		if (ParamUtil.isNullForParam(exist_user)) {
+			throw new BusinessException("该手机号未注册用户");
+		}
+		// 校验 验证码是否正确
+		redisService.validateIdentifyingCode(phoneNumber, IndentityCode, IdentityCodeEnum.Login.getValue());
+		return exist_user;
 	}
 
 	/**

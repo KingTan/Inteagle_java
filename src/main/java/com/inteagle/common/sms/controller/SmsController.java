@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.inteagle.apis.loginInfo.entity.UserInfo;
+import com.inteagle.apis.loginInfo.service.UserInfoService;
 import com.inteagle.common.constant.Constant;
 import com.inteagle.common.entity.JsonResult;
 import com.inteagle.common.exception.BusinessException;
@@ -14,6 +16,7 @@ import com.inteagle.common.redis.RedisService;
 import com.inteagle.common.sms.entity.IdentityCodeEnum;
 import com.inteagle.common.sms.util.SMS_util;
 import com.inteagle.common.sms.util.SendSMS;
+import com.inteagle.common.util.ParamUtil;
 import com.inteagle.common.util.RandomUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,9 @@ public class SmsController {
 	@Autowired
 	private RedisService redisService;
 
+	@Autowired
+	private UserInfoService userInfoService;
+
 	/**
 	 * @description 发送验证码
 	 * @author IVAn
@@ -46,44 +52,42 @@ public class SmsController {
 	@ResponseBody
 	public JsonResult<Object> sendSMSCode(String phoneNumber, String codeType) {
 
-		try {
-			// 模板编号
-			String tNum = "";
-			// 验证码类型 Register_Code-注册验证码、 Login_Code-登录验证码
-			if (codeType.equals("Register_Code")) {
-				tNum = IdentityCodeEnum.Register_Code.getValue();
-			} else if (codeType.equals("Login_Code")) {
-				tNum = IdentityCodeEnum.Login_Code.getValue();
+		// 模板编号
+		String tNum = "";
+		// 验证码类型 Register_Code-注册验证码、 Login_Code-登录验证码
+		if (codeType.equals(IdentityCodeEnum.Register.getValue())) {
+			tNum = IdentityCodeEnum.Register_Code.getValue();
+			// 根据手机号查询是否已注册用户
+			UserInfo exist_user = userInfoService.getUserInfoByPhone(phoneNumber);
+			if (ParamUtil.notNullForParam(exist_user)) {
+				throw new BusinessException("该手机号已注册过用户");
 			}
-
-			// 随机6位验证码
-			String code = RandomUtil.getRandomNumberCode(6);
-
-			// 验证码参数JSON格式
-			JSONObject content_obejct = new JSONObject();
-			content_obejct.put("code", code);
-			String content = content_obejct.toJSONString();
-			// 发送短信
-			JSONObject object = SMS_util.sendTplSms(phoneNumber, tNum, content);
-
-			// 短信发送状态
-			if (!object.getJSONObject("showapi_res_body").getString("remark")
-					.equals(IdentityCodeEnum.Success_Code.getValue())) {
-				log.error("短信发送失败，错误码：" + object.getJSONObject("showapi_res_body").getString("showapi_fee_code")
-						+ "错误信息：" + object.getJSONObject("showapi_res_body").getString("remark"));
-				System.err
-						.println("短信发送失败，错误码：" + object.getJSONObject("showapi_res_body").getString("showapi_fee_code")
-								+ "错误信息：" + object.getJSONObject("showapi_res_body").getString("remark"));
-				throw new BusinessException(BusinessException.BUSINESS_ERROR_CODE, "验证码发送失败");
-			}
-			// 保存验证码到缓存中
-			redisService.saveIdentifyingCode(phoneNumber, code, "register");
-			return new JsonResult<>(object);
-		} catch (Exception e) {
-			// TODO: handle exception
-			log.info("短信验证码发送失败.----" + e.toString());
+		} else if (codeType.equals(IdentityCodeEnum.Login.getValue())) {
+			tNum = IdentityCodeEnum.Login_Code.getValue();
 		}
-		return new JsonResult<>(JsonResult.ERROR, JsonResult.ERROR_MESSAGE);
+
+		// 随机6位验证码
+		String code = RandomUtil.getRandomNumberCode(6);
+
+		// 验证码参数JSON格式
+		JSONObject content_obejct = new JSONObject();
+		content_obejct.put("code", code);
+		String content = content_obejct.toJSONString();
+		// 发送短信
+		JSONObject object = SMS_util.sendTplSms(phoneNumber, tNum, content);
+
+		// 短信发送状态
+		if (!object.getJSONObject("showapi_res_body").getString("remark")
+				.equals(IdentityCodeEnum.Success_Code.getValue())) {
+			log.error("短信发送失败，错误码：" + object.getJSONObject("showapi_res_body").getString("showapi_fee_code") + "错误信息："
+					+ object.getJSONObject("showapi_res_body").getString("remark"));
+			System.err.println("短信发送失败，错误码：" + object.getJSONObject("showapi_res_body").getString("showapi_fee_code")
+					+ "错误信息：" + object.getJSONObject("showapi_res_body").getString("remark"));
+			throw new BusinessException(BusinessException.BUSINESS_ERROR_CODE, "验证码发送失败");
+		}
+		// 保存验证码到缓存中
+		redisService.saveIdentifyingCode(phoneNumber, code, codeType);
+		return new JsonResult<>(object);
 	}
 
 	/**

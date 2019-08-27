@@ -77,9 +77,16 @@ public class RedisService {
 	 * @time 2018年11月1日 下午8:41:32
 	 */
 	public void validateIdentifyingCode(String telephone, String code, String codeType) {
-		IdentifyingCode identifyingCode = JSON.parseObject(get(telephone + "-" + codeType).toString(),
-				IdentifyingCode.class);
-
+		Object redis_object = new Object();
+		try {
+			redis_object = get(telephone + "-" + codeType);
+			if (redis_object == null) {
+				BusinessException.throwException("手机号与接收验证码手机号不一致");
+			}
+		} catch (Exception e) {
+			BusinessException.throwException("手机号与接收验证码手机号不一致");
+		}
+		IdentifyingCode identifyingCode = JSON.parseObject(redis_object.toString(), IdentifyingCode.class);
 		if (identifyingCode == null) {
 			BusinessException.throwException("请重新获取验证码");
 		}
