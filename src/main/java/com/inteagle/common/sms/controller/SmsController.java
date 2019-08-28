@@ -66,9 +66,15 @@ public class SmsController {
 			tNum = IdentityCodeEnum.Login_Code.getValue();
 		}
 
+		// 真实验证码开关
+		if (!Constant.IdentifyingCodeFlag) {
+			// 保存验证码到缓存中
+			redisService.saveIdentifyingCode(phoneNumber, "666666", codeType);
+			return new JsonResult<>("发送成功");
+		}
+
 		// 随机6位验证码
 		String code = RandomUtil.getRandomNumberCode(6);
-
 		// 验证码参数JSON格式
 		JSONObject content_obejct = new JSONObject();
 		content_obejct.put("code", code);
@@ -87,6 +93,7 @@ public class SmsController {
 		}
 		// 保存验证码到缓存中
 		redisService.saveIdentifyingCode(phoneNumber, code, codeType);
+
 		return new JsonResult<>(object);
 	}
 

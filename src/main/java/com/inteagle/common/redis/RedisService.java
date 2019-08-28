@@ -54,13 +54,12 @@ public class RedisService {
 	}
 
 	/**
-	 * 保存验证码
-	 * 
-	 * @param request
-	 * @param telephone：手机号码
-	 * @param codeType：1注册，2修改密码，3修改手机号码，4绑定手机号码
-	 * @author peng.xy
-	 * @time 2018年11月1日 下午8:55:47
+	 * @description 保存验证码 
+	 * @author IVAn
+	 * @date 2019年8月28日 下午2:30:01
+	 * @param telephone
+	 * @param code
+	 * @param codeType
 	 */
 	public void saveIdentifyingCode(String telephone, String code, String codeType) {
 		IdentifyingCode identifyingCode = new IdentifyingCode(telephone, code, codeType);
@@ -68,23 +67,22 @@ public class RedisService {
 	}
 
 	/**
-	 * 校验验证码
-	 * 
-	 * @param request
-	 * @param telephone：手机号码
-	 * @param codeType：1注册，2修改密码，3修改手机号码，4绑定手机号码
-	 * @author peng.xy
-	 * @time 2018年11月1日 下午8:41:32
+	 * @description 效验验证码
+	 * @author IVAn
+	 * @date 2019年8月28日 下午2:30:12
+	 * @param telephone 手机号
+	 * @param code 验证码
+	 * @param codeType 验证码类型 register-注册 login-登录
 	 */
 	public void validateIdentifyingCode(String telephone, String code, String codeType) {
 		Object redis_object = new Object();
 		try {
 			redis_object = get(telephone + "-" + codeType);
 			if (redis_object == null) {
-				BusinessException.throwException("手机号与接收验证码手机号不一致");
+				BusinessException.throwException("该手机号未接收验证码");
 			}
 		} catch (Exception e) {
-			BusinessException.throwException("手机号与接收验证码手机号不一致");
+			BusinessException.throwException("该手机号未接收验证码");
 		}
 		IdentifyingCode identifyingCode = JSON.parseObject(redis_object.toString(), IdentifyingCode.class);
 		if (identifyingCode == null) {
