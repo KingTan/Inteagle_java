@@ -2,7 +2,8 @@
 <root>
 
 	<!-- // 项目ip -->
-	<server>http://192.168.1.26:8080/</server>
+	<server>http://192.168.1.26:80/</server>
+<!-- 	<server>https://www.inteagle.com.cn/</server> -->
 
 	<!-- 文件盘符 -->
 	<drive>F:\\</drive>

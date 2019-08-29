@@ -9,9 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inteagle.common.base.service.AbstractService;
 import com.inteagle.common.entity.JsonResult;
 import com.inteagle.common.exception.BusinessException;
+import com.inteagle.common.idCardAudit.entity.IdCardAuditEntity;
+import com.inteagle.common.idCardAudit.util.Check_idCardAudit_util;
 import com.inteagle.common.redis.RedisService;
 import com.inteagle.common.sms.entity.IdentityCodeEnum;
 import com.inteagle.common.util.ParamUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.inteagle.apis.loginInfo.dao.UserInfoMapper;
 import com.inteagle.apis.loginInfo.entity.UserInfo;
 
@@ -46,6 +50,32 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 		}
 		// 校验 验证码是否正确
 		redisService.validateIdentifyingCode(phone, IdentityCode, codeType);
+
+		// 错误次数
+		int error_counts = 0;
+		// 取出redis中的对象
+		Object redis_idCardAudit_object = redisService.get(phone + "-idCardAudit");
+		if (redis_idCardAudit_object != null) {
+			JSONObject strObj = JSON.parseObject(redis_idCardAudit_object.toString());
+			IdCardAuditEntity idCardAuditEntity_redis = JSON.toJavaObject(strObj, IdCardAuditEntity.class);
+			if (idCardAuditEntity_redis != null) {
+				error_counts = idCardAuditEntity_redis.getErrorCounts();
+				if (error_counts > 2) {
+					throw new BusinessException("该手机号实名认证失败次数已达上限,<br/>请24小时之后再注册");
+				}
+			}
+		}
+
+		// 效验身份证号是否正确
+		if (!Check_idCardAudit_util.check_idCardAudit(idCardNum, userName)) {
+			error_counts++;
+			IdCardAuditEntity idCardAuditEntity = new IdCardAuditEntity(idCardNum, userName, phone, error_counts);
+			// 保存到redis(保存时间为一天)
+			redisService.set(idCardAuditEntity.getCacheKey(), JSON.toJSONString(idCardAuditEntity),
+					Long.parseLong("1440"));
+			throw new BusinessException("姓名与身份证信息不匹配");
+		}
+
 		try {
 			// 注册新用户
 			UserInfo userInfo = new UserInfo();

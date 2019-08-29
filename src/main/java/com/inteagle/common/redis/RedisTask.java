@@ -16,7 +16,7 @@ public class RedisTask {
 	@Scheduled(cron = "0/30 * * * * ? ")
 	public void execute() {
 		// 每一分钟清空Redis里 人脸识别的数据
-		redisService.set("personId", null);
+		redisService.set("personId", "");
 //		log.info("清空redis里缓存的人脸识别数据...");
 	}
 
