@@ -21,6 +21,21 @@ public class UserInfoController {
 	private UserInfoService userInfoService;
 
 	/**
+	 * @description 通过手机号修改密码
+	 * @author IVAn
+	 * @date 2019年9月2日 下午5:26:15
+	 * @param phone
+	 * @param newPwd
+	 * @param identityCode
+	 * @return
+	 */
+	@RequestMapping("/updatePwdByIdentityCode")
+	@ResponseBody
+	public JsonResult<Object> updatePwdByIdentityCode(String phone, String newPwd, String identityCode) {
+		return userInfoService.updatePwdByPhone(phone, newPwd, identityCode);
+	}
+
+	/**
 	 * @description 登录(验证码登录)
 	 * @author IVAn
 	 * @date 2019年8月27日 下午6:03:31

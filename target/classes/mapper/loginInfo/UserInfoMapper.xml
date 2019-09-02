@@ -26,18 +26,26 @@
   		edit_user_name,edit_date
   </sql>
   
+  <!--根据手机号修改密码  -->
+  <update id="updatePwdByPhoneNum">
+	  UPDATE user_info
+	  SET `password` = #{newPwd}
+	  WHERE phone = #{phone}
+  </update>
+  
   <!-- 注册 -->
   <insert id="register" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
-  	INSERT INTO user_info (user_id,user_name,phone,id_card_num,password,in_date,edit_date)
+  	INSERT INTO user_info (user_id,user_name,phone,id_card_num,password,head_portrait,in_date,edit_date)
 	VALUES(
 		REPLACE (uuid(), '-', ''),
 		#{userName},
 		#{phone},
 		#{idCardNum},
 		#{password},
+		#{headPortrait},
 		now(),
 		now()
-	);
+	)
   </insert>
   
   <!--通过手机号查询用户对象  -->

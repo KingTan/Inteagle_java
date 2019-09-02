@@ -29,6 +29,28 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 	private RedisService redisService;
 
 	/**
+	 * @description 通过手机号修改密码
+	 * @author IVAn
+	 * @date 2019年9月2日 下午5:23:10
+	 * @param phone
+	 * @param newPwd
+	 * @param identityCode
+	 * @return
+	 */
+	@Transactional
+	public JsonResult<Object> updatePwdByPhone(String phone, String newPwd, String identityCode) {
+
+		// 效验 验证码是否正确
+		redisService.validateIdentifyingCode(phone, identityCode, IdentityCodeEnum.Forget.getValue());
+
+		int result = userInfoMapper.updatePwdByPhoneNum(phone, newPwd);
+		if (result > 0) {
+			return new JsonResult<Object>(JsonResult.SUCCESS, "修改成功");
+		}
+		return new JsonResult<Object>(JsonResult.ERROR, "密码修改失败");
+	}
+
+	/**
 	 * @description 注册新用户
 	 * @author IVAn
 	 * @date 2019年8月27日 下午6:55:04
@@ -83,6 +105,8 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 			userInfo.setPhone(phone);
 			userInfo.setIdCardNum(idCardNum);
 			userInfo.setPassword(password);
+			// 设置默认头像
+			userInfo.setHeadPortrait("https://www.inteagle.com.cn/tag/default_icon.png");
 			int result = userInfoMapper.register(userInfo);
 			if (result > 0) {
 				return new JsonResult<Object>(JsonResult.SUCCESS, "注册成功");
@@ -90,7 +114,7 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		return new JsonResult<Object>(JsonResult.ERROR, JsonResult.ERROR_MESSAGE);
+		return new JsonResult<Object>(JsonResult.ERROR_MESSAGE);
 	}
 
 	/**

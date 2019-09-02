@@ -98,6 +98,22 @@ public class SmsController {
 	}
 
 	/**
+	 * @description 效验 短信验证码
+	 * @author IVAn
+	 * @date 2019年9月2日 下午5:29:59
+	 * @param phone
+	 * @param identityCode
+	 * @param codeType
+	 * @return
+	 */
+	@RequestMapping("/ValidateCode")
+	@ResponseBody
+	public JsonResult<Object> ValidateCode(String phone, String identityCode, String codeType) {
+		redisService.validateIdentifyingCode(phone, identityCode, codeType);
+		return new JsonResult<>(JsonResult.SUCCESS, "效验成功");
+	}
+
+	/**
 	 * @description 修改短信模板内容
 	 * @author IVAn
 	 * @date 2019年8月27日 下午5:23:32

@@ -15,6 +15,16 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 	int insertSelective(UserInfo record);
 
 	/**
+	 * @description 通过手机号修改密码
+	 * @author IVAn
+	 * @date 2019年9月2日 下午5:14:23
+	 * @param phone
+	 * @param newPwd
+	 * @return
+	 */
+	int updatePwdByPhoneNum(@Param("phone") String phone, @Param("newPwd") String newPwd);
+
+	/**
 	 * @description 注册
 	 * @author IVAn
 	 * @date 2019年8月27日 下午6:05:17
