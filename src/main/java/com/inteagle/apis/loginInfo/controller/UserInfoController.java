@@ -19,6 +19,20 @@ public class UserInfoController {
 
 	@Autowired
 	private UserInfoService userInfoService;
+	
+	/**
+	 * @description 通过手机号查询用户对象
+	 * @author IVAn
+	 * @date 2019年9月3日 上午10:47:37
+	 * @param phoneNumber
+	 * @return
+	 */
+	@RequestMapping("/getUserByPhone")
+	@ResponseBody
+	public JsonResult<UserInfo> getUserInfoByPhoneNumber(String phoneNumber) {
+
+		return new JsonResult<UserInfo>(userInfoService.getUserInfoByPhone(phoneNumber));
+	}
 
 	/**
 	 * @description 通过手机号修改密码

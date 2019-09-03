@@ -64,6 +64,8 @@ public class SmsController {
 			}
 		} else if (codeType.equals(IdentityCodeEnum.Login.getValue())) {
 			tNum = IdentityCodeEnum.Login_Code.getValue();
+		}else if(codeType.equals(IdentityCodeEnum.Forget.getValue())) {
+			tNum = IdentityCodeEnum.Register_Code.getValue();
 		}
 
 		// 真实验证码开关
