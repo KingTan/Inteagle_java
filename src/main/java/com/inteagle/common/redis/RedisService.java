@@ -54,7 +54,7 @@ public class RedisService {
 	}
 
 	/**
-	 * @description 保存验证码 
+	 * @description 保存验证码
 	 * @author IVAn
 	 * @date 2019年8月28日 下午2:30:01
 	 * @param telephone
@@ -71,8 +71,8 @@ public class RedisService {
 	 * @author IVAn
 	 * @date 2019年8月28日 下午2:30:12
 	 * @param telephone 手机号
-	 * @param code 验证码
-	 * @param codeType 验证码类型 register-注册 login-登录
+	 * @param code      验证码
+	 * @param codeType  验证码类型 register-注册 login-登录
 	 */
 	public void validateIdentifyingCode(String telephone, String code, String codeType) {
 		Object redis_object = new Object();
@@ -156,6 +156,32 @@ public class RedisService {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	/**
+	 * 按小时保存键值对
+	 * 
+	 * @param key   键
+	 * @param valu  值
+	 * @param hours 时
+	 * @author peng.xy
+	 * @time 2018年10月23日 下午8:17:05
+	 */
+	public void setHours(String key, Object value, int hours) {
+		redisTemplate.opsForValue().set(getProjectKey(key), value, hours, TimeUnit.HOURS);
+	}
+
+	/**
+	 * 按天保存键值对
+	 * 
+	 * @param key  键
+	 * @param valu 值
+	 * @param day  天
+	 * @author peng.xy
+	 * @time 2018年10月23日 下午8:17:05
+	 */
+	public void setDay(String key, Object value, int day) {
+		redisTemplate.opsForValue().set(getProjectKey(key), value, day, TimeUnit.DAYS);
 	}
 
 	/**

@@ -38,20 +38,18 @@ public class PushCallback implements MqttCallback {
 	@Override
 	public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
 		log.info("接收消息主题:{},接收消息Qos:{},接收消息内容:{}", topic, mqttMessage.getQos(), new String(mqttMessage.getPayload()));
-		String content = new String(mqttMessage.getPayload());
-		log.info("MQ消费者接收消息:" + content);
-
 		// 分别不同主题、解析数据
 		if (topic.indexOf("inclinometer") != -1) {
-
+			String content = new String(mqttMessage.getPayload());
 			// 解析数据(圣一 -基坑数据)
 			System.out.println("content------" + content);
-//			analyseData(content);
+			analyseData(content);
 
-		} else if (topic.indexOf("6lbr-server") != -1 || topic.indexOf("6lbr-up") != -1|| topic.indexOf("6lbr-down") != -1) {
+		} else if (topic.indexOf("6lbr-server") != -1 || topic.indexOf("6lbr-up") != -1
+				|| topic.indexOf("6lbr-down") != -1) {
 
 			// 解析数据(小慧-安全帽数据)
-//			AnalysisUtil.validate(mqttMessage.getPayload());
+			// AnalysisUtil.validate(mqttMessage.getPayload());
 
 			String hexStr_2 = ByteHexUtil.bytes2HexStr(mqttMessage.getPayload()); // 编码
 
@@ -111,7 +109,13 @@ public class PushCallback implements MqttCallback {
 	}
 
 	public static void main(String[] args) {
-		String data_str = "00000001020304050006003001.000002.000003.000004.000005.000006.000007.000008.000009.000";
+
+		String test_data = "30303030303030313032303330343035303030363030333030312e3030303030322e3030303030332e3030303030342e3030303030352e3030303030362e3030303030372e3030303030382e3030303030392e30303000";
+//		String data_str = "00000001020304050006003001.000002.000003.000004.000005.000006.000007.000008.000009.000";
+		
+		String data_str=ByteHexUtil.hexStr2Str(test_data);
+		System.out.println("data_str--------"+data_str);
+		
 		analyseData(data_str);
 	}
 

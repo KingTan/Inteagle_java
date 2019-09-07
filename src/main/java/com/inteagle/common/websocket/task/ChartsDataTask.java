@@ -64,20 +64,6 @@ public class ChartsDataTask {
 		}
 	}
 
-	class DataSource {
-
-		private ArrayList<Data_single> data_array;
-
-		public ArrayList<Data_single> getData_array() {
-			return data_array;
-		}
-
-		public void setData_array(ArrayList<Data_single> data_array) {
-			this.data_array = data_array;
-		}
-
-	}
-
 	class Data_single {
 
 		private int x;

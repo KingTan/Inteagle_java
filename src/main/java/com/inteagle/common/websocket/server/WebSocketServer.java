@@ -54,6 +54,7 @@ public class WebSocketServer {
 		this.sid = sid;
 		try {
 			JSONObject object = new JSONObject();
+			object.put("senderType", MessageData.SYSTEM_MSG);
 			object.put("message", "socket连接成功");
 			sendMessage(object.toJSONString());
 		} catch (IOException e) {

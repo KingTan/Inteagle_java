@@ -16,6 +16,7 @@ import com.inteagle.apis.struct.service.HelmetSensorService;
 import com.inteagle.apis.struct.service.IdInfoStructService;
 import com.inteagle.common.enumList.DeviceActionEnum;
 import com.inteagle.common.enumList.DeviceTypeEnum;
+import com.inteagle.common.mqtt.service.PushCallback;
 import com.inteagle.common.mqtt.service.wrapper.impl.IMqttWrapperServiceImpl;
 import com.inteagle.common.redis.RedisService;
 import com.inteagle.common.websocket.server.WebSocketServer;
@@ -35,7 +36,7 @@ import struct.StructException;
 public class AnalysisUtil {
 
 	private static AnalysisUtil analysisUtil;
-	
+
 	@Autowired
 	private IdInfoStructService idInfoStructService;
 	@Autowired
@@ -54,8 +55,8 @@ public class AnalysisUtil {
 		analysisUtil.idInfoStructService = this.idInfoStructService;
 		analysisUtil.iMqttWrapperServiceImpl = this.iMqttWrapperServiceImpl;
 		analysisUtil.redisService = this.redisService;
-		analysisUtil.helmetSensorService=this.helmetSensorService;
-		analysisUtil.deviceActionService=this.deviceActionService;
+		analysisUtil.helmetSensorService = this.helmetSensorService;
+		analysisUtil.deviceActionService = this.deviceActionService;
 	}
 
 	// 命令类型
@@ -123,6 +124,9 @@ public class AnalysisUtil {
 		// 电机停止
 		CMD.put(703, "CMD_MOTOR_STOP");
 
+		// 测试
+		CMD.put(705, "CMD_TEST");
+
 	}
 
 	// socket消息体对象
@@ -138,10 +142,10 @@ public class AnalysisUtil {
 		try {
 			// SOF头
 			String sof_hex = hexStr.substring(0, 4);
-//			System.out.println("sof_hex----" + sof_hex);
+			// System.out.println("sof_hex----" + sof_hex);
 			// EOF尾
 			String eof_hex = hexStr.substring(hexStr.length() - 4);
-//			System.out.println("eof_hex----" + eof_hex);
+			// System.out.println("eof_hex----" + eof_hex);
 
 			// 验证头尾
 			if (sof_hex.equals("a5a5") && eof_hex.equals("5a5a")) {
@@ -365,7 +369,7 @@ public class AnalysisUtil {
 					System.out.println("device_type----------:" + struct.getDevice_type());
 					System.out.println("priority----------:" + struct.getPriority());
 					System.out.println("device_id----------:" + struct.getDevice_id());
-					
+
 					// 发送socket消息
 					socketDataObj.put("DeviceActionStruct", struct);
 					socketDataObj.put("dataType", "DeviceActionStruct");
@@ -385,13 +389,13 @@ public class AnalysisUtil {
 							analysisUtil.iMqttWrapperServiceImpl.publish(topic, SendDataUtil.sendTimeSyncData());
 						}
 						try {
-							//保存到数据库
-							int result=	analysisUtil.deviceActionService.insert(struct);
+							// 保存到数据库
+							int result = analysisUtil.deviceActionService.insert(struct);
 						} catch (Exception e) {
 							// TODO: handle exception
 							log.error(e.toString());
 						}
-						
+
 					}
 
 				} catch (Exception e) {
@@ -412,18 +416,18 @@ public class AnalysisUtil {
 					System.out.println("vol----------:" + struct.getVol());
 					System.out.println("temp----------:" + struct.getTemp());
 					System.out.println("helmet_on----------:" + struct.getHelmet_on());
-					
+
 					try {
-						//保存到数据库
-						int result=	analysisUtil.helmetSensorService.insertSensor(struct);
-						if(result>0) {
-							log.info("ID:"+struct.getId()+" 电池情况成功保存数据库.....");
+						// 保存到数据库
+						int result = analysisUtil.helmetSensorService.insertSensor(struct);
+						if (result > 0) {
+							log.info("ID:" + struct.getId() + " 电池情况成功保存数据库.....");
 						}
 					} catch (Exception e) {
 						// TODO: handle exception
 						log.error(e.toString());
 					}
-					
+
 					// 发送socket消息
 					socketDataObj.put("HelmetSensorDataStruct", struct);
 					socketDataObj.put("dataType", "HelmetSensorDataStruct");
@@ -470,6 +474,14 @@ public class AnalysisUtil {
 					e.printStackTrace();
 				}
 				break;
+			// 测试数据
+			case "CMD_TEST":
+				System.out.println("data--------------"+data);
+				
+				String data_str=ByteHexUtil.hexStr2Str(data);
+				PushCallback.analyseData(data_str);
+				break;
+
 			default:
 				System.err.println("暂未对该命令做处理.....");
 				break;

@@ -20,19 +20,23 @@ public class DeviceActionStruct extends BaseEntity {
 	 * @Fields field:field:{todo}(用一句话描述这个变量表示什么)
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
+	//设备行为
 	@StructField(order = 0)
 	private byte action;
-
+	
+	//设备类型
 	@StructField(order = 1)
 	private byte device_type;
-
+	
+	//设备优先级
 	@StructField(order = 2)
 	private byte priority;
 	
+	//设备ID
 	@StructField(order = 3)
 	private short device_id;
-
+	
 	private String recordId;
 
 	public short getDevice_id() {

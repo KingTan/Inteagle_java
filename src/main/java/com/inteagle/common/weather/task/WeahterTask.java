@@ -17,9 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class WeahterTask {
 
-	@Scheduled(cron = "0 0 0/1 * * ? ")
-	public void execute() {
-		
-	}
+//	@Scheduled(cron = "0 0 0/1 * * ? ")
+//	public void execute() {
+//		
+//	}
 
 }

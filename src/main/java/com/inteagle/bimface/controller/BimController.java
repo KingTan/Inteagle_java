@@ -63,9 +63,6 @@ public class BimController {
 			log.error(e.toString());
 		}
 		return new JsonResult<String>(JsonResult.SUCCESS, viewToken, JsonResult.SUCCESS_MESSAGE);
-
-//		// JSON序列化
-//		response.getWriter().write(JSONObject.toJSONString(viewToken));
 	}
 
 	/**

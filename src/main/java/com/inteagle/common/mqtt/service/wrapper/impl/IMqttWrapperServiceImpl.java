@@ -35,9 +35,9 @@ public class IMqttWrapperServiceImpl implements IMqttWrapperService {
 		String hexStr_2 = ByteHexUtil.bytes2HexStr(rawSource); // 编码
 		System.out.println("发送encode result : " + hexStr_2);
 		
-		MqttMessage message = new MqttMessage(rawSource);
+//		MqttMessage message = new MqttMessage(rawSource);
 		
-//		MqttMessage message = new MqttMessage(content.getBytes());
+		MqttMessage message = new MqttMessage(content.getBytes());
 		
 		message.setQos(mqttConfiguration.getQos());
 		/**
