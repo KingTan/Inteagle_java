@@ -25,20 +25,23 @@ public class IMqttWrapperServiceImpl implements IMqttWrapperService {
 	private SubscribeConn subscribeConn;
 
 	@Override
-	public Boolean publish(String topic, String content) {
+	public Boolean publish(String topic, String content, String type) {
 
 		log.info("MQ===public=== 入参:topic:{};content:{}", topic, content);
-		
-		byte[] rawSource =ByteHexUtil.hexStr2Bytes(content); // 解码
-		System.out.println("发送decode result : " + rawSource);
 
+		byte[] rawSource = ByteHexUtil.hexStr2Bytes(content); // 解码
+		System.out.println("发送decode result : " + rawSource);
 		String hexStr_2 = ByteHexUtil.bytes2HexStr(rawSource); // 编码
 		System.out.println("发送encode result : " + hexStr_2);
 		
-//		MqttMessage message = new MqttMessage(rawSource);
-		
-		MqttMessage message = new MqttMessage(content.getBytes());
-		
+		//消息体对象
+		MqttMessage message;
+		if (type.equals("global_timer")) {
+			message = new MqttMessage(rawSource);
+		} else {
+			message = new MqttMessage(content.getBytes());
+		}
+
 		message.setQos(mqttConfiguration.getQos());
 		/**
 		 * Retained为true时MQ会保留最后一条发送的数据，当断开再次订阅即会接收到这最后一次的数据
@@ -50,7 +53,7 @@ public class IMqttWrapperServiceImpl implements IMqttWrapperService {
 			// 判定是否需要重新连接
 			// 删除一个判断条件
 			// || !mqttClient.getClientId().equals(mqttConfiguration.getSubscribeClientId())
-			
+
 			if (mqttClient == null || !mqttClient.isConnected()) {
 				System.err.println("重新连接------");
 				mqttClient = subscribeConn.getConn();

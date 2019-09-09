@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-@Component // 不加这个注解的话, 使用@Autowired 就不能注入进去了
+@Component
 @PropertySource("classpath:application.yml")
 @ConfigurationProperties(prefix = "mqtt") // 配置文件中的前缀
 public class MqttConfiguration {
@@ -30,6 +30,9 @@ public class MqttConfiguration {
 	private String subscribeClientId;
 
 	private boolean retained;
+
+	public static String GLOBAL_TIME = "global_timer"; // 基坑时间同步数据类型
+	public static String HELMET = "helmet"; // 人员定位安全帽数据类型
 
 	public String getHost() {
 		return host;

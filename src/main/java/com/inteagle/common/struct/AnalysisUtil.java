@@ -16,6 +16,7 @@ import com.inteagle.apis.struct.service.HelmetSensorService;
 import com.inteagle.apis.struct.service.IdInfoStructService;
 import com.inteagle.common.enumList.DeviceActionEnum;
 import com.inteagle.common.enumList.DeviceTypeEnum;
+import com.inteagle.common.mqtt.config.MqttConfiguration;
 import com.inteagle.common.mqtt.service.PushCallback;
 import com.inteagle.common.mqtt.service.wrapper.impl.IMqttWrapperServiceImpl;
 import com.inteagle.common.redis.RedisService;
@@ -386,7 +387,8 @@ public class AnalysisUtil {
 							System.out.println("topic-------------" + topic);
 
 							// 发送时间同步的消息到对应主题的设备
-							analysisUtil.iMqttWrapperServiceImpl.publish(topic, SendDataUtil.sendTimeSyncData());
+							analysisUtil.iMqttWrapperServiceImpl.publish(topic, SendDataUtil.sendTimeSyncData(),
+									MqttConfiguration.HELMET);
 						}
 						try {
 							// 保存到数据库
@@ -476,9 +478,9 @@ public class AnalysisUtil {
 				break;
 			// 测试数据
 			case "CMD_TEST":
-				System.out.println("data--------------"+data);
-				
-				String data_str=ByteHexUtil.hexStr2Str(data);
+				System.out.println("data--------------" + data);
+
+				String data_str = ByteHexUtil.hexStr2Str(data);
 				PushCallback.analyseData(data_str);
 				break;
 

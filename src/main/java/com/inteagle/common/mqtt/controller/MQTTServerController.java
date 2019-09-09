@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.inteagle.apis.struct.entity.HelmetSensorDataStruct;
+import com.inteagle.common.mqtt.config.MqttConfiguration;
 import com.inteagle.common.mqtt.service.IMqttPublish;
 import com.inteagle.common.struct.AnalysisUtil;
 import com.inteagle.common.struct.ByteHexUtil;
@@ -35,9 +36,9 @@ public class MQTTServerController {
 	public String sayHello() {
 		return "Hello !";
 	}
-	
+
 	/**
-	 * @description 发送电量mqtt数据 
+	 * @description 发送电量mqtt数据
 	 * @author IVAn
 	 * @date 2019年8月9日 上午10:27:06
 	 * @return
@@ -59,23 +60,23 @@ public class MQTTServerController {
 
 		try {
 			HelmetSensorDataStruct helmetSensorDataStruct = new HelmetSensorDataStruct();
-			short id=100;
+			short id = 100;
 			helmetSensorDataStruct.setId(id);
 			helmetSensorDataStruct.setVol(11);
 			helmetSensorDataStruct.setTemp(22);
 			helmetSensorDataStruct.setHelmet_on(0);
-			
+
 			// 转成字节数组
 			byte[] start_byte = JavaStruct.pack(helmetSensorDataStruct);
 			String data = ByteHexUtil.bytes2HexStr(start_byte);
-			
+
 			// 10进制转成16进制
 			String len_hex = ByteHexUtil.intToHex(data.length());
 			System.out.println("len_hex----" + len_hex);
 
 			String len = ByteHexUtil.addZeroForNum(len_hex, 4);
 			System.out.println("len----" + len);
-			
+
 			len = ByteHexUtil.changeType(len);
 			// 按照协议 截取到crc的16进制值
 			String crc = len + cmd + data;
@@ -101,10 +102,9 @@ public class MQTTServerController {
 			e.printStackTrace();
 		}
 
-		return iEmqService.publish(topic, msg);
-	
+		return iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
+
 	}
-	
 
 	/**
 	 * @description 发送mqtt电机启动数据
@@ -145,15 +145,14 @@ public class MQTTServerController {
 			// 转成字节数组
 			byte[] start_byte = JavaStruct.pack(motorStartStruct);
 			String data = ByteHexUtil.bytes2HexStr(start_byte);
-			
-			
+
 			// 10进制转成16进制
 			String len_hex = ByteHexUtil.intToHex(data.length());
 			System.out.println("len_hex----" + len_hex);
 
 			String len = ByteHexUtil.addZeroForNum(len_hex, 4);
 			System.out.println("len----" + len);
-			
+
 			len = ByteHexUtil.changeType(len);
 			// 按照协议 截取到crc的16进制值
 			String crc = len + cmd + data;
@@ -179,7 +178,7 @@ public class MQTTServerController {
 			e.printStackTrace();
 		}
 
-		return iEmqService.publish(topic, msg);
+		return iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
 	}
 
 	/**
@@ -228,10 +227,10 @@ public class MQTTServerController {
 			e.printStackTrace();
 		}
 
-		return iEmqService.publish(topic, msg);
+		return iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
 	}
-	
-	//发送时间同步的消息
+
+	// 发送时间同步的消息
 	@RequestMapping("/send/msg")
 	public boolean send(@RequestParam("msg") String msg, @RequestParam("topic") String topic)
 			throws MqttException, StructException {
@@ -324,7 +323,7 @@ public class MQTTServerController {
 			e.printStackTrace();
 		}
 
-		return iEmqService.publish(topic, msg);
+		return iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
 	}
 
 }

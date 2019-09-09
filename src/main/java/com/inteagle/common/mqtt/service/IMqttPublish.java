@@ -17,6 +17,6 @@ public interface IMqttPublish {
 	 * @param content
 	 * @return
 	 */
-	Boolean publish(String topic, String content);
+	Boolean publish(String topic, String content,String type);
 
 }

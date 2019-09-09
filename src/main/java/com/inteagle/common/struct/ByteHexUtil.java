@@ -23,10 +23,10 @@ public class ByteHexUtil {
 		
 
 		// CMD 10进制
-		long cmd_ten = Long.parseLong("025c", 16) & 0x0fff;
+		long cmd_ten = Long.parseLong("2006", 16) & 0x0fff;
 		System.out.println("cmd_ten-----" + cmd_ten);
 		
-		String cmd_hex=Integer.toHexString(604);
+		String cmd_hex=Integer.toHexString(2006);
 		System.out.println("cmd_hex-----" + cmd_hex);
 		
 		

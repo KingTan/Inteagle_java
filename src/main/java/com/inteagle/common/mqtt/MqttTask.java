@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSONObject;
+import com.inteagle.common.mqtt.config.MqttConfiguration;
 import com.inteagle.common.mqtt.service.IMqttPublish;
 import com.inteagle.common.struct.ByteHexUtil;
 import com.inteagle.common.websocket.message.MessageData;
@@ -27,7 +28,7 @@ public class MqttTask {
 //		String topic = "global_timer";
 //		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
 //		// 发送时间同步消息
-//		iEmqService.publish(topic, Long.toString(content));
+//		iEmqService.publish(topic, Long.toString(content), MqttConfiguration.GLOBAL_TIME);
 //	}
 
 //	@Scheduled(cron = "0/5 * * * * ? ")

@@ -16,7 +16,75 @@ import struct.StructException;
  *
  */
 public class SendDataUtil {
+	
+	/**
+	 * @description 发送电机启动的数据
+	 * @author IVAn
+	 * @date 2019年9月9日 上午10:28:02
+	 * @return
+	 */
+	public static String sendElecticStart() {
+		try {
+			String sof = "a5a5";
+			sof = ByteHexUtil.changeType(sof);
 
+			String len = "0000";
+			len = ByteHexUtil.changeType(len);
+
+			String cmd = "2006";
+			cmd = ByteHexUtil.changeType(cmd);
+
+			// 初始时间结构体对象
+			TimeSyncData timeSyncData = new TimeSyncData();
+
+			// 转成字节数组
+			byte[] time_byte;
+			time_byte = JavaStruct.pack(timeSyncData);
+
+			String data = ByteHexUtil.bytes2HexStr(time_byte);
+			// System.out.println("data------"+data);
+
+			// 按照协议 截取到crc的16进制值
+			String crc = len + cmd + data;
+			// System.out.println("crc-------" + crc);
+
+			// 16进制转成字节数组
+			byte[] crc_byte = ByteHexUtil.hex2Byte(crc);
+
+			// 传入字节数组 求出crc的校验值字节
+			byte crc_after = CRC8.calcCrc8(crc_byte);
+			// System.out.println("crc_after-校验值-----" + crc_after);
+
+			// 将校验值字节放入数组中 转成16进制数据
+			byte[] crc_after_array = { crc_after };
+			crc = ByteHexUtil.byte2HexStr(crc_after_array);
+			// System.out.println("crc_last------" + crc);
+
+			String eof = "5a5a";
+			eof = ByteHexUtil.changeType(eof);
+
+			String msg = sof + len + cmd + data + crc + eof;
+			System.out.println("msg-----" + msg);
+			return msg;
+		} catch (StructException e) {
+			// TODO Auto-generated catch block
+
+			e.printStackTrace();
+		}
+		
+		
+		return "";
+	}
+	
+	
+	
+	
+	/**
+	 * @description 发送时间同步的数据
+	 * @author IVAn
+	 * @date 2019年9月7日 下午6:39:09
+	 * @return
+	 */
 	public static String sendTimeSyncData() {
 
 		try {

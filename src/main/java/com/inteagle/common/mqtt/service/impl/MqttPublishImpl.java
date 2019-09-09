@@ -13,9 +13,9 @@ public class MqttPublishImpl implements IMqttPublish {
 	private IMqttWrapperService iMqttWrapperService;
 
 	@Override
-	public Boolean publish(String topic, String content) {
+	public Boolean publish(String topic, String content, String type) {
 		// TODO Auto-generated method stub
-		return iMqttWrapperService.publish(topic, content);
+		return iMqttWrapperService.publish(topic, content, type);
 	}
 
 }
