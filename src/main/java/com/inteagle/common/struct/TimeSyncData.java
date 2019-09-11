@@ -5,6 +5,14 @@ import com.inteagle.common.base.entity.BaseEntity;
 import struct.StructClass;
 import struct.StructField;
 
+/**
+ * 
+* @ClassName: TimeSyncData
+* @Description: TODO(时间同步结构体)
+* @author IVAn
+* @date 2019年9月11日上午10:06:22
+*
+ */
 @StructClass
 public class TimeSyncData extends BaseEntity {
 

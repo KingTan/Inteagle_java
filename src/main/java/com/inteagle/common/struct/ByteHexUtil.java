@@ -20,107 +20,32 @@ import struct.JavaStruct;
 public class ByteHexUtil {
 
 	public static void main(String[] args) throws Exception {
-		
 
-		// CMD 10进制
-		long cmd_ten = Long.parseLong("2006", 16) & 0x0fff;
-		System.out.println("cmd_ten-----" + cmd_ten);
-		
-		String cmd_hex=Integer.toHexString(2006);
-		System.out.println("cmd_hex-----" + cmd_hex);
-		
-		
-		String hex_str="a5a5000e225cb40600000a8f0000001800000000d85a5a";
-		
-		
-//		String sof = "a5a5";
-//		sof = ByteHexUtil.changeType(sof);
-//
-//		// CMD 16进制
-//		String cmd_hex = Integer.toHexString(0604);
-//
-//		System.out.println("cmd_hex-------------" + cmd_hex);
-//
-//		String cmd = "02be";
-//		cmd = ByteHexUtil.changeType(cmd);
-//
-//		String msg = "";
-//
-//		HelmetSensorDataStruct helmetSensorDataStruct = new HelmetSensorDataStruct();
-//		short id = 1;
-//		helmetSensorDataStruct.setId(id);
-//		helmetSensorDataStruct.setVol(11);
-//		helmetSensorDataStruct.setTemp(22);
-//		helmetSensorDataStruct.setHelmet_on(0);
-//
+		String data_hex = "a5a5006422c231323334353637383234313531313039323031393031313030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e303030fd5a5a";
+
+//		// Len 反解析
+//		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
 //		// 转成字节数组
-//		byte[] start_byte = JavaStruct.pack(helmetSensorDataStruct);
-//		String data = ByteHexUtil.bytes2HexStr(start_byte);
-//
-//		System.out.println("data.length-----------" + data.length());
-//
+//		String data = Long.toString(content);
+//		System.out.println("data----" + data);
+//		String data_hex = str2HexStr(data);
+//		System.out.println("data_hex-----" + data_hex);
+//		int data_hex_length = data_hex.length();
+//		System.out.println("data_hex_length-----" + data_hex_length);
 //		// 10进制转成16进制
-//		String len_hex = ByteHexUtil.intToHex(data.length());
+//		String len_hex = ByteHexUtil.intToHex(data_hex_length / 2);
 //		System.out.println("len_hex----" + len_hex);
-//
 //		String len = ByteHexUtil.addZeroForNum(len_hex, 4);
 //		System.out.println("len----" + len);
 //
-//		len = ByteHexUtil.changeType(len);
-//		// 按照协议 截取到crc的16进制值
-//		String crc = len + cmd + data;
-//		// System.out.println("crc-------" + crc);
-//
-//		// 16进制转成字节数组
-//		byte[] crc_byte = ByteHexUtil.hex2Byte(crc);
-//
-//		// 传入字节数组 求出crc的校验值字节
-//		byte crc_after = CRC8.calcCrc8(crc_byte);
-//
-//		// 将校验值字节放入数组中 转成16进制数据
-//		byte[] crc_after_array = { crc_after };
-//		crc = ByteHexUtil.byte2HexStr(crc_after_array);
-//
-//		String eof = "5a5a";
-//		eof = ByteHexUtil.changeType(eof);
-//
-//		msg = sof + len + cmd + data + crc + eof;
-//
-//		System.out.println("msg-----" + msg);
-
-		// 精确到毫秒
-		// 获取当前时间戳
-//        System.out.println(System.currentTimeMillis());
-//        System.out.println(Calendar.getInstance().getTimeInMillis());
-//        System.out.println(new Date().getTime());
-
-//		String now_time = DateUtil.getDateTimeStr();
-//
-//		System.out.println("now_time---------" + now_time);
-//
-//		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
-//
-//		System.out.println(Long.toString(content));
-//		
-//        //a5a500122133009542db000042f700000000000000000040115a5a
-//		byte[] rawSource = hexStr2Bytes("2006"); // 解码
-//		System.out.println("decode result : " + rawSource);
-//
-//		String hexStr_2 = bytes2HexStr(rawSource); // 编码
-//		System.out.println("encode result : " + hexStr_2);
-//		
-//		long hexStr_long=Long.parseLong(hexStr_2);
-//		System.out.println("hexStr_long------"+hexStr_long);
-
-//		byte[] b = hexStr2Bytes(rawSource);
-//
-//		String str = "{";
-//		for (int i = 0; i < b.length; i++) {
-////			System.out.printf("b[%d]: %d\n", i, b[i]);
-//			str += b[i] + ",";
-//		}
-//		str += "}";
-//		System.out.println("str-----" + str);
+//		// CMD反解析
+//		// 10进制转16进制
+//		String cmd_six = intToHex(307);
+//		cmd_six = addZeroForNum(cmd_six, 4);
+//		System.out.println("cmd_six-------" + cmd_six);
+//		// 16进制转10进制
+//		long cmd_ten_ad = Long.parseLong(cmd_six, 16) & 0x0fff;
+//		System.out.println("cmd_ten_ad-----" + cmd_ten_ad);
 
 	}
 
@@ -337,13 +262,6 @@ public class ByteHexUtil {
 		return result;
 	}
 
-	/**
-	 * 十六进制转为十进制
-	 */
-	public static String getHexToTen(String hex) {
-		return String.valueOf(Integer.parseInt(hex, 16));
-	}
-
 	// 判断浮点数（double和float）
 	public static boolean isDouble(String str) {
 		if (null == str || "".equals(str)) {
@@ -383,7 +301,7 @@ public class ByteHexUtil {
 			sb.append(chars[bit]);
 			bit = bs[i] & 0x0f;
 			sb.append(chars[bit]);
-			sb.append(' ');
+//			sb.append(' ');
 		}
 		return sb.toString().trim();
 	}
@@ -424,25 +342,6 @@ public class ByteHexUtil {
 		}
 		return sb.toString().trim();
 	}
-
-	/**
-	 * bytes字符串转换为Byte值
-	 *
-	 * @param String src Byte字符串，每个Byte之间没有分隔符
-	 * @return byte[]
-	 */
-//    public static byte[] hexStr2Bytes(String src) {
-//        int m = 0, n = 0;
-//        int l = src.length() / 2;
-//        System.out.println(l);
-//        byte[] ret = new byte[l];
-//        for (int i = 0; i < l; i++) {
-//            m = i * 2 + 1;
-//            n = m + 1;
-//            ret[i] = Byte.decode("0x" + src.substring(i * 2, m) + src.substring(m, n));
-//        }
-//        return ret;
-//    }
 
 	/**
 	 * String的字符串转换成unicode的String

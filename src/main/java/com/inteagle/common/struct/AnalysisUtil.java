@@ -125,8 +125,8 @@ public class AnalysisUtil {
 		// 电机停止
 		CMD.put(703, "CMD_MOTOR_STOP");
 
-		// 测试
-		CMD.put(705, "CMD_TEST");
+		// 电机数据
+		CMD.put(706, "CMD_MOTOR_DATA");
 
 	}
 
@@ -136,18 +136,13 @@ public class AnalysisUtil {
 	// 解析 paylaod 数据
 	// byte[] playload
 	public static void validate(String hexStr, String topic) {
-
 		socketDataObj = new JSONObject();
-
 		System.out.println("hexStr-----" + hexStr);
 		try {
 			// SOF头
 			String sof_hex = hexStr.substring(0, 4);
-			// System.out.println("sof_hex----" + sof_hex);
 			// EOF尾
 			String eof_hex = hexStr.substring(hexStr.length() - 4);
-			// System.out.println("eof_hex----" + eof_hex);
-
 			// 验证头尾
 			if (sof_hex.equals("a5a5") && eof_hex.equals("5a5a")) {
 
@@ -160,32 +155,31 @@ public class AnalysisUtil {
 				log.info("数据完整,SOF EOF验证成功");
 				// 数据长度 16进制
 				String len_hex = hexStr.substring(4, 8);
-				System.out.println("长度len_hex------" + len_hex);
+				// System.out.println("长度len_hex------" + len_hex);
 
 				// 数据长度 10进制
 				long len_num = Long.parseLong(len_hex, 16);
-				System.out.println("长度len_num------" + len_num);
+				// System.out.println("长度len_num------" + len_num);
 
 				// CMD 16进制
 				String cmd_hex = hexStr.substring(8, 12);
-				System.out.println("cmd_hex-----" + cmd_hex);
+				// System.out.println("cmd_hex-----" + cmd_hex);
 
 				// CMD 10进制
 				long cmd_ten = Long.parseLong(cmd_hex, 16) & 0x0fff;
-				System.out.println("cmd_ten-----" + cmd_ten);
+				// System.out.println("cmd_ten-----" + cmd_ten);
 
 				// data+crc+eof
 				String data_crc_eof = hexStr.substring(12);
-
 				// CRC 16进制
 				String crc_hex = data_crc_eof.substring((data_crc_eof.length() - 6), (data_crc_eof.length() - 4));
 
-				System.out.println("crc_hex-------" + crc_hex);
+				// System.out.println("crc_hex-------" + crc_hex);
 
 				// CRC 10进制
 				long crc_ten = Long.parseLong(crc_hex, 16);
 
-				System.out.println("crc_ten-------" + crc_ten);
+				// system.out.println("crc_ten-------" + crc_ten);
 
 				// CRC 检验数据
 				String crc_examine = hexStr.substring(4, (hexStr.length() - 6));
@@ -196,12 +190,11 @@ public class AnalysisUtil {
 				// CRC 校验
 				byte crc = CRC8.calcCrc8(b);
 
-				System.out.println("crc--校验值-----" + crc);
-
+				// System.out.println("crc--校验值-----" + crc);
 				// crc_ten == crc
 				// crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString())
 				// 判断CRC 10进制 和校验值
-				if (crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString())) {
+				if (crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString()) || crc_ten == crc) {
 					log.info("crc校验成功....");
 
 					// socket 消息体对象
@@ -248,12 +241,8 @@ public class AnalysisUtil {
 
 		// 命令值
 		int cmd_num = (int) cmd;
-		System.out.println("cmd-num--------" + cmd_num);
-
 		// 找到对应的命令
 		String cmd_value = CMD.get(cmd_num);
-
-		System.out.println("cmd_value---------------------" + cmd_value);
 
 		socketDataObj.put("cmd_value", cmd_value);
 
@@ -269,9 +258,6 @@ public class AnalysisUtil {
 					TimeSyncData timeSyncData = new TimeSyncData();
 					// 解析成javaStruct
 					JavaStruct.unpack(timeSyncData, b, ByteOrder.BIG_ENDIAN);
-					System.out.println("getT_h-------" + timeSyncData.getT_h());
-					System.out.println("getT_l-------" + timeSyncData.getT_l());
-
 					socketDataObj.put("TimeSyncData", timeSyncData);
 					socketDataObj.put("dataType", "TimeSyncData");
 
@@ -290,13 +276,7 @@ public class AnalysisUtil {
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
 
-					int helmet_id = struct.getId();
-
-					System.out.println("id----" + struct.id);
-					System.out.println("x-----" + struct.x);
-					System.out.println("y-----" + struct.y);
-					System.out.println("t-----" + struct.t);
-					System.out.println("camera_id-----" + struct.camera_id);
+					short helmet_id = struct.getId();
 
 					// socket 消息体
 					socketDataObj.put("IdInfoStruct", struct);
@@ -304,8 +284,8 @@ public class AnalysisUtil {
 
 					try {
 						if (analysisUtil.redisService.get("personId") != null) {
-							int personId = (int) analysisUtil.redisService.get("personId");
-							if (personId == 255 && helmet_id == 255) {
+							String personId = analysisUtil.redisService.get("personId").toString();
+							if (personId.equals("255") && helmet_id == 255) {
 								log.info("----------安全帽-人脸识别正确-------------");
 							} else {
 								JSONObject jsonObject = new JSONObject();
@@ -316,10 +296,11 @@ public class AnalysisUtil {
 								WebSocketServer.sendInfo(JSONObject.toJSONString(jsonObject), "ivan");
 							}
 						}
-
 						// 保存到数据库
-//							  int result = analysisUtil.idInfoStructService.insert(struct);
-//							  if (result > 0) { log.info("数据保存成功..."); }
+						int result = analysisUtil.idInfoStructService.insert(struct);
+						if (result > 0) {
+							log.info("数据保存成功...");
+						}
 						// 发送socket消息
 						WebSocketServer.sendInfo(JSONObject.toJSONString(struct), "ivan");
 
@@ -343,7 +324,6 @@ public class AnalysisUtil {
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
 
 					int personId = struct.getId();
-					System.out.println("id----------" + personId);
 
 					// 缓存到redis
 					analysisUtil.redisService.set("personId", personId);
@@ -366,11 +346,6 @@ public class AnalysisUtil {
 
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
-					System.out.println("action----------:" + struct.getAction());
-					System.out.println("device_type----------:" + struct.getDevice_type());
-					System.out.println("priority----------:" + struct.getPriority());
-					System.out.println("device_id----------:" + struct.getDevice_id());
-
 					// 发送socket消息
 					socketDataObj.put("DeviceActionStruct", struct);
 					socketDataObj.put("dataType", "DeviceActionStruct");
@@ -414,11 +389,6 @@ public class AnalysisUtil {
 
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
-					System.out.println("id----------:" + struct.getId());
-					System.out.println("vol----------:" + struct.getVol());
-					System.out.println("temp----------:" + struct.getTemp());
-					System.out.println("helmet_on----------:" + struct.getHelmet_on());
-
 					try {
 						// 保存到数据库
 						int result = analysisUtil.helmetSensorService.insertSensor(struct);
@@ -448,12 +418,6 @@ public class AnalysisUtil {
 
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
-					System.out.println("fre----------" + struct.getFre());
-					System.out.println("dir----------" + struct.getDir());
-					System.out.println("duty----------" + struct.getDuty());
-					System.out.println("hold_time----------" + struct.getHold_time());
-					System.out.println("steps----------" + struct.getSteps());
-					System.out.println("steps_hold----------" + struct.getSteps_hold());
 
 					// 发送socket消息
 					socketDataObj.put("MotorStartStruct", struct);
@@ -476,19 +440,15 @@ public class AnalysisUtil {
 					e.printStackTrace();
 				}
 				break;
-			// 测试数据
-			case "CMD_TEST":
+			case "CMD_MOTOR_DATA":
 				System.out.println("data--------------" + data);
-
-				String data_str = ByteHexUtil.hexStr2Str(data);
-				PushCallback.analyseData(data_str);
+				String data_str_data = ByteHexUtil.hexStr2Str(data);
+				PushCallback.analyseData(data_str_data);
 				break;
-
 			default:
 				System.err.println("暂未对该命令做处理.....");
 				break;
 			}
-
 		} else {
 			System.err.println("没有找到对应的命令.....");
 		}
@@ -578,9 +538,6 @@ public class AnalysisUtil {
 	}
 
 	public static void main(String[] args) {
-
-		// a5a5000c225c000000000000000000000000885a5a
-		// a5a5200802be000100010003000300030001e15a5a
 		try {
 			validate("a5a5000e225cb40600000a8f0000001800000000d85a5a", "6lbr-up");
 		} catch (Exception e) {

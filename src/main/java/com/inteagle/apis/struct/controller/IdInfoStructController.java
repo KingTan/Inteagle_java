@@ -1,6 +1,10 @@
 package com.inteagle.apis.struct.controller;
 
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +20,8 @@ import com.inteagle.apis.struct.service.DeviceActionService;
 import com.inteagle.apis.struct.service.HelmetSensorService;
 import com.inteagle.apis.struct.service.IdInfoStructService;
 import com.inteagle.common.entity.JsonResult;
+import com.inteagle.common.excel.entity.ExportFoundation;
+import com.inteagle.common.excel.util.ExcelUtil;
 import com.inteagle.common.util.PageUtil;
 
 @Controller
@@ -69,6 +75,58 @@ public class IdInfoStructController {
 		PageUtil.setPage(page, limit);
 		List<HelmetSensorDataStruct> list = helmetSensorService.selectAllHelmetSensorDataStructListById(deviceId);
 		return PageUtil.getPageJsonResult(list);
+	}
+
+	/**
+	 * @description 查询人员定位数据
+	 * @author IVAn
+	 * @date 2019年9月11日 下午2:43:35
+	 * @param page
+	 * @param limit
+	 * @return
+	 */
+	@RequestMapping("/getHelmetData")
+	@ResponseBody
+	public JsonResult<PageInfo<IdInfoStruct>> getHelmetData(Integer page, Integer limit) {
+		PageUtil.setPage(page, limit);
+		List<IdInfoStruct> list = idInfoStructService.getIdInfoStructList();
+		return PageUtil.getPageJsonResult(list);
+	}
+
+	/**
+	 * @description 导出安全帽定位数据
+	 * @author IVAn
+	 * @date 2019年9月11日 下午2:45:56
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/exportHelmetPositionData")
+	public void exportHelmetPositionData(HttpServletRequest request, HttpServletResponse response) {
+		List<IdInfoStruct> list = idInfoStructService.getIdInfoStructList();
+		String table_header = "安全帽定位数据";
+		String table_sheetName = "安全帽定位数据";
+		String table_name = "安全帽定位数据";
+		table_name = table_name.concat(".xls");
+		ExcelUtil.exportExcel(list, table_header, table_sheetName, IdInfoStruct.class, table_name, true, response);
+	}
+
+	/**
+	 * @description 导出设备电池情况数据Excel
+	 * @author IVAn
+	 * @date 2019年9月10日 上午10:42:08
+	 * @param request
+	 * @param response
+	 * @param deviceId
+	 */
+	@RequestMapping("/exportHelmetSensorData")
+	public void exportHelmetSensorData(HttpServletRequest request, HttpServletResponse response, String deviceId) {
+		List<HelmetSensorDataStruct> list = helmetSensorService.selectAllHelmetSensorDataStructListById(deviceId);
+		String table_header = "电池情况数据";
+		String table_sheetName = "设备电池情况数据";
+		String table_name = "电池情况数据";
+		table_name = table_name.concat(".xls");
+		ExcelUtil.exportExcel(list, table_header, table_sheetName, HelmetSensorDataStruct.class, table_name, true,
+				response);
 	}
 
 	@RequestMapping("/getHelmetSensorList")

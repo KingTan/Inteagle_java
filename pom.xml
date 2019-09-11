@@ -97,7 +97,6 @@
 			<artifactId>commons-pool2</artifactId>
 		</dependency>
 
-		<!-- 将作为Redis对象序列化器 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>

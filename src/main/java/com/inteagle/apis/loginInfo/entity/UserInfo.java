@@ -1,7 +1,5 @@
 package com.inteagle.apis.loginInfo.entity;
 
-import java.util.Date;
-
 import com.inteagle.common.base.entity.BaseEntity;
 
 /**

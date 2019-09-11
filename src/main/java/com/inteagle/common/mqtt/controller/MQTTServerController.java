@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.inteagle.apis.struct.entity.HelmetSensorDataStruct;
+import com.inteagle.common.entity.JsonResult;
 import com.inteagle.common.mqtt.config.MqttConfiguration;
 import com.inteagle.common.mqtt.service.IMqttPublish;
 import com.inteagle.common.struct.AnalysisUtil;
@@ -35,6 +36,13 @@ public class MQTTServerController {
 	@RequestMapping("/")
 	public String sayHello() {
 		return "Hello !";
+	}
+
+	@RequestMapping("/send/helmet")
+	public boolean sendHelmetData() {
+		String msg = SendDataUtil.sendHelmetPositionData();
+		String topic = "test";
+		return iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
 	}
 
 	/**
@@ -230,13 +238,66 @@ public class MQTTServerController {
 		return iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
 	}
 
+	@RequestMapping("/send/timeSync")
+	public JsonResult<Object> sendTimeSync() {
+		String sof = "a5a5";
+		sof = ByteHexUtil.changeType(sof);
+
+		String len = "000a";
+		len = ByteHexUtil.changeType(len);
+
+		String cmd = "2006";
+		cmd = ByteHexUtil.changeType(cmd);
+
+		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
+
+		// 转成字节数组
+		String data = Long.toString(content);
+		System.out.println("data-----" + data);
+
+		data = ByteHexUtil.str2HexStr(data);
+
+		// 按照协议 截取到crc的16进制值
+		String crc = len + cmd + data;
+
+		// 16进制转成字节数组
+		byte[] crc_byte = ByteHexUtil.hex2Byte(crc);
+
+		// 传入字节数组 求出crc的校验值字节
+		byte crc_after = CRC8.calcCrc8(crc_byte);
+
+		// 将校验值字节放入数组中 转成16进制数据
+		byte[] crc_after_array = { crc_after };
+
+		crc = ByteHexUtil.byte2HexStr(crc_after_array);
+
+		String eof = "5a5a";
+
+		eof = ByteHexUtil.changeType(eof);
+
+		String msg = sof + len + cmd + data + crc + eof;
+
+		System.out.println("msg--------" + msg);
+
+		String topic = "6lbr-down/61948/28153";
+//		String topic = "test";
+
+		try {
+			boolean is_send = iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
+			if (is_send) {
+				return new JsonResult<>("发送成功");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new JsonResult<>(JsonResult.ERROR, "发送失败");
+	}
+
 	// 发送时间同步的消息
 	@RequestMapping("/send/msg")
 	public boolean send(@RequestParam("msg") String msg, @RequestParam("topic") String topic)
 			throws MqttException, StructException {
-
-//		System.out.println("发布消息");
-//		System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName() + "==========:" + msg);
 
 		String sof = "a5a5";
 		sof = ByteHexUtil.changeType(sof);
@@ -254,8 +315,6 @@ public class MQTTServerController {
 		TimeSyncData timeSyncData = new TimeSyncData();
 
 		long curretnTimeStamp = Calendar.getInstance().getTimeInMillis();
-
-		System.out.println("curretnTimeStamp-------" + curretnTimeStamp);
 
 		int t_l = (int) curretnTimeStamp;
 		int t_h = (int) (curretnTimeStamp >> 32);
@@ -275,7 +334,7 @@ public class MQTTServerController {
 		// 转成字节数组
 		byte[] time_byte = JavaStruct.pack(timeSyncData);
 		String data = ByteHexUtil.bytes2HexStr(time_byte);
-		// System.out.println("data------"+data);
+		System.out.println("data------" + data);
 
 		// 按照协议 截取到crc的16进制值
 		String crc = len + cmd + data;

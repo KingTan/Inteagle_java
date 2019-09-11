@@ -31,12 +31,13 @@ public class IMqttWrapperServiceImpl implements IMqttWrapperService {
 
 		byte[] rawSource = ByteHexUtil.hexStr2Bytes(content); // 解码
 		System.out.println("发送decode result : " + rawSource);
+		
 		String hexStr_2 = ByteHexUtil.bytes2HexStr(rawSource); // 编码
 		System.out.println("发送encode result : " + hexStr_2);
 		
 		//消息体对象
 		MqttMessage message;
-		if (type.equals("global_timer")) {
+		if (type.equals(MqttConfiguration.HELMET)) {
 			message = new MqttMessage(rawSource);
 		} else {
 			message = new MqttMessage(content.getBytes());

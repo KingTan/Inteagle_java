@@ -4,15 +4,17 @@
 	namespace="com.inteagle.apis.struct.dao.IdInfoStructMapper">
 	<resultMap id="BaseResultMap"
 		type="com.inteagle.apis.struct.entity.IdInfoStruct">
-		<result column="istruct_id" jdbcType="CHAR" property="userId" />
-		<result column="id" jdbcType="CHAR" property="roleId" />
-		<result column="x" jdbcType="VARCHAR" property="userName" />
-		<result column="y" jdbcType="VARCHAR" property="gender" />
-		<result column="t" jdbcType="VARCHAR" property="phone" />
+		<result column="istruct_id" jdbcType="CHAR" property="istructId" />
+		<result column="id" jdbcType="CHAR" property="id" />
+		<result column="x" jdbcType="VARCHAR" property="x" />
+		<result column="y" jdbcType="VARCHAR" property="y" />
+		<result column="t" jdbcType="VARCHAR" property="t" />
+		<result column="camera_id" jdbcType="VARCHAR" property="camera_id" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		istruct_id,id,x,y,t
+		istruct_id,id,x,y,t,camera_id,create_time
 	</sql>
 
 	<!--查询所有数据 -->
@@ -30,6 +32,7 @@
 				#{x,jdbcType=CHAR},
 				#{y,jdbcType=CHAR},
 				#{t,jdbcType=CHAR},
+				#{camera_id,jdbcType=CHAR},
 				current_time
 			)
 	</insert>

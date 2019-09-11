@@ -30,5 +30,7 @@ public class MyApplicationRunner implements ApplicationRunner {
 		iMqttSubscribe.subscribe("inclinometer/#");
 		// 订阅主题
 		iMqttSubscribe.subscribe("6lbr-up/#");
+		// 订阅主题
+		iMqttSubscribe.subscribe("6lbr-down/#");
 	}
 }

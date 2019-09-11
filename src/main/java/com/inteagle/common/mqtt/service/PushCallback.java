@@ -42,17 +42,12 @@ public class PushCallback implements MqttCallback {
 		if (topic.indexOf("inclinometer") != -1) {
 			String content = new String(mqttMessage.getPayload());
 			// 解析数据(圣一 -基坑数据)
-			System.out.println("content------" + content);
 			analyseData(content);
 
 		} else if (topic.indexOf("6lbr-server") != -1 || topic.indexOf("6lbr-up") != -1
-				|| topic.indexOf("6lbr-down") != -1) {
-
+				|| topic.indexOf("6lbr-down") != -1 ) {
 			// 解析数据(小慧-安全帽数据)
-			// AnalysisUtil.validate(mqttMessage.getPayload());
-
 			String hexStr_2 = ByteHexUtil.bytes2HexStr(mqttMessage.getPayload()); // 编码
-
 			AnalysisUtil.validate(hexStr_2, topic);
 		}
 
@@ -96,26 +91,34 @@ public class PushCallback implements MqttCallback {
 			log.info("num---------{}", num_str);
 			System.out.println("changNum-------" + Integer.parseInt(num_str));
 
-			for (int i = 0; i < num; i++) {
-				System.out
-						.println("p" + (i + 1) + "_x(7)-----" + dataStr.substring(23 + i * 7 * 3, 23 + i * 7 * 3 + 7));
-				System.out.println(
-						"p" + (i + 1) + "_y(7)-----" + dataStr.substring(23 + i * 7 * 3 + 7, 23 + i * 7 * 3 + 14));
-				System.out.println(
-						"p" + (i + 1) + "_z(7)-----" + dataStr.substring(23 + i * 7 * 3 + 14, 23 + i * 7 * 3 + 21));
-				System.out.println("--------------------");
+			String data_text = dataStr.substring(23);
+			System.out.println("data_text----" + data_text);
+			
+			System.out.println("data_text_length----" + data_text.length());
+			
+			try {
+				for (int i = 0; i < num; i++) {
+					System.out
+							.println("p" + (i + 1) + "_x(7)-----" + dataStr.substring(23 + i * 7 * 3, 23 + i * 7 * 3 + 7));
+					System.out.println(
+							"p" + (i + 1) + "_y(7)-----" + dataStr.substring(23 + i * 7 * 3 + 7, 23 + i * 7 * 3 + 14));
+					System.out.println(
+							"p" + (i + 1) + "_z(7)-----" + dataStr.substring(23 + i * 7 * 3 + 14, 23 + i * 7 * 3 + 21));
+					System.out.println("--------------------");
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
 		}
 	}
 
 	public static void main(String[] args) {
 
-		String test_data = "30303030303030313032303330343035303030363030333030312e3030303030322e3030303030332e3030303030342e3030303030352e3030303030362e3030303030372e3030303030382e3030303030392e30303000";
-//		String data_str = "00000001020304050006003001.000002.000003.000004.000005.000006.000007.000008.000009.000";
-		
-		String data_str=ByteHexUtil.hexStr2Str(test_data);
-		System.out.println("data_str--------"+data_str);
-		
+		String test_data = "31323334353637383234313531313039323031393031313030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e303030";
+
+		String data_str = ByteHexUtil.hexStr2Str(test_data);
+		System.out.println("data_str--------" + data_str);
+
 		analyseData(data_str);
 	}
 
