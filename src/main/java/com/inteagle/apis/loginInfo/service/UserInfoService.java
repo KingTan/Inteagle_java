@@ -1,6 +1,7 @@
 package com.inteagle.apis.loginInfo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,7 +73,6 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 		}
 		// 校验 验证码是否正确
 		redisService.validateIdentifyingCode(phone, IdentityCode, codeType);
-
 		// 错误次数
 		int error_counts = 0;
 		// 取出redis中的对象
@@ -87,9 +87,13 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 				}
 			}
 		}
-
+		Map<String, Object> result_map = Check_idCardAudit_util.check_idCardAudit(idCardNum, userName);
+		// 匹配结果
+		boolean identity_result = (boolean) result_map.get("result");
+		// 性别
+		String gender = result_map.get("gender").toString();
 		// 效验身份证号是否正确
-		if (!Check_idCardAudit_util.check_idCardAudit(idCardNum, userName)) {
+		if (!identity_result) {
 			error_counts++;
 			IdCardAuditEntity idCardAuditEntity = new IdCardAuditEntity(idCardNum, userName, phone, error_counts);
 			// 保存到redis(保存时间为一天)
@@ -105,6 +109,7 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 			userInfo.setPhone(phone);
 			userInfo.setIdCardNum(idCardNum);
 			userInfo.setPassword(password);
+			userInfo.setGender(gender);
 			// 设置默认头像
 			userInfo.setHeadPortrait("https://www.inteagle.com.cn/tag/default_icon.png");
 			int result = userInfoMapper.register(userInfo);
@@ -115,6 +120,21 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 			// TODO: handle exception
 		}
 		return new JsonResult<Object>(JsonResult.ERROR_MESSAGE);
+	}
+
+	/**
+	 * @description 修改用户信息
+	 * @author IVAn
+	 * @date 2019年9月18日 上午11:18:43
+	 * @param userInfo
+	 * @return
+	 */
+	public JsonResult<Object> updateUserInfo(UserInfo userInfo) {
+		int result = userInfoMapper.updateUserInfo(userInfo);
+		if (result > 0) {
+			return new JsonResult<Object>(JsonResult.SUCCESS, "修改成功");
+		}
+		return new JsonResult<>(JsonResult.ERROR, "修改失败");
 	}
 
 	/**

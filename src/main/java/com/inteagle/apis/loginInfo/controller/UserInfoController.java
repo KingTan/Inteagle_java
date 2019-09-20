@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +22,19 @@ public class UserInfoController {
 	private UserInfoService userInfoService;
 	
 	/**
+	 * @description 修改用户信息 
+	 * @author IVAn
+	 * @date 2019年9月18日 上午11:22:47
+	 * @param userInfo
+	 * @return
+	 */
+	@PostMapping("/updateUserInfo")
+	@ResponseBody
+	public JsonResult<Object> updateUserInfo(UserInfo userInfo) {
+		return userInfoService.updateUserInfo(userInfo);
+	}
+
+	/**
 	 * @description 通过手机号查询用户对象
 	 * @author IVAn
 	 * @date 2019年9月3日 上午10:47:37
@@ -30,7 +44,6 @@ public class UserInfoController {
 	@RequestMapping("/getUserByPhone")
 	@ResponseBody
 	public JsonResult<UserInfo> getUserInfoByPhoneNumber(String phoneNumber) {
-
 		return new JsonResult<UserInfo>(userInfoService.getUserInfoByPhone(phoneNumber));
 	}
 

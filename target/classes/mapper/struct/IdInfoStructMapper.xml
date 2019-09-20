@@ -22,7 +22,22 @@
 		select <include refid="Base_Column_List"/>
 		from idinfo_struct
 	</select>
-
+	
+	<!--查询指定安全帽ID的数据的集合  -->
+	<select id="getListById" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/>
+		FROM idinfo_struct
+		WHERE id=#{id}
+	</select>
+	
+	<!--查询对应安全帽ID指定时间段之内的数据  -->
+	<select id="getListByIdAndTimePeriod" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/>
+		FROM idinfo_struct
+		WHERE id=#{id} and 
+		create_time BETWEEN #{beginTime} AND #{endTime}
+	</select>
+	
 	<!--新增数据  -->
 	<insert id="insert" parameterType="com.inteagle.apis.struct.entity.IdInfoStruct">
 		INSERT INTO idinfo_struct
@@ -36,7 +51,4 @@
 				current_time
 			)
 	</insert>
-
-
-
 </mapper>

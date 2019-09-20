@@ -59,7 +59,10 @@ public class Check_idCardAudit_util {
 	 * @param name
 	 * @return
 	 */
-	public static boolean check_idCardAudit(String idCard, String name) {
+	public static Map<String, Object> check_idCardAudit(String idCard, String name) {
+
+		Map<String, Object> result_map = new HashMap<String, Object>();
+
 		String method = "GET";
 		String path = "/idcardAudit";
 		Map<String, String> headers = new HashMap<String, String>();
@@ -76,15 +79,25 @@ public class Check_idCardAudit_util {
 			JSONObject object = JSONObject.parseObject(JsonString);
 
 			// 验证结果
-			String result = object.getJSONObject("showapi_res_body").getString("msg");
-			if (result.equals("匹配")) {
-				return true;
+			int result = Integer.parseInt(object.getJSONObject("showapi_res_body").getString("ret_code"));
+			if (result == 0) {
+				String gender = object.getJSONObject("showapi_res_body").getString("sex");
+				if (gender.equals("M")) {
+					gender = "男";
+				} else if (gender.equals("WM")) {
+					gender = "女";
+				}
+				result_map.put("result", true);
+				result_map.put("gender", gender);
+				return result_map;
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		
+		result_map.put("result", false);
+		return result_map;
 	}
 
 }

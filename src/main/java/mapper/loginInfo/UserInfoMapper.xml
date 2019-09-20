@@ -26,6 +26,25 @@
   		edit_user_name,edit_date
   </sql>
   
+  <!--修改用户信息  -->
+   <update id="updateUserInfo" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+  	  UPDATE user_info
+  	  <trim prefix="set" suffixOverrides=",">
+  	  	<if test="roleId != null">role_id=#{roleId},</if>
+  	  	<if test="userName != null">user_name=#{userName},</if>
+  	  	<if test="gender != null">gender=#{gender},</if>
+  	  	<if test="phone != null">phone=#{phone},</if>
+  	  	<if test="idCardNum != null">id_card_num=#{idCardNum},</if>
+  	  	<if test="corpName != null">corp_name=#{corpName},</if>
+  	  	<if test="password != null">password=#{password},</if>
+  	  	<if test="email != null">email=#{email},</if>
+  	  	<if test="headPortrait != null">head_portrait=#{headPortrait},</if>
+  	  	<if test="editUserName != null">edit_user_name=#{editUserName},</if>
+  	  	<if test="editDate != null">now()</if>
+  	  </trim>
+  	  where user_id=#{userId}
+   </update>
+  
   <!--根据手机号修改密码  -->
   <update id="updatePwdByPhoneNum">
 	  UPDATE user_info
@@ -35,10 +54,11 @@
   
   <!-- 注册 -->
   <insert id="register" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
-  	INSERT INTO user_info (user_id,user_name,phone,id_card_num,password,head_portrait,in_date,edit_date)
+  	INSERT INTO user_info (user_id,user_name,gender,phone,id_card_num,password,head_portrait,in_date,edit_date)
 	VALUES(
 		REPLACE (uuid(), '-', ''),
 		#{userName},
+		#{gender},
 		#{phone},
 		#{idCardNum},
 		#{password},

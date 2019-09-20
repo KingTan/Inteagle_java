@@ -13,6 +13,15 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 	int insert(UserInfo record);
 
 	int insertSelective(UserInfo record);
+	
+	/**
+	 * @description 修改用户信息 
+	 * @author IVAn
+	 * @date 2019年9月18日 上午10:24:00
+	 * @param userinfo
+	 * @return
+	 */
+	int updateUserInfo(UserInfo userinfo);
 
 	/**
 	 * @description 通过手机号修改密码
