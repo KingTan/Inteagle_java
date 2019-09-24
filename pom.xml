@@ -305,9 +305,6 @@
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
 		</dependency>
-
-
-
 	</dependencies>
 
 	<build>

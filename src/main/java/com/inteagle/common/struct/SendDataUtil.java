@@ -26,26 +26,40 @@ public class SendDataUtil {
 	 * @return
 	 */
 	public static String sendElecticStart() {
+		String sof = "a5a5";
+		sof = ByteHexUtil.changeType(sof);
+		// CMD 16进制
+		// Integer.toHexString(0712)
+		String cmd = "02be";
+		cmd = ByteHexUtil.changeType(cmd);
+		String msg = "";
 		try {
-			String sof = "a5a5";
-			sof = ByteHexUtil.changeType(sof);
-
-			String len = "0000";
-			len = ByteHexUtil.changeType(len);
-
-			String cmd = "2006";
-			cmd = ByteHexUtil.changeType(cmd);
-
-			// 初始时间结构体对象
-			TimeSyncData timeSyncData = new TimeSyncData();
+			MotorStartStruct motorStartStruct = new MotorStartStruct();
+			short fre = 1;
+			motorStartStruct.setFre(fre);
+			short duty = 1;
+			motorStartStruct.setDuty(duty);
+			short steps = 3;
+			motorStartStruct.setSteps(steps);
+			short step_hold = 3;
+			motorStartStruct.setSteps_hold(step_hold);
+			short hold_time = 3;
+			motorStartStruct.setHold_time(hold_time);
+			short dir = 1;
+			motorStartStruct.setDir(dir);
 
 			// 转成字节数组
-			byte[] time_byte;
-			time_byte = JavaStruct.pack(timeSyncData);
+			byte[] start_byte = JavaStruct.pack(motorStartStruct);
+			String data = ByteHexUtil.bytes2HexStr(start_byte);
 
-			String data = ByteHexUtil.bytes2HexStr(time_byte);
-			// System.out.println("data------"+data);
+			// 10进制转成16进制
+			String len_hex = ByteHexUtil.intToHex(data.length());
+			System.out.println("len_hex----" + len_hex);
 
+			String len = ByteHexUtil.addZeroForNum(len_hex, 4);
+			System.out.println("len----" + len);
+
+			len = ByteHexUtil.changeType(len);
 			// 按照协议 截取到crc的16进制值
 			String crc = len + cmd + data;
 			// System.out.println("crc-------" + crc);
@@ -55,22 +69,18 @@ public class SendDataUtil {
 
 			// 传入字节数组 求出crc的校验值字节
 			byte crc_after = CRC8.calcCrc8(crc_byte);
-			// System.out.println("crc_after-校验值-----" + crc_after);
 
 			// 将校验值字节放入数组中 转成16进制数据
 			byte[] crc_after_array = { crc_after };
 			crc = ByteHexUtil.byte2HexStr(crc_after_array);
-			// System.out.println("crc_last------" + crc);
 
 			String eof = "5a5a";
 			eof = ByteHexUtil.changeType(eof);
 
-			String msg = sof + len + cmd + data + crc + eof;
-			System.out.println("msg-----" + msg);
+			msg = sof + len + cmd + data + crc + eof;
 			return msg;
-		} catch (StructException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-
 			e.printStackTrace();
 		}
 		return "";

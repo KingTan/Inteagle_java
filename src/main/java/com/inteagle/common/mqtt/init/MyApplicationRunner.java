@@ -26,7 +26,7 @@ public class MyApplicationRunner implements ApplicationRunner {
 		iMqttSubscribe.subscribe(mqttConfiguration.getTopic());
 		// 订阅主题
 		iMqttSubscribe.subscribe("6lbr-up/#");
-		// 订阅主题
-		iMqttSubscribe.subscribe("6lbr-down/#");
+//		// 订阅主题
+//		iMqttSubscribe.subscribe("6lbr-down/#");
 	}
 }
