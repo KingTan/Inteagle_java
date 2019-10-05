@@ -333,6 +333,13 @@ public class AnalysisUtil {
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
 					byte action = struct.getAction();
 					byte device_type = struct.getDevice_type();
+					
+					// 带符号位
+					short before_id = struct.getDevice_id();
+					
+					// 转换
+					int change_id = toUnsigned(before_id);
+					struct.setUnSignedId(change_id);
 
 					if (action == DeviceActionEnum.ONLINE.getValue()) {
 						// CAMERA_MASTER和BR上线时发送时间同步的mqtt消息
@@ -366,9 +373,16 @@ public class AnalysisUtil {
 				try {
 					HelmetSensorDataStruct struct = new HelmetSensorDataStruct();
 					byte[] b = ByteHexUtil.hexStr2Bytes(data);
-
+				
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
+					
+					// 带符号位
+					short before_id = struct.getId();
+					// 转换
+					int change_id = toUnsigned(before_id);
+					struct.setUnSignedId(change_id);
+
 					try {
 						// 保存到数据库
 						int result = analysisUtil.helmetSensorService.insertSensor(struct);
@@ -499,13 +513,13 @@ public class AnalysisUtil {
 
 	public static void main(String[] args) {
 		try {
-//			validate("a5a5000820060000016d99aad028085a5a", "6lbr-up");
+			validate("a5a5000520070001000098605a5a", "6lbr-up");
 
-			short num = -24760;
-			int num2 = toUnsigned(num);
-			System.out.println("num2----------" + num2);
-			short num3 = (short) num2;
-			System.out.println("num3---------" + num3);
+//			short num = -24760;
+//			int num2 = toUnsigned(num);
+//			System.out.println("num2----------" + num2);
+//			short num3 = (short) num2;
+//			System.out.println("num3---------" + num3);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -6,6 +6,7 @@
 		type="com.inteagle.apis.struct.entity.IdInfoStruct">
 		<result column="istruct_id" jdbcType="CHAR" property="istructId" />
 		<result column="id" jdbcType="CHAR" property="id" />
+		<result column="unsigned_id" jdbcType="INTEGER" property="unSignedId" />
 		<result column="x" jdbcType="VARCHAR" property="x" />
 		<result column="y" jdbcType="VARCHAR" property="y" />
 		<result column="t" jdbcType="VARCHAR" property="t" />
@@ -14,7 +15,7 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		istruct_id,id,x,y,t,camera_id,create_time
+		istruct_id,id,unsigned_id,x,y,t,camera_id,create_time
 	</sql>
 	
 	<!--删除所有安全帽位置数据  -->
@@ -49,6 +50,7 @@
 		VALUES(
 				REPLACE(UUID(),"-",""),
 				#{id,jdbcType=CHAR},
+				#{unSignedId},
 				#{x,jdbcType=CHAR},
 				#{y,jdbcType=CHAR},
 				#{t,jdbcType=CHAR},
