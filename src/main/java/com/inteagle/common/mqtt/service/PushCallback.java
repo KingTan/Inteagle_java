@@ -45,7 +45,7 @@ public class PushCallback implements MqttCallback {
 			analyseData(content);
 
 		} else if (topic.indexOf("6lbr-server") != -1 || topic.indexOf("6lbr-up") != -1
-				|| topic.indexOf("6lbr-down") != -1 ) {
+				|| topic.indexOf("6lbr-down") != -1) {
 			// 解析数据(小慧-安全帽数据)
 			String hexStr_2 = ByteHexUtil.bytes2HexStr(mqttMessage.getPayload()); // 编码
 			AnalysisUtil.validate(hexStr_2, topic);
@@ -91,23 +91,36 @@ public class PushCallback implements MqttCallback {
 			log.info("num---------{}", num_str);
 			System.out.println("changNum-------" + Integer.parseInt(num_str));
 
-			String data_text = dataStr.substring(23);
+			String data_text = dataStr.substring(23).trim();
 			System.out.println("data_text----" + data_text);
-			
+
 			System.out.println("data_text_length----" + data_text.length());
-			
+
 			try {
 				for (int i = 0; i < num; i++) {
-					System.out
-							.println("p" + (i + 1) + "_x(7)-----" + dataStr.substring(23 + i * 7 * 3, 23 + i * 7 * 3 + 7));
-					System.out.println(
-							"p" + (i + 1) + "_y(7)-----" + dataStr.substring(23 + i * 7 * 3 + 7, 23 + i * 7 * 3 + 14));
-					System.out.println(
-							"p" + (i + 1) + "_z(7)-----" + dataStr.substring(23 + i * 7 * 3 + 14, 23 + i * 7 * 3 + 21));
-					System.out.println("--------------------");
+
+					System.out.println(dataStr.substring(23 + i * 7, 23 + i * 7 + 7));
+
+//					System.out.println(
+//							"p" + (i + 1) + "_x(7)-----" + dataStr.substring(23 + i * 7 * 3, 23 + i * 7 * 3 + 7));
+//					System.out.println(
+//							"p" + (i + 1) + "_y(7)-----" + dataStr.substring(23 + i * 7 * 3 + 7, 23 + i * 7 * 3 + 14));
+//
+//					System.out.println(
+//							"p" + (i + 1) + "_z(7)-----" + dataStr.substring(23 + i * 7 * 3 + 14, 23 + i * 7 * 3 + 21));
+
+//					System.out.println("--------------------");
+
+					String dx = dataStr.substring(23 + i * 7, 23 + i * 7 + 7);
+
+					double df = Double.valueOf(dx);
+
+					System.out.println("df------" + df);
+
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
+				System.out.println(e.toString());
 			}
 		}
 	}
