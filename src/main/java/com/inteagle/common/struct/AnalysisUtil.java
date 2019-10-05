@@ -267,9 +267,9 @@ public class AnalysisUtil {
 					short before_id = struct.getId();
 					// 转换
 					int change_id = toUnsigned(before_id);
-
-					struct.setId((short) change_id);
-
+					struct.setUnSignedId(change_id);
+					
+					//安全帽ID
 					short helmet_id = struct.getId();
 					try {
 						if (analysisUtil.redisService.get("personId") != null) {
@@ -504,7 +504,6 @@ public class AnalysisUtil {
 			short num = -24760;
 			int num2 = toUnsigned(num);
 			System.out.println("num2----------" + num2);
-
 			short num3 = (short) num2;
 			System.out.println("num3---------" + num3);
 

@@ -7,6 +7,7 @@
 		type="com.inteagle.apis.struct.entity.HelmetSensorDataStruct">
 		<result column="sensor_id" jdbcType="CHAR" property="sensorId" />
 		<result column="device_id" jdbcType="CHAR" property="id" />
+		<result column="unsigned_device_id" jdbcType="INTEGER" property="unSignedId" />
 		<result column="vol" jdbcType="INTEGER" property="vol" />
 		<result column="temp" jdbcType="INTEGER" property="temp" />
 		<result column="helmet_on" jdbcType="INTEGER" property="helmet_on" />
@@ -17,7 +18,7 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		sensor_id,device_id,vol,temp,helmet_on,in_date,in_user_name,edit_user_name,edit_date
+		sensor_id,device_id,unsigned_device_id,vol,temp,helmet_on,in_date,in_user_name,edit_user_name,edit_date
 	</sql>
 
 	<!--删除所有电池数据  -->
@@ -41,6 +42,7 @@
 		VALUE(
 			replace(UUID(),'-',''),
 			#{id},
+			#{unSignedId},
 			#{vol},
 			#{temp},
 			#{helmet_on},

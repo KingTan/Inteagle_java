@@ -7,6 +7,7 @@
 		type="com.inteagle.apis.struct.entity.DeviceActionStruct">
 		<result column="record_id" jdbcType="CHAR" property="recordId" />
 		<result column="device_id" jdbcType="CHAR" property="device_id" />
+		<result column="unsigned_device_id" jdbcType="INTEGER" property="unSignedId" />
 		<result column="action" jdbcType="INTEGER" property="action" />
 		<result column="device_type" jdbcType="INTEGER" property="device_type" />
 		<result column="priority" jdbcType="INTEGER" property="priority" />
@@ -17,7 +18,7 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		record_id,device_id,action,device_type,priority,in_date,in_user_name,edit_user_name,edit_date
+		record_id,device_id,unsigned_device_id,action,device_type,priority,in_date,in_user_name,edit_user_name,edit_date
 	</sql>
 	
 	<delete id="delAllData">
@@ -36,6 +37,7 @@
 			(
 			replace(uuid(),'-',''),
 			#{device_id},
+			#{unSignedId},
 			#{action},
 			#{device_type},
 			#{priority},
