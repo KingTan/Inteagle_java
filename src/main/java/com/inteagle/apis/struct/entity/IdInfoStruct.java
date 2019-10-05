@@ -18,10 +18,14 @@ public class IdInfoStruct extends BaseEntity {
 	 * @Fields field:field:{todo}(序列化ID)
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
+	//带符号位(转换前)
 	@StructField(order = 0)
 	@Excel(name = "设备ID", width = 30, orderNum = "0", isImportField = "true_st")
 	public short id;
+	
+	//无符号位(转换后)
+	private int unSignedId;
 
 	@StructField(order = 1)
 	@Excel(name = "x_Data", width = 30, orderNum = "2", isImportField = "true_st")
@@ -47,6 +51,14 @@ public class IdInfoStruct extends BaseEntity {
 	@Excel(name = "创建时间", width = 40, orderNum = "5",exportFormat = "yyyy-MM-dd HH:mm:ss", isImportField = "true_st")
 	private Date createTime;
 	
+	public int getUnSignedId() {
+		return unSignedId;
+	}
+
+	public void setUnSignedId(int unSignedId) {
+		this.unSignedId = unSignedId;
+	}
+
 	public Date getCreateTime() {
 		return createTime;
 	}

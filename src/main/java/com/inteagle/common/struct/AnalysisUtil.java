@@ -136,7 +136,6 @@ public class AnalysisUtil {
 	// 解析 paylaod 数据
 	// byte[] playload
 	public static void validate(String hexStr, String topic) {
-		socketDataObj = new JSONObject();
 		System.out.println("hexStr-----" + hexStr);
 		try {
 			// SOF头
@@ -197,11 +196,6 @@ public class AnalysisUtil {
 				if (crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString()) || crc_ten == crc) {
 					log.info("crc校验成功....");
 
-					// socket 消息体对象
-					socketDataObj.put("topic", topic);
-					socketDataObj.put("hexStr", hexStr);
-					socketDataObj.put("cmd_ten", cmd_ten);
-
 					// 数据体
 					String data_str = data_crc_eof.substring(0, (data_crc_eof.length() - 6));
 
@@ -209,9 +203,6 @@ public class AnalysisUtil {
 
 					// JavaStruct解析数据、保存到数据库
 					getDataJson(data_str, cmd_ten, topic);
-
-					// 发送socket数据到展示页面
-					sendSocketData(socketDataObj);
 
 				} else {
 					log.error("CRC 校验失败.....");
@@ -244,8 +235,6 @@ public class AnalysisUtil {
 		// 找到对应的命令
 		String cmd_value = CMD.get(cmd_num);
 
-		socketDataObj.put("cmd_value", cmd_value);
-
 		if (cmd_value != null) {
 
 			// 根据不同命令 做不同处理
@@ -258,8 +247,6 @@ public class AnalysisUtil {
 					TimeSyncData timeSyncData = new TimeSyncData();
 					// 解析成javaStruct
 					JavaStruct.unpack(timeSyncData, b, ByteOrder.BIG_ENDIAN);
-					socketDataObj.put("TimeSyncData", timeSyncData);
-					socketDataObj.put("dataType", "TimeSyncData");
 
 				} catch (StructException e) {
 					// TODO Auto-generated catch block
@@ -276,12 +263,14 @@ public class AnalysisUtil {
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
 
+					// 带符号位
+					short before_id = struct.getId();
+					// 转换
+					int change_id = toUnsigned(before_id);
+
+					struct.setId((short) change_id);
+
 					short helmet_id = struct.getId();
-
-					// socket 消息体
-					socketDataObj.put("IdInfoStruct", struct);
-					socketDataObj.put("dataType", "IdInfoStruct");
-
 					try {
 						if (analysisUtil.redisService.get("personId") != null) {
 							String personId = analysisUtil.redisService.get("personId").toString();
@@ -328,10 +317,6 @@ public class AnalysisUtil {
 					// 缓存到redis
 					analysisUtil.redisService.set("personId", personId);
 
-					// 发送socket消息
-					socketDataObj.put("HelmetDiscernStruct", struct);
-					socketDataObj.put("dataType", "HelmetDiscernStruct");
-
 				} catch (StructException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -346,10 +331,6 @@ public class AnalysisUtil {
 
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
-					// 发送socket消息
-					socketDataObj.put("DeviceActionStruct", struct);
-					socketDataObj.put("dataType", "DeviceActionStruct");
-
 					byte action = struct.getAction();
 					byte device_type = struct.getDevice_type();
 
@@ -399,10 +380,6 @@ public class AnalysisUtil {
 						log.error(e.toString());
 					}
 
-					// 发送socket消息
-					socketDataObj.put("HelmetSensorDataStruct", struct);
-					socketDataObj.put("dataType", "HelmetSensorDataStruct");
-
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -418,10 +395,6 @@ public class AnalysisUtil {
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
 
-					// 发送socket消息
-					socketDataObj.put("MotorStartStruct", struct);
-					socketDataObj.put("dataType", "MotorStartStruct");
-
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -432,8 +405,6 @@ public class AnalysisUtil {
 				// 方法2 JavaStruct解析
 				try {
 					System.err.println("电机停止.....");
-					// 发送socket消息
-					socketDataObj.put("dataType", "MotorStopStruct");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -521,24 +492,22 @@ public class AnalysisUtil {
 //
 //	}
 
-	// 发送socket数据
-	public static void sendSocketData(Object dataObject) {
-		try {
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("data", dataObject);
-			jsonObject.put("messageType", "mqtt");
-			jsonObject.put("invoke", "receive");
-			WebSocketServer.sendInfo(JSONObject.toJSONString(jsonObject), "showWindow");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			log.error("socket发送mqtt数据失败...");
-		}
+	// 将带符号位的short转换成无符号位的int
+	public static int toUnsigned(short s) {
+		return s & 0x0FFFF;
 	}
 
 	public static void main(String[] args) {
 		try {
-			validate("a5a5000e225cb40600000a8f0000001800000000d85a5a", "6lbr-up");
+//			validate("a5a5000820060000016d99aad028085a5a", "6lbr-up");
+
+			short num = -24760;
+			int num2 = toUnsigned(num);
+			System.out.println("num2----------" + num2);
+
+			short num3 = (short) num2;
+			System.out.println("num3---------" + num3);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

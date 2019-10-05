@@ -27,10 +27,13 @@ public class HelmetSensorDataStruct extends BaseEntity {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// 设备ID
+	// 设备ID(带符号位)
 	@StructField(order = 0)
 	@Excel(name = "设备ID", width = 30, orderNum = "0", isImportField = "true_st")
 	private short id;
+	
+	//无符号位的ID
+	private int unSignedId;
 
 	// 电压(电压低于2600m/f时 电量不足)
 	@StructField(order = 1)
@@ -56,6 +59,14 @@ public class HelmetSensorDataStruct extends BaseEntity {
 	@Excel(name = "创建时间", width = 30, orderNum = "4",exportFormat = "yyyy-MM-dd HH:mm:ss", isImportField = "true_st")
 	private Date inDate;
 	
+	public int getUnSignedId() {
+		return unSignedId;
+	}
+
+	public void setUnSignedId(int unSignedId) {
+		this.unSignedId = unSignedId;
+	}
+
 	public Date getInDate() {
 		return inDate;
 	}

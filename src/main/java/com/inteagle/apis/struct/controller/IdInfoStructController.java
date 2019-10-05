@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -74,7 +75,7 @@ public class IdInfoStructController {
 	 * @param limit
 	 * @return
 	 */
-	@RequestMapping("/getDeviceActionList")
+	@PostMapping("/getDeviceActionList")
 	@ResponseBody
 	public JsonResult<PageInfo<DeviceActionStruct>> getDeviceActionList(Integer page, Integer limit) {
 		PageUtil.setPage(page, limit);
@@ -121,7 +122,7 @@ public class IdInfoStructController {
 	 * @param limit
 	 * @return
 	 */
-	@RequestMapping("/layuiTableData")
+	@PostMapping("/layuiTableData")
 	@ResponseBody
 	public JsonResult<PageInfo<HelmetSensorDataStruct>> getlayuiTableData(String deviceId, Integer page,
 			Integer limit) {
@@ -152,7 +153,7 @@ public class IdInfoStructController {
 	 * @param limit
 	 * @return
 	 */
-	@RequestMapping("/getHelmetData")
+	@PostMapping("/getHelmetData")
 	@ResponseBody
 	public JsonResult<PageInfo<IdInfoStruct>> getHelmetData(Integer page, Integer limit) {
 		PageUtil.setPage(page, limit);

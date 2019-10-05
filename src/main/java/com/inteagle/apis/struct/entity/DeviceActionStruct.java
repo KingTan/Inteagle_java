@@ -33,11 +33,22 @@ public class DeviceActionStruct extends BaseEntity {
 	@StructField(order = 2)
 	private byte priority;
 	
-	//设备ID
+	//设备ID(带符号位、转换前)
 	@StructField(order = 3)
 	private short device_id;
 	
+	//无符号位(转换后)
+	private int unSignedId;
+	
 	private String recordId;
+
+	public int getUnSignedId() {
+		return unSignedId;
+	}
+
+	public void setUnSignedId(int unSignedId) {
+		this.unSignedId = unSignedId;
+	}
 
 	public short getDevice_id() {
 		return device_id;
