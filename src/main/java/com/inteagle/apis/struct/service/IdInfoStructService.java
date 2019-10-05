@@ -13,6 +13,16 @@ public class IdInfoStructService extends AbstractService<IdInfoStruct, IdInfoStr
 	private IdInfoStructMapper idInfoStructMapper;
 
 	/**
+	 * @description 删除所有安全帽位置数据
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:46:11
+	 * @return
+	 */
+	public int delAllIdInfoData() {
+		return idInfoStructMapper.delAllIdInfoData();
+	}
+
+	/**
 	 * @description 查询对应安全帽指定时间段之内的数据
 	 * @author IVAn
 	 * @date 2019年9月20日 上午10:55:39

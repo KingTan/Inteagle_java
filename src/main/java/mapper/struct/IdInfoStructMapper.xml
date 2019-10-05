@@ -16,7 +16,12 @@
 	<sql id="Base_Column_List">
 		istruct_id,id,x,y,t,camera_id,create_time
 	</sql>
-
+	
+	<!--删除所有安全帽位置数据  -->
+	<delete id="delAllIdInfoData">
+		DELETE FROM idinfo_struct;
+	</delete>
+	
 	<!--查询所有数据 -->
 	<select id="getAllIdInfoStructList" resultMap="BaseResultMap">
 		select <include refid="Base_Column_List"/>

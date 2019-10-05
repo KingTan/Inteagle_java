@@ -20,6 +20,11 @@
 		sensor_id,device_id,vol,temp,helmet_on,in_date,in_user_name,edit_user_name,edit_date
 	</sql>
 
+	<!--删除所有电池数据  -->
+	<delete id="delAllSensorData">
+		DELETE FROM device_sensor;
+	</delete>
+
 	<!--根据 设备ID 查询该设备的电池情况  -->
 	<select id="selectAllHelmetSensorDataStructListById" resultMap="BaseResultMap">
 		select <include refid="Base_Column_List"/>

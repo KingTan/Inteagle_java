@@ -14,7 +14,18 @@ public class HelmetSensorService extends AbstractService<HelmetSensorDataStruct,
 
 	@Autowired
 	private HelmetSensorMapper helmetSensorMapper;
-
+	
+	
+	/**
+	 * @description 删除所有电池数据 
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:33:47
+	 * @return
+	 */
+	public int delAllSensorData(){
+		return helmetSensorMapper.delAllSensorData();
+	}
+	
 	/**
 	 * @description 添加设备 电视情况数据
 	 * @author IVAn

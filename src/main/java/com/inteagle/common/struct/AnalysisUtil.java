@@ -354,20 +354,23 @@ public class AnalysisUtil {
 					byte device_type = struct.getDevice_type();
 
 					if (action == DeviceActionEnum.ONLINE.getValue()) {
-						if (device_type == DeviceTypeEnum.DEVICE_TYPE_CAMERA_MASTER.getValue()) {
-							System.out.println("-----设备上线-----");
-							System.out.println("上线设备为---DEVICE_TYPE_CAMERA_MASTER----");
+						// CAMERA_MASTER和BR上线时发送时间同步的mqtt消息
+						if (device_type == DeviceTypeEnum.DEVICE_TYPE_CAMERA_MASTER.getValue()
+								|| device_type == DeviceTypeEnum.DEVICE_TYPE_6LBR.getValue()) {
+							log.info("-----设备上线-----");
+							log.info("上线设备为---DEVICE_TYPE_CAMERA_MASTER----");
 							topic = topic.replace("up", "down");
 							// 发送时间同步的消息到对应主题的设备
 							analysisUtil.iMqttWrapperServiceImpl.publish(topic, SendDataUtil.sendTimeSyncData(),
 									MqttConfiguration.HELMET);
-							try {
-								// 保存到数据库
-								int result = analysisUtil.deviceActionService.insert(struct);
-							} catch (Exception e) {
-								// TODO: handle exception
-								log.error(e.toString());
-							}
+						}
+						// 收到设备行为数据即保存数据库
+						try {
+							// 保存到数据库
+							analysisUtil.deviceActionService.insert(struct);
+						} catch (Exception e) {
+							// TODO: handle exception
+							log.error(e.toString());
 						}
 					}
 

@@ -13,7 +13,17 @@ public class DeviceActionService extends AbstractService<DeviceActionStruct, Dev
 
 	@Autowired
 	private DeviceActionMapper deviceActionMapper;
-
+	
+	/**
+	 * @description 删除所有数据 
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:28:30
+	 * @return
+	 */
+	public int delAllData() {
+		return deviceActionMapper.delAllData();
+	}
+	
 	/**
 	 * @description 添加设备 设备行为数据
 	 * @author IVAn

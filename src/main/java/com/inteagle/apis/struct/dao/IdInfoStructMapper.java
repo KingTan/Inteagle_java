@@ -10,7 +10,16 @@ import com.inteagle.common.base.dao.BaseMapper;
 
 @Repository
 public interface IdInfoStructMapper extends BaseMapper<IdInfoStruct> {
-
+	
+	
+	/**
+	 * @description 删除所有安全帽位置数据 
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:44:32
+	 * @return
+	 */
+	int delAllIdInfoData();
+	
 	/**
 	 * @description 查询对应安全帽ID 指定时间段内的数据
 	 * @author IVAn

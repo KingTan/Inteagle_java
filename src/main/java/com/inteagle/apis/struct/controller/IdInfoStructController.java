@@ -36,6 +36,24 @@ public class IdInfoStructController {
 	@Autowired
 	private DeviceActionService deviceActionService;
 
+	/**
+	 * @description 删除所有设备行为数据
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:31:05
+	 * @return
+	 */
+	@RequestMapping("/delDeviceAction")
+	@ResponseBody
+	public JsonResult<Integer> delDeviceAction() {
+		return new JsonResult<Integer>(deviceActionService.delAllData());
+	}
+
+	/**
+	 * @description 添加设备行为数据
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:28:49
+	 * @return
+	 */
 	@RequestMapping("/addDeviceAction")
 	@ResponseBody
 	public JsonResult<Integer> addDeviceAction() {
@@ -48,6 +66,14 @@ public class IdInfoStructController {
 		return new JsonResult<Integer>(deviceActionService.insert(deviceActionStruct));
 	}
 
+	/**
+	 * @description 查询设备行为数据列表
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:29:04
+	 * @param page
+	 * @param limit
+	 * @return
+	 */
 	@RequestMapping("/getDeviceActionList")
 	@ResponseBody
 	public JsonResult<PageInfo<DeviceActionStruct>> getDeviceActionList(Integer page, Integer limit) {
@@ -56,6 +82,24 @@ public class IdInfoStructController {
 		return PageUtil.getPageJsonResult(list);
 	}
 
+	/**
+	 * @description 删除所有电池数据
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:43:36
+	 * @return
+	 */
+	@RequestMapping("/delHelmetSensorData")
+	@ResponseBody
+	public JsonResult<Integer> delHelmetSensorData() {
+		return new JsonResult<Integer>(helmetSensorService.delAllSensorData());
+	}
+
+	/**
+	 * @description 添加安全帽电池电压数据
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:29:20
+	 * @return
+	 */
 	@RequestMapping("/addHelmetSensor")
 	@ResponseBody
 	public JsonResult<Integer> addHelmetSensor() {
@@ -68,6 +112,15 @@ public class IdInfoStructController {
 		return new JsonResult<Integer>(helmetSensorService.insertSensor(helmetSensorDataStruct));
 	}
 
+	/**
+	 * @description 查询安全帽电池电压数据列表
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:29:37
+	 * @param deviceId
+	 * @param page
+	 * @param limit
+	 * @return
+	 */
 	@RequestMapping("/layuiTableData")
 	@ResponseBody
 	public JsonResult<PageInfo<HelmetSensorDataStruct>> getlayuiTableData(String deviceId, Integer page,
@@ -75,6 +128,20 @@ public class IdInfoStructController {
 		PageUtil.setPage(page, limit);
 		List<HelmetSensorDataStruct> list = helmetSensorService.selectAllHelmetSensorDataStructListById(deviceId);
 		return PageUtil.getPageJsonResult(list);
+	}
+
+	/**
+	 * @description 删除所有安全帽位置数据
+	 * @author IVAn
+	 * @date 2019年10月4日 上午10:47:17
+	 * @param page
+	 * @param limit
+	 * @return
+	 */
+	@RequestMapping("/delAllIdInfoData")
+	@ResponseBody
+	public JsonResult<Integer> delAllIdInfoData(Integer page, Integer limit) {
+		return new JsonResult<Integer>(idInfoStructService.delAllIdInfoData());
 	}
 
 	/**

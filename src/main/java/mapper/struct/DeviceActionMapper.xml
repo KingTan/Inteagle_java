@@ -20,6 +20,10 @@
 		record_id,device_id,action,device_type,priority,in_date,in_user_name,edit_user_name,edit_date
 	</sql>
 	
+	<delete id="delAllData">
+		DELETE FROM device_action
+	</delete>
+	
 	<select id="getDeviceActionList" resultMap="BaseResultMap">
 		select <include refid="Base_Column_List"/>
 		from device_action
