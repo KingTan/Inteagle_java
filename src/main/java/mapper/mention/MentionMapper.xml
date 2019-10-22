@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inteagle.apis.mention.dao.MentionMapper">
+  <resultMap id="BaseResultMap" type="com.inteagle.apis.mention.entity.Mention">
+    <id column="mention_id" jdbcType="CHAR" property="mentionId" />
+    <result column="device_id" jdbcType="CHAR" property="deviceId" />
+    <result column="device_type" jdbcType="CHAR" property="deviceType" />
+    <result column="mention_text" jdbcType="VARCHAR" property="mentionText" />
+    <result column="mention_status" jdbcType="VARCHAR" property="mentionStatus" />
+    <result column="solved_id" jdbcType="CHAR" property="solvedId" />
+    <result column="mention_time" jdbcType="TIMESTAMP" property="mentionTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    mention_id, device_id, device_type, mention_text, mention_status, solved_id, mention_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from mention
+    where mention_id = #{mentionId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from mention
+    where mention_id = #{mentionId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.inteagle.apis.mention.entity.Mention">
+    insert into mention (mention_id, device_id, device_type, 
+      mention_text, mention_status, solved_id, 
+      mention_time)
+    values (#{mentionId,jdbcType=CHAR}, #{deviceId,jdbcType=CHAR}, #{deviceType,jdbcType=CHAR}, 
+      #{mentionText,jdbcType=VARCHAR}, #{mentionStatus,jdbcType=VARCHAR}, #{solvedId,jdbcType=CHAR}, 
+      #{mentionTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.inteagle.apis.mention.entity.Mention">
+    insert into mention
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mentionId != null">
+        mention_id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="deviceType != null">
+        device_type,
+      </if>
+      <if test="mentionText != null">
+        mention_text,
+      </if>
+      <if test="mentionStatus != null">
+        mention_status,
+      </if>
+      <if test="solvedId != null">
+        solved_id,
+      </if>
+      <if test="mentionTime != null">
+        mention_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mentionId != null">
+        #{mentionId,jdbcType=CHAR},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=CHAR},
+      </if>
+      <if test="deviceType != null">
+        #{deviceType,jdbcType=CHAR},
+      </if>
+      <if test="mentionText != null">
+        #{mentionText,jdbcType=VARCHAR},
+      </if>
+      <if test="mentionStatus != null">
+        #{mentionStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="solvedId != null">
+        #{solvedId,jdbcType=CHAR},
+      </if>
+      <if test="mentionTime != null">
+        #{mentionTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.inteagle.apis.mention.entity.Mention">
+    update mention
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=CHAR},
+      </if>
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=CHAR},
+      </if>
+      <if test="mentionText != null">
+        mention_text = #{mentionText,jdbcType=VARCHAR},
+      </if>
+      <if test="mentionStatus != null">
+        mention_status = #{mentionStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="solvedId != null">
+        solved_id = #{solvedId,jdbcType=CHAR},
+      </if>
+      <if test="mentionTime != null">
+        mention_time = #{mentionTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where mention_id = #{mentionId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.inteagle.apis.mention.entity.Mention">
+    update mention
+    set device_id = #{deviceId,jdbcType=CHAR},
+      device_type = #{deviceType,jdbcType=CHAR},
+      mention_text = #{mentionText,jdbcType=VARCHAR},
+      mention_status = #{mentionStatus,jdbcType=VARCHAR},
+      solved_id = #{solvedId,jdbcType=CHAR},
+      mention_time = #{mentionTime,jdbcType=TIMESTAMP}
+    where mention_id = #{mentionId,jdbcType=CHAR}
+  </update>
+</mapper>

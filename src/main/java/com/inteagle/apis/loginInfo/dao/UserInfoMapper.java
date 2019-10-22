@@ -10,18 +10,34 @@ import com.inteagle.apis.loginInfo.entity.UserInfo;
 
 @Repository
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
-	int insert(UserInfo record);
 
-	int insertSelective(UserInfo record);
-	
 	/**
-	 * @description 修改用户信息 
+	 * @description 通过appid查询用户信息
+	 * @author IVAn
+	 * @date 2019年10月12日 下午5:09:10
+	 * @param appId
+	 * @return
+	 */
+	UserInfo getUserInfoByOpenId(String openId);
+
+	/**
+	 * @description 修改用户信息
 	 * @author IVAn
 	 * @date 2019年9月18日 上午10:24:00
 	 * @param userinfo
 	 * @return
 	 */
 	int updateUserInfo(UserInfo userinfo);
+
+	/**
+	 * @description 根据用户ID修改openid
+	 * @author IVAn
+	 * @date 2019年10月15日 下午5:39:52
+	 * @param userId
+	 * @param openId
+	 * @return
+	 */
+	int updateOpenId(@Param("userId") String userId, @Param("openId") String openId);
 
 	/**
 	 * @description 通过手机号修改密码
@@ -34,13 +50,22 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 	int updatePwdByPhoneNum(@Param("phone") String phone, @Param("newPwd") String newPwd);
 
 	/**
-	 * @description 注册
+	 * @description PC端 注册
 	 * @author IVAn
 	 * @date 2019年8月27日 下午6:05:17
 	 * @param userInfo
 	 * @return
 	 */
 	int register(UserInfo userInfo);
+
+	/**
+	 * @description 微信小程序端 注册
+	 * @author IVAn
+	 * @date 2019年10月16日 上午9:53:30
+	 * @param userInfo
+	 * @return
+	 */
+	int registerForMiniProgram(UserInfo userInfo);
 
 	/**
 	 * @description 查询所有用户列表
@@ -77,5 +102,9 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 	 * @return
 	 */
 	UserInfo getUserInfoByPhone(String phone);
+
+	int insert(UserInfo record);
+
+	int insertSelective(UserInfo record);
 
 }

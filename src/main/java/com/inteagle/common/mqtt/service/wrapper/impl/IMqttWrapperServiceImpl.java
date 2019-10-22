@@ -56,7 +56,7 @@ public class IMqttWrapperServiceImpl implements IMqttWrapperService {
 			// || !mqttClient.getClientId().equals(mqttConfiguration.getSubscribeClientId())
 
 			if (mqttClient == null || !mqttClient.isConnected()) {
-				System.err.println("重新连接------");
+//				System.err.println("重新连接------");
 				mqttClient = subscribeConn.getConn();
 			}
 			mqttClient.publish(topic, message);

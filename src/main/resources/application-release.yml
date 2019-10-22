@@ -1,0 +1,46 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: Inteagle
+  datasource:
+    url: jdbc:mysql://localhost:3306/inteagle?characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: inteagle2019
+    driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    host: 127.0.0.1
+    password: inteagle2019
+    port: 6379
+    jedis:
+      pool:
+        max-idle: 100
+        min-idle: 1
+        max-active: 1000
+        max-wait: -1
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+mybatis:
+  mapper-locations: classpath:mapper/*/*.xml
+  type-aliases-package: com.inteagle.*.entity
+logging:
+  path: F:\logs\Inteagle
+  config: classpath:logback.xml
+  level:
+    xatu.zsl: debug
+    org.springfromework.web: info
+    org.hibernate: error
+mqtt:
+  host: tcp://120.24.102.197:1883
+  username: admin
+  password: public
+  topic: 6lbr-server/#
+  qos: 2
+  hosts: tcp://120.24.102.197:1883
+  connectionTimeout: 10
+  keepAliveInterval: 10
+  publishClientId: my_publish_01
+  subscribeClientId: my_subscribe_01

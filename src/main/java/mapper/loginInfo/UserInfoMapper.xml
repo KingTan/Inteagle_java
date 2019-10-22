@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.inteagle.apis.loginInfo.entity.UserInfo">
     <result column="user_id" jdbcType="CHAR" property="userId" />
     <result column="role_id" jdbcType="CHAR" property="roleId" />
+    <result column="openId" jdbcType="CHAR" property="openId" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="gender" jdbcType="VARCHAR" property="gender" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
@@ -21,52 +22,18 @@
   </resultMap>
   
   <sql id="Base_Column_List">
-  		user_id,role_id,user_name,gender,phone,id_card_num,corp_name,password,
+  		user_id,role_id,openId,user_name,gender,phone,id_card_num,corp_name,password,
   		email,head_portrait,user_status,user_isonline,in_date,in_user_name,
   		edit_user_name,edit_date
   </sql>
   
-  <!--修改用户信息  -->
-   <update id="updateUserInfo" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
-  	  UPDATE user_info
-  	  <trim prefix="set" suffixOverrides=",">
-  	  	<if test="roleId != null">role_id=#{roleId},</if>
-  	  	<if test="userName != null">user_name=#{userName},</if>
-  	  	<if test="gender != null">gender=#{gender},</if>
-  	  	<if test="phone != null">phone=#{phone},</if>
-  	  	<if test="idCardNum != null">id_card_num=#{idCardNum},</if>
-  	  	<if test="corpName != null">corp_name=#{corpName},</if>
-  	  	<if test="password != null">password=#{password},</if>
-  	  	<if test="email != null">email=#{email},</if>
-  	  	<if test="headPortrait != null">head_portrait=#{headPortrait},</if>
-  	  	<if test="editUserName != null">edit_user_name=#{editUserName},</if>
-  	  	<if test="editDate != null">now()</if>
-  	  </trim>
-  	  where user_id=#{userId}
-   </update>
+  <!--通过openId查询用户信息  -->
+  <select id="getUserInfoByOpenId" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/>
+  	from user_info
+  	where openId=#{openId}
+  </select>
   
-  <!--根据手机号修改密码  -->
-  <update id="updatePwdByPhoneNum">
-	  UPDATE user_info
-	  SET `password` = #{newPwd}
-	  WHERE phone = #{phone}
-  </update>
-  
-  <!-- 注册 -->
-  <insert id="register" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
-  	INSERT INTO user_info (user_id,user_name,gender,phone,id_card_num,password,head_portrait,in_date,edit_date)
-	VALUES(
-		REPLACE (uuid(), '-', ''),
-		#{userName},
-		#{gender},
-		#{phone},
-		#{idCardNum},
-		#{password},
-		#{headPortrait},
-		now(),
-		now()
-	)
-  </insert>
   
   <!--通过手机号查询用户对象  -->
   <select id="getUserInfoByPhone" resultMap="BaseResultMap">
@@ -106,14 +73,82 @@
   		from user_info
   </select>
   
+  <!--修改openId  -->
+  <update id="updateOpenId">
+  		UPDATE user_info
+		SET openId = #{openId}
+		WHERE
+		user_id = #{userId}
+  </update>
+  
+  
+  <!--修改用户信息  -->
+   <update id="updateUserInfo" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+  	  UPDATE user_info
+  	  <trim prefix="set" suffixOverrides=",">
+  	  	<if test="roleId != null">role_id=#{roleId},</if>
+  	  	<if test="openId != null">openId=#{openId},</if>
+  	  	<if test="userName != null">user_name=#{userName},</if>
+  	  	<if test="gender != null">gender=#{gender},</if>
+  	  	<if test="phone != null">phone=#{phone},</if>
+  	  	<if test="idCardNum != null">id_card_num=#{idCardNum},</if>
+  	  	<if test="corpName != null">corp_name=#{corpName},</if>
+  	  	<if test="password != null">password=#{password},</if>
+  	  	<if test="email != null">email=#{email},</if>
+  	  	<if test="headPortrait != null">head_portrait=#{headPortrait},</if>
+  	  	<if test="editUserName != null">edit_user_name=#{editUserName},</if>
+  	  	<if test="editDate != null">now()</if>
+  	  </trim>
+  	  where user_id=#{userId}
+   </update>
+  	
+  <!--根据手机号修改密码  -->
+  <update id="updatePwdByPhoneNum">
+	  UPDATE user_info
+	  SET `password` = #{newPwd}
+	  WHERE phone = #{phone}
+  </update>
+  
+  <!-- 注册  PC端-->
+  <insert id="register" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+  	INSERT INTO user_info (user_id,user_name,gender,phone,id_card_num,password,head_portrait,in_date,edit_date)
+	VALUES(
+		REPLACE (uuid(), '-', ''),
+		#{userName},
+		#{gender},
+		#{phone},
+		#{idCardNum},
+		#{password},
+		#{headPortrait},
+		now(),
+		now()
+	)
+  </insert>
+  
+  <!--微信小程序端注册  -->
+  <insert id="registerForMiniProgram" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+  		INSERT INTO user_info (user_id,openId,user_name,gender,phone,password,head_portrait,in_date,edit_date)
+		VALUES(
+			#{userId},
+			#{openId},
+			#{userName},
+			#{gender},
+			#{phone},
+			#{password},
+			#{headPortrait},
+			now(),
+			now()
+		)
+  </insert>
+  
   <insert id="insert" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
-    insert into user_info (user_id, role_id, user_name, 
+    insert into user_info (user_id, role_id,openId user_name, 
       gender, phone, id_card_num, 
       corp_name, password, email, 
       head_portrait, user_status, user_isonline, 
       in_date, in_user_name, edit_user_name, 
       edit_date)
-    values (#{userId,jdbcType=CHAR}, #{roleId,jdbcType=CHAR}, #{userName,jdbcType=VARCHAR}, 
+    values (#{userId,jdbcType=CHAR}, #{roleId,jdbcType=CHAR},#{openId,jdbcType=CHAR}, #{userName,jdbcType=VARCHAR}, 
       #{gender,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{idCardNum,jdbcType=VARCHAR}, 
       #{corpName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{headPortrait,jdbcType=VARCHAR}, #{userStatus,jdbcType=VARCHAR}, #{userIsonline,jdbcType=VARCHAR}, 
@@ -129,6 +164,9 @@
       </if>
       <if test="roleId != null">
         role_id,
+      </if>
+      <if test="openId != null">
+        openId,
       </if>
       <if test="userName != null">
         user_name,
@@ -179,6 +217,9 @@
       </if>
       <if test="roleId != null">
         #{roleId,jdbcType=CHAR},
+      </if>
+       <if test="appId != null">
+        #{openId,jdbcType=CHAR},
       </if>
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},

@@ -40,12 +40,13 @@ public class ByteHexUtil {
 //
 //		// CMD反解析
 //		// 10进制转16进制
-//		String cmd_six = intToHex(307);
-//		cmd_six = addZeroForNum(cmd_six, 4);
-//		System.out.println("cmd_six-------" + cmd_six);
+		String cmd_six = intToHex(704); //命令值
+		cmd_six = addZeroForNum(cmd_six, 4);
+		System.out.println("cmd_six-------" + cmd_six);
+		
 //		// 16进制转10进制
-//		long cmd_ten_ad = Long.parseLong(cmd_six, 16) & 0x0fff;
-//		System.out.println("cmd_ten_ad-----" + cmd_ten_ad);
+		long cmd_ten_ad = Long.parseLong(cmd_six, 16) & 0x0fff;
+		System.out.println("cmd_ten_ad-----" + cmd_ten_ad);
 
 	}
 

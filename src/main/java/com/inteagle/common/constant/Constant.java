@@ -22,6 +22,11 @@ public class Constant {
 	// 项目名
 	public static String project;
 
+	// 小程序信息
+	public static String appid;
+
+	public static String secret;
+
 	// 项目盘符
 	public static String drive;
 
@@ -42,7 +47,7 @@ public class Constant {
 
 	// 真实验证码开关
 	public static boolean IdentifyingCodeFlag;
-	
+
 	// 真实验证码有效时间
 	public static int identityCodeMinutes;
 
@@ -57,6 +62,8 @@ public class Constant {
 			project = root.elementText("project");
 			drive = root.elementText("drive");
 			folder = root.elementText("folder");
+			appid = root.elementText("appid");
+			secret = root.elementText("secret");
 			baseUrl = server + folder + "/";
 			basePath = drive + folder + File.separator;
 			debugFilterFlag = Boolean.parseBoolean(root.elementText("debugFilterFlag"));

@@ -130,6 +130,76 @@ public class HttpUtil {
 	public static String doBeanPost(String url, Object bean) {
 		return doMapPost(url, BeanUtil.beanToMap(bean));
 	}
+	
+	/**
+	 * get请求(用于key-value格式的参数)
+	 * 
+	 * @param url:请求路径
+	 * @param paramMap：键值对参数
+	 * @return String：json返回值
+	 * @author IVAn
+	 * @createDate 2018年6月23日 上午9:39:44
+	 */
+	public static String doMapGet(String url, Map<?, ?> paramMap) {
+		CloseableHttpClient httpClient = null;
+		CloseableHttpResponse response = null;
+		BufferedReader in = null;
+		try {
+			// 定义HttpClient
+			httpClient = HttpClients.createDefault();
+			// 实例化HTTP方法
+			HttpGet httpGet = new HttpGet(url);
+			// 创建HttpClient
+			httpClient = HttpClients.createDefault();
+			// 绑定参数
+			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+			for (@SuppressWarnings("rawtypes")
+			Iterator iter = paramMap.keySet().iterator(); iter.hasNext();) {
+				String name = (String) iter.next();
+				String value = String.valueOf(paramMap.get(name));
+				nvps.add(new BasicNameValuePair(name, value));
+			}
+//			httpGet.setEntity(new UrlEncodedFormEntity(nvps, CHATSET));
+			// 发送请求并获取响应
+			response = httpClient.execute(httpGet);
+			int statusCode = response.getStatusLine().getStatusCode();
+			// 请求成功
+			if (statusCode == HttpStatus.SC_OK) {
+				in = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), CHATSET));
+				StringBuffer sb = new StringBuffer("");
+				String line = "";
+				String NL = System.getProperty("line.separator");
+				while ((line = in.readLine()) != null) {
+					sb.append(line + NL);
+				}
+				in.close();
+				return sb.toString();
+			}
+			// 请求失败
+			else {
+				HttpException
+						.throwException("request url failed, status code : " + statusCode + ", url address : " + url);
+			}
+		} catch (IOException e) {
+			HttpException.throwException(e);
+		} finally {
+			try {
+				if (httpClient != null) {
+					httpClient.close();
+				}
+				if (response != null) {
+					response.close();
+				}
+				if (in != null) {
+					in.close();
+				}
+			} catch (IOException e) {
+				HttpException.throwException(e);
+			}
+		}
+		return null;
+	}
+	
 
 	/**
 	 * post请求(用于key-value格式的参数)

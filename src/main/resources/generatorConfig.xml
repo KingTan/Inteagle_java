@@ -5,14 +5,14 @@
 <generatorConfiguration>
 
 	<classPathEntry
-		location="F:\Maven_Repository\mysql\mysql-connector-java\8.0.15\mysql-connector-java-8.0.15.jar" />
+		location="F:\Maven_Repository\mysql\mysql-connector-java\5.1.35\mysql-connector-java-5.1.35.jar" />
 	<context id="DB2Tables" targetRuntime="MyBatis3">
 		<commentGenerator>
 			<property name="suppressDate" value="true" />
 			<property name="suppressAllComments" value="true" />
 		</commentGenerator>
 
-		<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
 			connectionURL="jdbc:mysql://localhost:3306/inteagle?characterEncoding=utf8&amp;useSSL=true&amp;serverTimezone=UTC"
 			userId="root" password="root">
 		</jdbcConnection>
@@ -21,27 +21,28 @@
 		</javaTypeResolver>
 
 		<javaModelGenerator
-			targetPackage="com.inteagle.loginInfo.entity"
-			targetProject="Inteagle">
+			targetPackage="com.inteagle.apis.mention.entity"
+			targetProject="Inteagle_java">
 			<property name="enableSubPackages" value="false" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
 
-		<sqlMapGenerator targetPackage="mapper.loginInfo"
-			targetProject="Inteagle">
+		<sqlMapGenerator targetPackage="mapper.mention"
+			targetProject="Inteagle_java">
 			<property name="enableSubPackages" value="false" />
 		</sqlMapGenerator>
 
 		<javaClientGenerator
-			targetPackage="com.inteagle.loginInfo.dao" targetProject="Inteagle"
-			type="XMLMAPPER">
+			targetPackage="com.inteagle.apis.mention.dao"
+			targetProject="Inteagle_java" type="XMLMAPPER">
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 
-		<table tableName="user_info" domainObjectName="UserInfo"
+		<table tableName="mention" domainObjectName="Mention"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
-			selectByExampleQueryId="false" />
+			selectByExampleQueryId="true" enableSelectByPrimaryKey="true"
+			enableUpdateByPrimaryKey="true" enableDeleteByPrimaryKey="true" />
 
 
 	</context>

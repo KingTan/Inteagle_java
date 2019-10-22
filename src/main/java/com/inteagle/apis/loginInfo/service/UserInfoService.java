@@ -1,26 +1,42 @@
 package com.inteagle.apis.loginInfo.service;
 
+import java.security.AlgorithmParameters;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inteagle.common.base.entity.BaseEntity;
 import com.inteagle.common.base.service.AbstractService;
+import com.inteagle.common.constant.Constant;
 import com.inteagle.common.entity.JsonResult;
 import com.inteagle.common.exception.BusinessException;
 import com.inteagle.common.idCardAudit.entity.IdCardAuditEntity;
 import com.inteagle.common.idCardAudit.util.Check_idCardAudit_util;
 import com.inteagle.common.redis.RedisService;
 import com.inteagle.common.sms.entity.IdentityCodeEnum;
+import com.inteagle.common.util.Md5Util;
 import com.inteagle.common.util.ParamUtil;
+import com.inteagle.common.wechat.util.WeChatUtil;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.inteagle.apis.loginInfo.dao.UserInfoMapper;
 import com.inteagle.apis.loginInfo.entity.UserInfo;
 
 @Service
+@SuppressWarnings({ "restriction", "unused" })
 public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 
 	@Autowired
@@ -28,6 +44,138 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 
 	@Autowired
 	private RedisService redisService;
+
+	/**
+	 * @description 获取微信手机号、快捷绑定登录或注册
+	 * @author IVAn
+	 * @date 2019年10月15日 下午6:58:14
+	 * @param encryptedData
+	 * @param session_key
+	 * @param iv
+	 * @return
+	 */
+	@Transactional
+	public Map<String, Object> loginOrResgisterforMiniProgram(String encryptedData, String session_key, String iv,
+			String openId, String wechat_userInfo) {
+
+		Map<String, Object> return_map = new HashMap<String, Object>();
+
+		byte[] dataByte = Base64.decode(encryptedData);
+		byte[] keyByte = Base64.decode(session_key);
+		byte[] ivByte = Base64.decode(iv);
+		try {
+			int base = 16;
+			if (keyByte.length % base != 0) {
+				int groups = keyByte.length / base + (keyByte.length % base != 0 ? 1 : 0);
+				byte[] temp = new byte[groups * base];
+				Arrays.fill(temp, (byte) 0);
+				System.arraycopy(keyByte, 0, temp, 0, keyByte.length);
+				keyByte = temp;
+			}
+			// 初始化
+			Security.addProvider(new BouncyCastleProvider());
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			SecretKeySpec spec = new SecretKeySpec(keyByte, "AES");
+			AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
+			parameters.init(new IvParameterSpec(ivByte));
+			cipher.init(Cipher.DECRYPT_MODE, spec, parameters);
+			byte[] resultByte = cipher.doFinal(dataByte);
+			if (null != resultByte && resultByte.length > 0) {
+				String result = new String(resultByte, "UTF-8");
+				JSONObject jsonObject = JSONObject.parseObject(result);
+
+				// 用户手机号
+				String phoneNumer = jsonObject.getString("phoneNumber");
+				// 根据手机号查询是否存在该用户
+				UserInfo userInfoByPhone = userInfoMapper.getUserInfoByPhone(phoneNumer);
+
+				if (userInfoByPhone != null) {
+					// openid和已存在用户绑定
+					userInfoByPhone.setOpenId(openId);
+					userInfoMapper.updateOpenId(userInfoByPhone.getUserId(), openId);
+					return_map.put("userInfo", userInfoByPhone);
+					return return_map;
+				} else {
+					// 根据手机号注册新用户 设置默认密码
+					// 当前微信用户对象
+					JSONObject wechat_object = JSONObject.parseObject(wechat_userInfo);
+					// 微信昵称
+					String userName = wechat_object.getString("nickName");
+					// 微信性别
+					int gender = wechat_object.getInteger("gender");
+					String gender_text = "";
+					if (gender == 1) {
+						gender_text = "男";
+					} else if (gender == 2) {
+						gender_text = "女";
+					}
+					// 微信头像
+					String headPortrait = wechat_object.getString("avatarUrl");
+					try {
+						// 注册新用户
+						UserInfo userInfo = new UserInfo();
+						userInfo.setUserId(BaseEntity.getUUID());
+						userInfo.setUserName(userName);
+						userInfo.setPhone(phoneNumer);
+						userInfo.setPassword(Md5Util.encoderByMd5("123456")); // 设置初始密码
+						userInfo.setGender(gender_text);
+						// 设置默认头像
+						userInfo.setHeadPortrait(headPortrait);
+						userInfo.setOpenId(openId);
+						int register_result = userInfoMapper.registerForMiniProgram(userInfo);
+						if (register_result > 0) {
+							return_map.put("userInfo", userInfo);
+							return return_map;
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * @description 微信小程序
+	 * @author IVAn
+	 * @date 2019年10月15日 下午5:03:52
+	 * @param userName
+	 * @param password
+	 * @param openId
+	 * @return
+	 */
+	@Transactional
+	public UserInfo loginforMiniProgram(String userName, String password, String code) {
+		// 当前登录用户对象
+		UserInfo userInfo = getUserInfoByParamAndPwd(userName, password);
+		// 根据小程序穿过来的code想这个url发送请求
+		String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + Constant.appid + "&secret="
+				+ Constant.secret + "&js_code=" + code + "&grant_type=authorization_code";
+		// 发送请求，返回Json字符串
+		String str = WeChatUtil.httpRequest(url, "GET", null);
+		// 转成Json对象 获取openid
+		JSONObject jsonObject = JSONObject.parseObject(str);
+
+		String openid = jsonObject.get("openid").toString();
+		userInfo.setOpenId(openid);
+
+		userInfoMapper.updateOpenId(userInfo.getUserId(), openid);
+		return userInfo;
+	}
+
+	/**
+	 * @description 通过appId查询用户对象
+	 * @author IVAn
+	 * @date 2019年10月12日 下午5:10:00
+	 * @param appId
+	 * @return
+	 */
+	public UserInfo getUserInfoByOpenId(String appId) {
+		return userInfoMapper.getUserInfoByOpenId(appId);
+	}
 
 	/**
 	 * @description 通过手机号修改密码

@@ -49,8 +49,8 @@
 		INSERT INTO idinfo_struct
 		VALUES(
 				REPLACE(UUID(),"-",""),
-				#{id,jdbcType=CHAR},
 				#{unSignedId},
+				#{id,jdbcType=CHAR},
 				#{x,jdbcType=CHAR},
 				#{y,jdbcType=CHAR},
 				#{t,jdbcType=CHAR},

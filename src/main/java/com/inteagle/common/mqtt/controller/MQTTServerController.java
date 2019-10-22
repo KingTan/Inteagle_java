@@ -238,6 +238,7 @@ public class MQTTServerController {
 		return iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
 	}
 
+	// 电机时间同步消息
 	@RequestMapping("/send/timeSync")
 	public JsonResult<Object> sendTimeSync() {
 		String sof = "a5a5";
@@ -246,14 +247,14 @@ public class MQTTServerController {
 		String len = "000a";
 		len = ByteHexUtil.changeType(len);
 
-		String cmd = "2006";
+		String cmd = "02C0";
 		cmd = ByteHexUtil.changeType(cmd);
 
 		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
 
 		// 转成字节数组
 		String data = Long.toString(content);
-		System.out.println("data-----" + data);
+//		System.out.println("data-----" + data);
 
 		data = ByteHexUtil.str2HexStr(data);
 
@@ -277,10 +278,9 @@ public class MQTTServerController {
 
 		String msg = sof + len + cmd + data + crc + eof;
 
-		System.out.println("msg--------" + msg);
+//		System.out.println("msg--------" + msg);
 
-		String topic = "6lbr-down/61948/28153";
-//		String topic = "test";
+		String topic = "6lbr-down/61948/26773";
 
 		try {
 			boolean is_send = iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
@@ -294,10 +294,9 @@ public class MQTTServerController {
 		return new JsonResult<>(JsonResult.ERROR, "发送失败");
 	}
 
-	// 发送时间同步的消息
+	// 发送时间同步的消息(安全帽)
 	@RequestMapping("/send/msg")
-	public boolean send(@RequestParam("msg") String msg, @RequestParam("topic") String topic)
-			throws MqttException, StructException {
+	public boolean send(@RequestParam("topic") String topic) throws MqttException, StructException {
 
 		String sof = "a5a5";
 		sof = ByteHexUtil.changeType(sof);
@@ -355,32 +354,8 @@ public class MQTTServerController {
 		String eof = "5a5a";
 		eof = ByteHexUtil.changeType(eof);
 
-		msg = sof + len + cmd + data + crc + eof;
+		String msg = sof + len + cmd + data + crc + eof;
 		System.out.println("msg-----" + msg);
-
-		try {
-			System.err.println("cmd_ten---------" + cmd_ten);
-			@SuppressWarnings({ "static-access" })
-			String cmd_value = new AnalysisUtil().CMD.get((int) cmd_ten);
-			System.err.println("cmd_value---------" + cmd_value);
-
-			JSONObject jsonObject_data = new JSONObject();
-			jsonObject_data.put("msg", msg);
-			jsonObject_data.put("topic", topic);
-			jsonObject_data.put("cmd_ten", cmd_ten);
-			jsonObject_data.put("cmd_value", cmd_value);
-			jsonObject_data.put("dataType", "sendTimeSync");
-
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("data", jsonObject_data);
-			jsonObject.put("messageType", "mqtt");
-			jsonObject.put("invoke", "send");
-			// 发送socket 消息
-			WebSocketServer.sendInfo(JSONObject.toJSONString(jsonObject), "showWindow");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		return iEmqService.publish(topic, msg, MqttConfiguration.HELMET);
 	}

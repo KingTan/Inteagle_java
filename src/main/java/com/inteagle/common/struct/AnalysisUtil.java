@@ -1,6 +1,7 @@
 package com.inteagle.common.struct;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
@@ -232,6 +233,9 @@ public class AnalysisUtil {
 
 		// 命令值
 		int cmd_num = (int) cmd;
+
+		System.out.println("cmd-------------------------" + cmd_num);
+
 		// 找到对应的命令
 		String cmd_value = CMD.get(cmd_num);
 
@@ -268,8 +272,8 @@ public class AnalysisUtil {
 					// 转换
 					int change_id = toUnsigned(before_id);
 					struct.setUnSignedId(change_id);
-					
-					//安全帽ID
+
+					// 安全帽ID
 					short helmet_id = struct.getId();
 					try {
 						if (analysisUtil.redisService.get("personId") != null) {
@@ -333,15 +337,16 @@ public class AnalysisUtil {
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
 					byte action = struct.getAction();
 					byte device_type = struct.getDevice_type();
-					
+
 					// 带符号位
 					short before_id = struct.getDevice_id();
-					
+
 					// 转换
 					int change_id = toUnsigned(before_id);
 					struct.setUnSignedId(change_id);
 
 					if (action == DeviceActionEnum.ONLINE.getValue()) {
+						// 上线 且上线设备为 camera_matser时 发送时间同步消息
 						// CAMERA_MASTER和BR上线时发送时间同步的mqtt消息
 						if (device_type == DeviceTypeEnum.DEVICE_TYPE_CAMERA_MASTER.getValue()
 								|| device_type == DeviceTypeEnum.DEVICE_TYPE_6LBR.getValue()) {
@@ -352,6 +357,9 @@ public class AnalysisUtil {
 							analysisUtil.iMqttWrapperServiceImpl.publish(topic, SendDataUtil.sendTimeSyncData(),
 									MqttConfiguration.HELMET);
 						}
+					}
+
+					if (action == DeviceActionEnum.ONLINE.getValue() || action == DeviceActionEnum.offLine.getValue()) {
 						// 收到设备行为数据即保存数据库
 						try {
 							// 保存到数据库
@@ -373,22 +381,28 @@ public class AnalysisUtil {
 				try {
 					HelmetSensorDataStruct struct = new HelmetSensorDataStruct();
 					byte[] b = ByteHexUtil.hexStr2Bytes(data);
-				
 					// 解析成javaStruct
 					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
-					
 					// 带符号位
 					short before_id = struct.getId();
 					// 转换
 					int change_id = toUnsigned(before_id);
 					struct.setUnSignedId(change_id);
-
 					try {
 						// 保存到数据库
 						int result = analysisUtil.helmetSensorService.insertSensor(struct);
 						if (result > 0) {
 							log.info("ID:" + struct.getId() + " 电池情况成功保存数据库.....");
 						}
+
+						// 判断电池电压是否处于报警 (微伏转成伏特 保留两位小数点)
+//						double voltage = new BigDecimal((float) struct.getVol() / 1000000)
+//								.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+						// 小于3.3则电量不足、提示充电
+//						if (voltage < 3.3) {
+//
+//						}
+
 					} catch (Exception e) {
 						// TODO: handle exception
 						log.error(e.toString());
@@ -511,9 +525,34 @@ public class AnalysisUtil {
 		return s & 0x0FFFF;
 	}
 
+	// 获得无符号位的int
+	public static long getUnsignedInt(int data) {
+		return data & 0xFFFFFF;
+	}
+
 	public static void main(String[] args) {
 		try {
-			validate("a5a5000520070001000098605a5a", "6lbr-up");
+
+			// CMD 16进制
+			// Integer.toHexString(0712)
+//			String cmd = "02be";
+
+			// CMD 16进制
+			String cmd_hex = Integer.toHexString(0712);
+
+			System.out.println("cmd_hex------" + cmd_hex);
+
+//			float voltage = 3835172 / 1000000;
+//			double f1 = new BigDecimal((float) 3835172 / 1000000).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+//			System.out.println("voltage--------" + voltage);
+//			System.out.println("f1--------" + f1);
+			// validate("a5a5000520070102000003145a5a", "6lbr-up");
+
+//			Long unsigned = getUnsignedInt(16777216);
+//			System.out.println("unsigned------," + unsigned);
+//
+//			Long unsigned_2 = getUnsignedInt(452984832);
+//			System.out.println("unsigned------," + unsigned_2);
 
 //			short num = -24760;
 //			int num2 = toUnsigned(num);

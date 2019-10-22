@@ -21,6 +21,8 @@ public class UserInfo extends BaseEntity {
 
 	private String roleId;
 
+	private String openId;
+
 	private String userName;
 
 	private String gender;
@@ -40,6 +42,14 @@ public class UserInfo extends BaseEntity {
 	private String userStatus;
 
 	private String userIsonline;
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
 
 	public String getUserId() {
 		return userId;
