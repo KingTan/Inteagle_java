@@ -5,7 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import com.inteagle.common.exception.BusinessException;
-import com.inteagle.common.util.ParamUtil;
+import com.inteagle.utils.ParamUtil;
 
 /**
  * 

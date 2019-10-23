@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @ComponentScan(basePackages = { "com.inteagle"})
-@MapperScan("com.inteagle.*.*.dao")
+@MapperScan("com.inteagle.dao.*")
 @EnableScheduling
 public class InteagleApplication extends SpringBootServletInitializer {
 

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.inteagle.apis.struct.entity.IdInfoStruct;
-import com.inteagle.apis.struct.service.IdInfoStructService;
-import com.inteagle.common.entity.JsonResult;
 import com.inteagle.common.websocket.message.MessageData;
 import com.inteagle.common.websocket.server.WebSocketServer;
+import com.inteagle.modal.base.JsonResult;
+import com.inteagle.modal.struct.IdInfoStruct;
+import com.inteagle.service.struct.IdInfoStructService;
 
 @Controller
 @RequestMapping("/checkcenter")

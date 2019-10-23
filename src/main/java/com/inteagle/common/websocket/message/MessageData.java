@@ -2,7 +2,7 @@ package com.inteagle.common.websocket.message;
 
 import java.io.Serializable;
 import com.alibaba.fastjson.annotation.JSONField;
-import com.inteagle.common.base.entity.BaseEntity;
+import com.inteagle.modal.base.BaseEntity;
 
 /**
  * 

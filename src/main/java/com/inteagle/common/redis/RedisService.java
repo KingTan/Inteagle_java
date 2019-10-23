@@ -15,9 +15,9 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.inteagle.common.constant.Constant;
 import com.inteagle.common.exception.BusinessException;
-import com.inteagle.common.sms.entity.IdentifyingCode;
+import com.inteagle.config.app.AppConfig;
+import com.inteagle.modal.sms.IdentifyingCode;
 
 /**
  * 
@@ -135,7 +135,7 @@ public class RedisService {
 		if (key == null) {
 			throw new BusinessException("rediskey不能为空");
 		}
-		return Constant.project + "-" + key;
+		return AppConfig.project + "-" + key;
 	}
 
 	/**

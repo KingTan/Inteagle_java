@@ -14,9 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
-import com.inteagle.common.util.DateUtil;
-import com.inteagle.common.util.UserUtil;
 import com.inteagle.common.websocket.server.ChartsSocketServer;
+import com.inteagle.utils.DateUtil;
+import com.inteagle.utils.UserUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,37 +47,37 @@ public class ChartsDataTask {
 
 		Calendar cal = Calendar.getInstance();
 		Date date = cal.getTime();
-		
-		//深层水平位移数据
+
+		// 深层水平位移数据
 		JSONObject jsonObject_data = new JSONObject();
 		jsonObject_data.put(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date), data_array_1);
-		
+
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("messageType", "foundation");
 		jsonObject.put("data", jsonObject_data);
-		
-		//顶部水平位移数据
+
+		// 顶部水平位移数据
 		ArrayList<Data_single> data_array_top = new ArrayList<Data_single>();
-		
+
 		Data_single data_single_top = new Data_single();
 		// 50以内的随机数
 		data_single_top.setX((int) (Math.random() * 40) + 10);
 		data_single_top.setY((int) (Math.random() * 40) + 10);
 		data_single_top.setZ(0);
 		data_array_top.add(data_single_top);
-		
+
 		JSONObject top_jsonObject_data = new JSONObject();
 		top_jsonObject_data.put(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date), data_array_top);
-		
+
 		JSONObject top_jsonObject = new JSONObject();
 		top_jsonObject.put("messageType", "foundation_top_horizontal");
 		top_jsonObject.put("data", top_jsonObject_data);
 
 		try {
-			//发送基坑深层水平位移数据
-			ChartsSocketServer.sendInfo(jsonObject.toJSONString(), "001");
-			//发送顶部水平位移数据
-			ChartsSocketServer.sendInfo(top_jsonObject.toJSONString(), "001");
+			// 发送基坑深层水平位移数据
+			ChartsSocketServer.sendInfo(jsonObject.toJSONString(), null);
+			// 发送顶部水平位移数据
+			ChartsSocketServer.sendInfo(top_jsonObject.toJSONString(), null);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

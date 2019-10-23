@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import com.inteagle.common.exception.BusinessException;
-import com.inteagle.common.sms.entity.IdentifyingCode;
+import com.inteagle.modal.sms.IdentifyingCode;
 
 /**
  * 

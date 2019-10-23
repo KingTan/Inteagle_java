@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
-import com.inteagle.apis.loginInfo.entity.UserInfo;
-import com.inteagle.apis.loginInfo.service.UserInfoService;
-import com.inteagle.common.constant.Constant;
-import com.inteagle.common.entity.JsonResult;
 import com.inteagle.common.wechat.util.WeChatUtil;
+import com.inteagle.config.app.AppConfig;
+import com.inteagle.modal.base.JsonResult;
+import com.inteagle.modal.userInfo.UserInfo;
+import com.inteagle.service.UserInfoService;
+
 import java.security.AlgorithmParameters;
 import java.security.Security;
 import java.util.Arrays;
@@ -65,8 +66,8 @@ public class AuthorizeController {
 		Map<String, Object> return_map = new HashMap<String, Object>();
 
 		// 根据小程序穿过来的code想这个url发送请求
-		String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + Constant.appid + "&secret="
-				+ Constant.secret + "&js_code=" + code + "&grant_type=authorization_code";
+		String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + AppConfig.appid + "&secret="
+				+ AppConfig.secret + "&js_code=" + code + "&grant_type=authorization_code";
 		// 发送请求，返回Json字符串
 		String str = WeChatUtil.httpRequest(url, "GET", null);
 		// 转成Json对象 获取openid
