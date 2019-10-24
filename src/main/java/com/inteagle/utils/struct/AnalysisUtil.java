@@ -138,6 +138,7 @@ public class AnalysisUtil {
 	// 解析 paylaod 数据
 	// byte[] playload
 	public static void validate(String hexStr, String topic) {
+		log.info("hexStr------" + hexStr);
 		try {
 			// SOF头
 			String sofHex = hexStr.substring(0, 4);
@@ -170,7 +171,6 @@ public class AnalysisUtil {
 				// CRC 16进制
 				String crc_hex = data_crc_eof.substring((data_crc_eof.length() - 6), (data_crc_eof.length() - 4));
 
-
 				// CRC 10进制
 				long crc_ten = Long.parseLong(crc_hex, 16);
 
@@ -183,11 +183,8 @@ public class AnalysisUtil {
 				// CRC 校验
 				byte crc = CRC8.calcCrc8(b);
 
-				// System.out.println("crc--校验值-----" + crc);
-				// crc_ten == crc
-				// crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString())
 				// 判断CRC 10进制 和校验值
-				if (crc_hex.equals((Integer.toHexString(0x00ff & crc)).toString()) || crc_ten == crc) {
+				if (crc_hex.equals((Integer.toHexString(0x00ff & crc))) || crc_ten == crc) {
 					log.info("crc校验成功....");
 
 					// 数据体
@@ -223,7 +220,7 @@ public class AnalysisUtil {
 		// 命令值
 		int cmd_num = (int) cmd;
 
-		System.out.println("cmd-------------------------" + cmd_num);
+		log.info("cmd-------------------------" + cmd_num);
 
 		// 找到对应的命令
 		String cmd_value = CMD.get(cmd_num);
@@ -406,15 +403,14 @@ public class AnalysisUtil {
 			case "CMD_MOTOR_START":
 				// 方法2 JavaStruct解析
 				try {
-					MotorStartStruct struct = new MotorStartStruct();
-					byte[] b = ByteHexUtil.hexStr2Bytes(data);
-
-					// 解析成javaStruct
-					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
+//					MotorStartStruct struct = new MotorStartStruct();
+//					byte[] b = ByteHexUtil.hexStr2Bytes(data);
+//					// 解析成javaStruct
+//					JavaStruct.unpack(struct, b, ByteOrder.BIG_ENDIAN);
 
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				break;
 			// 电机停止数据

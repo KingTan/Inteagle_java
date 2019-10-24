@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.inteagle.apis.loginInfo.dao.UserInfoMapper">
-  <resultMap id="BaseResultMap" type="com.inteagle.apis.loginInfo.entity.UserInfo">
+<mapper namespace="com.inteagle.dao.userInfo.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="com.inteagle.modal.userInfo.UserInfo">
     <result column="user_id" jdbcType="CHAR" property="userId" />
     <result column="role_id" jdbcType="CHAR" property="roleId" />
     <result column="openId" jdbcType="CHAR" property="openId" />
@@ -83,7 +83,7 @@
   
   
   <!--修改用户信息  -->
-   <update id="updateUserInfo" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+   <update id="updateUserInfo" parameterType="com.inteagle.modal.userInfo.UserInfo">
   	  UPDATE user_info
   	  <trim prefix="set" suffixOverrides=",">
   	  	<if test="roleId != null">role_id=#{roleId},</if>
@@ -110,7 +110,7 @@
   </update>
   
   <!-- 注册  PC端-->
-  <insert id="register" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+  <insert id="register" parameterType="com.inteagle.modal.userInfo.UserInfo">
   	INSERT INTO user_info (user_id,user_name,gender,phone,id_card_num,password,head_portrait,in_date,edit_date)
 	VALUES(
 		REPLACE (uuid(), '-', ''),
@@ -126,7 +126,7 @@
   </insert>
   
   <!--微信小程序端注册  -->
-  <insert id="registerForMiniProgram" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+  <insert id="registerForMiniProgram" parameterType="com.inteagle.modal.userInfo.UserInfo">
   		INSERT INTO user_info (user_id,openId,user_name,gender,phone,password,head_portrait,in_date,edit_date)
 		VALUES(
 			#{userId},
@@ -141,7 +141,7 @@
 		)
   </insert>
   
-  <insert id="insert" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+  <insert id="insert" parameterType="com.inteagle.modal.userInfo.UserInfo">
     insert into user_info (user_id, role_id,openId user_name, 
       gender, phone, id_card_num, 
       corp_name, password, email, 
@@ -156,7 +156,7 @@
       #{editDate,jdbcType=CHAR})
   </insert>
    
-  <insert id="insertSelective" parameterType="com.inteagle.apis.loginInfo.entity.UserInfo">
+  <insert id="insertSelective" parameterType="com.inteagle.modal.userInfo.UserInfo">
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userId != null">

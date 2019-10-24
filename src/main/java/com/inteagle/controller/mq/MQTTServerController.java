@@ -18,10 +18,12 @@ import com.inteagle.utils.struct.MotorStartStruct;
 import com.inteagle.utils.struct.SendDataUtil;
 import com.inteagle.utils.struct.TimeSyncData;
 
+import lombok.extern.slf4j.Slf4j;
 import struct.JavaStruct;
 import struct.StructException;
 
 @RestController
+@Slf4j
 public class MQTTServerController {
 	@Autowired
 	private IMqttPublish iEmqService;
@@ -235,21 +237,23 @@ public class MQTTServerController {
 	@RequestMapping("/send/timeSync")
 	public JsonResult<Object> sendTimeSync() {
 		String sof = "a5a5";
-		sof = ByteHexUtil.changeType(sof);
-
 		String len = "000a";
-		len = ByteHexUtil.changeType(len);
-
 		String cmd = "02C0";
-		cmd = ByteHexUtil.changeType(cmd);
 
-		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
+//		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
+		
+		Long content = 1571818193l;
+		byte[] test = ByteHexUtil.longToDword(content);
+
+		String test_hex = ByteHexUtil.bytes2HexStr(test);
 
 		// 转成字节数组
-		String data = Long.toString(content);
-//		System.out.println("data-----" + data);
+//		String data = Long.toString(content);
+//		data = ByteHexUtil.str2HexStr(data);
 
-		data = ByteHexUtil.str2HexStr(data);
+		String data = test_hex;
+
+		log.info("data----" + data);
 
 		// 按照协议 截取到crc的16进制值
 		String crc = len + cmd + data;
@@ -271,7 +275,7 @@ public class MQTTServerController {
 
 		String msg = sof + len + cmd + data + crc + eof;
 
-//		System.out.println("msg--------" + msg);
+		log.info("msg-----" + msg);
 
 		String topic = "6lbr-down/61948/26773";
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper
-	namespace="com.inteagle.apis.struct.dao.HelmetSensorMapper">
+	namespace="com.inteagle.dao.struct.HelmetSensorMapper">
 	
 	<resultMap id="BaseResultMap"
-		type="com.inteagle.apis.struct.entity.HelmetSensorDataStruct">
+		type="com.inteagle.modal.struct.HelmetSensorDataStruct">
 		<result column="sensor_id" jdbcType="CHAR" property="sensorId" />
 		<result column="device_id" jdbcType="CHAR" property="id" />
 		<result column="unsigned_device_id" jdbcType="INTEGER" property="unSignedId" />
@@ -37,7 +37,7 @@
 	</select>
 	
 	<!--添加电池情况  -->
-	<insert id="insertSensor" parameterType="com.inteagle.apis.struct.entity.HelmetSensorDataStruct">
+	<insert id="insertSensor" parameterType="com.inteagle.modal.struct.HelmetSensorDataStruct">
 		INSERT INTO device_sensor
 		VALUE(
 			replace(UUID(),'-',''),

@@ -6,6 +6,8 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @ClassName: Constant
@@ -14,6 +16,7 @@ import org.dom4j.io.SAXReader;
  * @date 2019年8月27日上午11:15:40
  *
  */
+@Slf4j
 public class AppConfig {
 
 	// 项目ip
@@ -71,7 +74,7 @@ public class AppConfig {
 			IdentifyingCodeFlag = Boolean.parseBoolean(root.elementText("IdentifyingCodeFlag"));
 			identityCodeMinutes = Integer.parseInt(root.elementText("identityCodeMinutes"));
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 

@@ -1,6 +1,9 @@
 package com.inteagle.utils.struct;
 
+import java.util.Calendar;
 import java.util.regex.Pattern;
+
+import com.inteagle.test.TemplatureRead;
 
 /**
  * 
@@ -14,7 +17,51 @@ public class ByteHexUtil {
 
 	public static void main(String[] args) throws Exception {
 
-		String data_hex = "a5a5006422c231323334353637383234313531313039323031393031313030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e3030303030322e303030fd5a5a";
+		String sof = "a5a5";
+		String len = "000a";
+		String cmd = "02C0";
+		
+//		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
+//		System.out.println("content----" + content);
+
+		Long content = 1571818193l;
+		byte[] test = longToDword(content);
+
+		String test_hex = bytes2HexStr(test);
+		System.out.println("test_hex---" + test_hex);
+
+		// 转成字节数组
+		String data = Long.toString(content);
+
+		data = ByteHexUtil.str2HexStr(data);
+
+		System.out.println("data----" + data);
+
+		// 按照协议 截取到crc的16进制值
+		String crc = len + cmd + data;
+
+		// 16进制转成字节数组
+		byte[] crc_byte = ByteHexUtil.hex2Byte(crc);
+
+		// 传入字节数组 求出crc的校验值字节
+		byte crc_after = CRC8.calcCrc8(crc_byte);
+
+		// 将校验值字节放入数组中 转成16进制数据
+		byte[] crc_after_array = { crc_after };
+
+		crc = ByteHexUtil.byte2HexStr(crc_after_array);
+
+		String eof = "5a5a";
+
+		eof = ByteHexUtil.changeType(eof);
+
+		String msg = sof + len + cmd + data + crc + eof;
+
+		System.out.println("msg----" + msg);
+
+//		String data_str = "00263400";
+//		String temp = formatTemp(data_str);
+//		System.out.println("temp---" + temp);
 
 //		// Len 反解析
 //		Long content = Calendar.getInstance().getTimeInMillis() / 1000;
@@ -30,17 +77,36 @@ public class ByteHexUtil {
 //		System.out.println("len_hex----" + len_hex);
 //		String len = ByteHexUtil.addZeroForNum(len_hex, 4);
 //		System.out.println("len----" + len);
-//
 //		// CMD反解析
 //		// 10进制转16进制
-		String cmd_six = intToHex(704); //命令值
-		cmd_six = addZeroForNum(cmd_six, 4);
-		System.out.println("cmd_six-------" + cmd_six);
-		
+//		String cmd_six = intToHex(704); //命令值
+//		cmd_six = addZeroForNum(cmd_six, 4);
+//		System.out.println("cmd_six-------" + cmd_six);
 //		// 16进制转10进制
-		long cmd_ten_ad = Long.parseLong(cmd_six, 16) & 0x0fff;
-		System.out.println("cmd_ten_ad-----" + cmd_ten_ad);
+//		long cmd_ten_ad = Long.parseLong(cmd_six, 16) & 0x0fff;
+//		System.out.println("cmd_ten_ad-----" + cmd_ten_ad);
+	}
 
+	// 将long型数据转换为Dword的字节数组（C/C++的无符号整数）
+	public static byte[] longToDword(long value) {
+		byte[] data = new byte[8];
+		for (int i = 0; i < data.length; i++) {
+			data[i] = (byte) (value >> (8 * i));
+		}
+		return data;
+
+	}
+
+	/**
+	 * @description 解析温度
+	 * @author IVAn
+	 * @date 2019年10月24日 上午11:56:34
+	 * @return
+	 */
+	private static String formatTemp(String tmpString) {
+		String b_num = tmpString.substring(0, 4).replaceAll("0", "");
+		String e_num = tmpString.substring(4).replaceAll("0", "");
+		return b_num.concat(".").concat(e_num);
 	}
 
 	// 字符串长度不够 前后补0

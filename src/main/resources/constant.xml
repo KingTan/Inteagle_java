@@ -2,8 +2,8 @@
 <root>
 
 	<!-- // 项目ip -->
-<!-- 	<server>http://192.168.1.26:80/</server> -->
-	<server>https://www.inteagle.com.cn/</server>
+	<server>http://192.168.1.26:80/</server>
+<!-- 	<server>https://www.inteagle.com.cn/</server> -->
 
 	<!-- 文件盘符 -->
 	<drive>F:\\</drive>
@@ -19,7 +19,7 @@
 	<secret>6327b57053ebcda91f4869541f8b8dff</secret>
 	
 	<!-- 真实验证码开关 -->
-	<IdentifyingCodeFlag>true</IdentifyingCodeFlag>
+	<IdentifyingCodeFlag>false</IdentifyingCodeFlag>
 
 	<!-- 验证码保存时间 -->
 	<identityCodeMinutes>10</identityCodeMinutes>

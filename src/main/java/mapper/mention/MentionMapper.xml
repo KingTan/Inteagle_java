@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.inteagle.apis.mention.dao.MentionMapper">
-  <resultMap id="BaseResultMap" type="com.inteagle.apis.mention.entity.Mention">
+<mapper namespace="com.inteagle.dao.mentions.MentionMapper">
+  <resultMap id="BaseResultMap" type="com.inteagle.modal.mention.Mention">
     <id column="mention_id" jdbcType="CHAR" property="mentionId" />
     <result column="device_id" jdbcType="CHAR" property="deviceId" />
     <result column="device_type" jdbcType="CHAR" property="deviceType" />
@@ -23,7 +23,7 @@
     delete from mention
     where mention_id = #{mentionId,jdbcType=CHAR}
   </delete>
-  <insert id="insert" parameterType="com.inteagle.apis.mention.entity.Mention">
+  <insert id="insert" parameterType="com.inteagle.modal.mention.Mention">
     insert into mention (mention_id, device_id, device_type, 
       mention_text, mention_status, solved_id, 
       mention_time)
@@ -31,7 +31,7 @@
       #{mentionText,jdbcType=VARCHAR}, #{mentionStatus,jdbcType=VARCHAR}, #{solvedId,jdbcType=CHAR}, 
       #{mentionTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.inteagle.apis.mention.entity.Mention">
+  <insert id="insertSelective" parameterType="com.inteagle.modal.mention.Mention">
     insert into mention
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="mentionId != null">
@@ -80,7 +80,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.inteagle.apis.mention.entity.Mention">
+  <update id="updateByPrimaryKeySelective" parameterType="com.inteagle.modal.mention.Mention">
     update mention
     <set>
       <if test="deviceId != null">
@@ -104,7 +104,7 @@
     </set>
     where mention_id = #{mentionId,jdbcType=CHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.inteagle.apis.mention.entity.Mention">
+  <update id="updateByPrimaryKey" parameterType="com.inteagle.modal.mention.Mention">
     update mention
     set device_id = #{deviceId,jdbcType=CHAR},
       device_type = #{deviceType,jdbcType=CHAR},

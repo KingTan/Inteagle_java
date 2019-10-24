@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper
-	namespace="com.inteagle.apis.struct.dao.DeviceActionMapper">
+	namespace="com.inteagle.dao.struct.DeviceActionMapper">
 	
 	<resultMap id="BaseResultMap"
-		type="com.inteagle.apis.struct.entity.DeviceActionStruct">
+		type="com.inteagle.modal.struct.DeviceActionStruct">
 		<result column="record_id" jdbcType="CHAR" property="recordId" />
 		<result column="device_id" jdbcType="CHAR" property="device_id" />
 		<result column="unsigned_device_id" jdbcType="INTEGER" property="unSignedId" />
@@ -31,7 +31,7 @@
 		ORDER BY in_date DESC
 	</select>
 	
-	<insert id="insert" parameterType="com.inteagle.apis.struct.entity.DeviceActionStruct">
+	<insert id="insert" parameterType="com.inteagle.modal.struct.DeviceActionStruct">
 		INSERT INTO device_action
 		VALUES
 			(

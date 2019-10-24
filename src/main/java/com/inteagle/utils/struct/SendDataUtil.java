@@ -186,23 +186,19 @@ public class SendDataUtil {
 			time_byte = JavaStruct.pack(timeSyncData);
 
 			String data = ByteHexUtil.bytes2HexStr(time_byte);
-			// System.out.println("data------"+data);
 
 			// 按照协议 截取到crc的16进制值
 			String crc = len + cmd + data;
-			// System.out.println("crc-------" + crc);
 
 			// 16进制转成字节数组
 			byte[] crc_byte = ByteHexUtil.hex2Byte(crc);
 
 			// 传入字节数组 求出crc的校验值字节
 			byte crc_after = CRC8.calcCrc8(crc_byte);
-			// System.out.println("crc_after-校验值-----" + crc_after);
 
 			// 将校验值字节放入数组中 转成16进制数据
 			byte[] crc_after_array = { crc_after };
 			crc = ByteHexUtil.byte2HexStr(crc_after_array);
-			// System.out.println("crc_last------" + crc);
 
 			String eof = "5a5a";
 			eof = ByteHexUtil.changeType(eof);

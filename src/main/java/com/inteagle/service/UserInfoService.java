@@ -31,12 +31,16 @@ import com.inteagle.utils.Check_idCardAudit_util;
 import com.inteagle.utils.Md5Util;
 import com.inteagle.utils.ParamUtil;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
+import lombok.extern.slf4j.Slf4j;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Service
 @SuppressWarnings({ "restriction", "unused" })
+@Slf4j
 public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 
 	@Autowired
@@ -58,7 +62,7 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 	public Map<String, Object> loginOrResgisterforMiniProgram(String encryptedData, String session_key, String iv,
 			String openId, String wechat_userInfo) {
 
-		Map<String, Object> return_map = new HashMap<String, Object>();
+		Map<String, Object> returnMap = new HashMap<String, Object>();
 
 		byte[] dataByte = Base64.decode(encryptedData);
 		byte[] keyByte = Base64.decode(session_key);
@@ -93,24 +97,24 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 					// openid和已存在用户绑定
 					userInfoByPhone.setOpenId(openId);
 					userInfoMapper.updateOpenId(userInfoByPhone.getUserId(), openId);
-					return_map.put("userInfo", userInfoByPhone);
-					return return_map;
+					returnMap.put("userInfo", userInfoByPhone);
+					return returnMap;
 				} else {
 					// 根据手机号注册新用户 设置默认密码
 					// 当前微信用户对象
-					JSONObject wechat_object = JSONObject.parseObject(wechat_userInfo);
+					JSONObject wechatObject = JSONObject.parseObject(wechat_userInfo);
 					// 微信昵称
-					String userName = wechat_object.getString("nickName");
+					String userName = wechatObject.getString("nickName");
 					// 微信性别
-					int gender = wechat_object.getInteger("gender");
-					String gender_text = "";
+					int gender = wechatObject.getInteger("gender");
+					String genderText = "";
 					if (gender == 1) {
-						gender_text = "男";
+						genderText = "男";
 					} else if (gender == 2) {
-						gender_text = "女";
+						genderText = "女";
 					}
 					// 微信头像
-					String headPortrait = wechat_object.getString("avatarUrl");
+					String headPortrait = wechatObject.getString("avatarUrl");
 					try {
 						// 注册新用户
 						UserInfo userInfo = new UserInfo();
@@ -118,14 +122,14 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 						userInfo.setUserName(userName);
 						userInfo.setPhone(phoneNumer);
 						userInfo.setPassword(Md5Util.encoderByMd5("123456")); // 设置初始密码
-						userInfo.setGender(gender_text);
+						userInfo.setGender(genderText);
 						// 设置默认头像
 						userInfo.setHeadPortrait(headPortrait);
 						userInfo.setOpenId(openId);
-						int register_result = userInfoMapper.registerForMiniProgram(userInfo);
-						if (register_result > 0) {
-							return_map.put("userInfo", userInfo);
-							return return_map;
+						int registerResult = userInfoMapper.registerForMiniProgram(userInfo);
+						if (registerResult > 0) {
+							returnMap.put("userInfo", userInfo);
+							return returnMap;
 						}
 					} catch (Exception e) {
 						// TODO: handle exception
@@ -133,7 +137,7 @@ public class UserInfoService extends AbstractService<UserInfo, UserInfoMapper> {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return null;
 	}

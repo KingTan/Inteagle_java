@@ -32,7 +32,7 @@ public class ExportFoundation implements Serializable {
 	@Excel(name = "y轴位移量", width = 30, orderNum = "3", isImportField = "true_st")
 	private int yRate;
 
-	@Excel(name = "记录时间", width = 40, orderNum = "4", exportFormat = "yyyy-MM-dd", isImportField = "true_st")
+	@Excel(name = "记录时间", width = 40, orderNum = "4", exportFormat = "yyyy-MM-dd HH:mm:ss", isImportField = "true_st")
 	private Date recordDate;
 
 	public String getDeviceId() {
